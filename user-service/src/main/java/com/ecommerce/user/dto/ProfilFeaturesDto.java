@@ -1,6 +1,5 @@
 package com.ecommerce.user.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,13 +11,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfilDto {
-
-    private Long id;
-
-    @NotBlank(message = "Name is required")
-    private String name;
-
-    Set<FeatureDto> features;
-
+public class ProfilFeaturesDto {
+    private Long profilId;
+    private Set<Long> featureIds;
 }

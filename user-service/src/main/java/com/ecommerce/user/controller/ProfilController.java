@@ -1,6 +1,7 @@
 package com.ecommerce.user.controller;
 
 import com.ecommerce.user.dto.ProfilDto;
+import com.ecommerce.user.dto.ProfilFeaturesDto;
 import com.ecommerce.user.service.ProfilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,16 @@ public class ProfilController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProfil(@PathVariable Long id) {
         return ResponseEntity.ok(profilService.deleteProfil(id));
+    }
+
+    @PostMapping("/add-features")
+    public ResponseEntity<ProfilDto> addFeaturesToProfil(@RequestBody ProfilFeaturesDto profilFeaturesDto) {
+        return new ResponseEntity<>(profilService.addFeaturesToProfil(profilFeaturesDto), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/remove-features")
+    public ResponseEntity<ProfilDto> removeFeaturesFromProfil(@RequestBody ProfilFeaturesDto profilFeaturesDto) {
+        return new ResponseEntity<>(profilService.removeFeaturesFromProfil(profilFeaturesDto), HttpStatus.CREATED);
     }
 
 }

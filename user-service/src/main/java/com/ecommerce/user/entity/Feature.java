@@ -18,6 +18,9 @@ public class Feature {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String resourceName; // Ex: USER, PRODUCT, CATEGORY, ...
+
+    @Column(nullable = false)
     private String action; // Ex: CREATE, READ, UPDATE, DELETE, ...
 }
