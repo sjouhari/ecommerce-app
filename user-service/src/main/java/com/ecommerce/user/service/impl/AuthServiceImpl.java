@@ -5,12 +5,10 @@ import com.ecommerce.user.dto.LoginDTO;
 import com.ecommerce.user.dto.RegisterDto;
 import com.ecommerce.user.dto.UserDto;
 import com.ecommerce.user.entity.Profil;
-import com.ecommerce.user.entity.Token;
 import com.ecommerce.user.entity.User;
 import com.ecommerce.user.exception.ResourceNotFoundException;
 import com.ecommerce.user.mapper.UserMapper;
 import com.ecommerce.user.repository.ProfilRepository;
-import com.ecommerce.user.repository.TokenRepository;
 import com.ecommerce.user.repository.UserRepository;
 import com.ecommerce.user.security.JwtTokenProvider;
 import com.ecommerce.user.service.AuthService;
@@ -34,7 +32,6 @@ public class AuthServiceImpl implements AuthService {
 	private PasswordEncoder passwordEncoder;
 	private UserRepository userRepository;
 	private ProfilRepository profilRepository;
-	private TokenRepository tokenRepository;
 	private JwtTokenProvider jwtTokenProvider;
 
 	@Override
@@ -52,9 +49,6 @@ public class AuthServiceImpl implements AuthService {
 			
 			String generatedToken = jwtTokenProvider.generateToken(authentication);
 			
-			revokeAllUserTokens(currentUser);
-			saveUserToken(currentUser, generatedToken);
-			
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 
             return new JWTAuthResponse(generatedToken, UserMapper.INSTANCE.userToUserDto(currentUser));
@@ -63,27 +57,6 @@ public class AuthServiceImpl implements AuthService {
 		} catch (Exception e) {
 			throw new RuntimeException("Something went wrong, try again later." + e.getMessage());
 		}
-	}
-
-	private void saveUserToken(User currentUser, String generatedToken) {
-		Token token = Token.builder()
-				.user(currentUser)
-				.token(generatedToken)
-				.tokenType("Bearer")
-				.expired(false)
-				.revoked(false)
-				.build();
-		tokenRepository.save(token);
-	}
-	
-	private void revokeAllUserTokens(User user) {
-		List<Token> validUserTokens = tokenRepository.findAllValidTokensByUser(user.getId());
-		if(validUserTokens.isEmpty()) return;
-		validUserTokens.forEach(token -> {
-			token.setExpired(true);
-			token.setRevoked(true);
-		});
-		tokenRepository.saveAll(validUserTokens);
 	}
 
 	@Override

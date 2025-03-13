@@ -6,13 +6,18 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
@@ -29,13 +34,23 @@ public class JwtTokenProvider {
 	
 	// Generate JWT Token
 	public String generateToken(Authentication authentication) {
+		// Get username from authentication
 		String username = authentication.getName();
-		
+
+		// Extract the roles from the authentication object
+		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+		Set<String> roles = authorities.stream()
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toSet());
+
+		// Dates for expiration of token and current date
 		Date currentDate = new Date();
 		Date expirationDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
+		// Create JWT token
         return Jwts.builder()
 				.subject(username)
+				.claim("roles", roles)
 				.issuedAt(currentDate)
 				.expiration(expirationDate)
 				.signWith(key())

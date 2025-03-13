@@ -1,6 +1,5 @@
 package com.ecommerce.user.security;
 
-import com.ecommerce.user.repository.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,9 +24,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
-	
-	@Autowired
-	private TokenRepository tokenRepository;
 
 	@Override
 	protected void doFilterInternal(
@@ -37,8 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	) throws ServletException, IOException {
 		// Get JWT Token from http request // Authorisation: Bearer <token>
 		String token = getTokenFromRequest(request);
-		boolean isTokenValid = tokenRepository.findByToken(token).map(t -> !t.isExpired() && !t.isRevoked()).orElse(false);
-		if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token) && isTokenValid) {
+		if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
 			// Get username from token
 			String username = jwtTokenProvider.getUsername(token);
 			
