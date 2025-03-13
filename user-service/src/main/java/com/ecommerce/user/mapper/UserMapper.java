@@ -1,5 +1,6 @@
 package com.ecommerce.user.mapper;
 
+import com.ecommerce.user.dto.RegisterDto;
 import com.ecommerce.user.dto.UserDto;
 import com.ecommerce.user.entity.User;
 import org.mapstruct.Mapper;
@@ -19,5 +20,8 @@ public interface UserMapper {
     UserDto userToUserDto(User user);
 
     List<UserDto> userToUserDtos(List<User> users);
+
+    @Mapping(target = "profils", ignore = true)
+    User registerDtoToUser(RegisterDto registerDto);
 
 }
