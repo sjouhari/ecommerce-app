@@ -1,9 +1,12 @@
 package com.ecommerce.product.service.impl;
 
+import com.ecommerce.product.dto.CommentDto;
 import com.ecommerce.product.dto.ProductDto;
 import com.ecommerce.product.entity.Category;
+import com.ecommerce.product.entity.Comment;
 import com.ecommerce.product.entity.Product;
 import com.ecommerce.product.exception.ResourceNotFoundException;
+import com.ecommerce.product.mapper.CommentMapper;
 import com.ecommerce.product.mapper.ProductMapper;
 import com.ecommerce.product.repository.CategoryRepository;
 import com.ecommerce.product.repository.ProductRepository;
@@ -62,5 +65,18 @@ public class ProductServiceImpl implements ProductService {
         getProductById(id);
         productRepository.deleteById(id);
         return "Product deleted successfully";
+    }
+
+    @Override
+    public ProductDto addComment(Long productId, CommentDto commentDto) {
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "id", productId.toString())
+        );
+
+        Comment comment = CommentMapper.INSTANCE.commentDtoToComment(commentDto);
+        comment.setProduct(product);
+        product.getComments().add(comment);
+        Product savedProduct = productRepository.save(product);
+        return ProductMapper.INSTANCE.productToProductDto(savedProduct);
     }
 }

@@ -47,8 +47,6 @@ public class JwtTokenProvider {
 				.getPayload()
 				.get("roles"); // Retrieve raw object
 
-		System.out.println(rolesObject);
-
 		// Safe type casting
 		if (rolesObject instanceof List<?> rawList) {
             Set<String> rolesSet = new HashSet<>();

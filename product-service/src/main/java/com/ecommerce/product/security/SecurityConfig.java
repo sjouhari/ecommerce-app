@@ -55,6 +55,10 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/api/products").hasAuthority("PRODUCT_CREATE")
 						.requestMatchers(HttpMethod.PUT, "/api/products/**").hasAuthority("PRODUCT_UPDATE")
 						.requestMatchers(HttpMethod.DELETE, "/api/products/**").hasAuthority("PRODUCT_DELETE")
+						.requestMatchers(HttpMethod.GET, "/api/categories", "/api/categories/**").hasAuthority("CATEGORY_READ")
+						.requestMatchers(HttpMethod.POST, "/api/categories").hasAuthority("CATEGORY_CREATE")
+						.requestMatchers(HttpMethod.PUT, "/api/categories/**").hasAuthority("CATEGORY_UPDATE")
+						.requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasAuthority("CATEGORY_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)

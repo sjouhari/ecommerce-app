@@ -31,9 +31,6 @@ public class SecurityConfig {
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-	@Autowired
-	private LogoutHandler logoutHandler;
-
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -81,7 +78,6 @@ public class SecurityConfig {
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				).logout(logout -> logout
 						.logoutUrl("/api/auth/logout")
-						.addLogoutHandler(logoutHandler)
 						.logoutSuccessHandler((request, response, authentication) -> {
 							SecurityContextHolder.clearContext();
 						})

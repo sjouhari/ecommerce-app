@@ -1,7 +1,9 @@
 package com.ecommerce.product.mapper;
 
+import com.ecommerce.product.dto.CommentDto;
 import com.ecommerce.product.dto.ProductDto;
 import com.ecommerce.product.entity.Category;
+import com.ecommerce.product.entity.Comment;
 import com.ecommerce.product.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -31,5 +33,12 @@ public interface ProductMapper {
         Category category = new Category();
         category.setId(categoryId);
         return category;
+    }
+
+    default CommentDto commentToCommentDto(Comment comment) {
+        CommentDto commentDto = new CommentDto();
+        commentDto.setId(comment.getId());
+        commentDto.setText(comment.getText());
+        return commentDto;
     }
 }

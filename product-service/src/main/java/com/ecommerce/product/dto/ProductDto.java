@@ -43,4 +43,6 @@ public class ProductDto {
     @NotNull(message = "Product Category is required")
     private Long categoryId;
 
+    private List<CommentDto> comments;
+
 }

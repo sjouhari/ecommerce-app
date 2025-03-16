@@ -1,5 +1,6 @@
 package com.ecommerce.product.controller;
 
+import com.ecommerce.product.dto.CommentDto;
 import com.ecommerce.product.dto.ProductDto;
 import com.ecommerce.product.service.ProductService;
 import jakarta.validation.Valid;
@@ -42,6 +43,11 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         return ResponseEntity.ok(productService.deleteProduct(id));
+    }
+
+    @PostMapping("/{productId}/comments")
+    public ResponseEntity<ProductDto> addComment(@PathVariable Long productId, @RequestBody CommentDto commentDto) {
+        return ResponseEntity.ok(productService.addComment(productId, commentDto));
     }
 
 }

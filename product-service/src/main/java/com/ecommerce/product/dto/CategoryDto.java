@@ -17,4 +17,7 @@ public class CategoryDto {
     @NotBlank(message = "Category Name is required")
     private String name;
 
+    @NotBlank(message = "Category Description is required")
+    private String description;
+
 }
