@@ -1,6 +1,5 @@
 package com.ecommerce.product.service;
 
-import com.ecommerce.product.dto.CommentDto;
 import com.ecommerce.product.dto.ProductDto;
 
 import java.util.List;
@@ -16,7 +15,5 @@ public interface ProductService {
     ProductDto updateProduct(Long id, ProductDto productDto);
 
     String deleteProduct(Long id);
-
-    ProductDto addComment(Long productId, CommentDto commentDto);
 
 }

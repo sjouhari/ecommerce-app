@@ -7,12 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -27,25 +22,32 @@ public class Product extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String name;
 
     private String description;
-    private double price;
-    private int quantityInStock;
 
-    @ElementCollection(targetClass = ProductColor.class)
+    private String type;
+
+    private Integer quantityInStock;
+
+    private Double price;
+
+    private double reductionPercentage;
+
+    @ElementCollection
     @CollectionTable(name = "product_colors", joinColumns = @JoinColumn(name = "product_id"))
     @Enumerated(EnumType.STRING)
-    private List<ProductColor> colors;
+    private List<ProductColor> productColors;
 
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
+    private Long subCategoryId;
+
     @ManyToOne
-    private Category category;
+    private Tva tva;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Comment> comments;
-
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Media> medias;
 }

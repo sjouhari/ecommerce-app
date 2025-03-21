@@ -1,44 +1,37 @@
 package com.ecommerce.product.mapper;
 
-import com.ecommerce.product.dto.CommentDto;
+import com.ecommerce.product.dto.MediaDto;
 import com.ecommerce.product.dto.ProductDto;
-import com.ecommerce.product.entity.Category;
-import com.ecommerce.product.entity.Comment;
+import com.ecommerce.product.dto.TvaDto;
+import com.ecommerce.product.entity.Media;
 import com.ecommerce.product.entity.Product;
+import com.ecommerce.product.entity.Tva;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface ProductMapper {
 
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
-    @Mapping(target = "categoryId", source = "category.id")
-    ProductDto productToProductDto(Product product);
-
-    @Mapping(source = "categoryId", target = "category", qualifiedByName = "mapCategory")
     Product productDtoToProduct(ProductDto productDto);
+
+    ProductDto productToProductDto(Product product);
 
     List<ProductDto> productsToProductDtos(List<Product> products);
 
-    @Named("mapCategory")
-    default Category mapCategory(Long categoryId) {
-        if (categoryId == null) {
-            return null;
-        }
-        Category category = new Category();
-        category.setId(categoryId);
-        return category;
-    }
+    List<MediaDto> mediasToMediaDtos(List<Media> medias);
 
-    default CommentDto commentToCommentDto(Comment comment) {
-        CommentDto commentDto = new CommentDto();
-        commentDto.setId(comment.getId());
-        commentDto.setText(comment.getText());
-        return commentDto;
-    }
+    List<Media> mediaDtosToMedias(List<MediaDto> mediaDtos);
+
+    Media mediaDtoToMedia(MediaDto mediaDto);
+
+    MediaDto mediaToMediaDto(Media media);
+
+    Tva tvaDtoToTva(TvaDto tvaDto);
+
+    TvaDto tvaToTvaDto(Tva tva);
+
 }

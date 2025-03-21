@@ -1,20 +1,16 @@
 package com.ecommerce.product.controller;
 
-import com.ecommerce.product.dto.CommentDto;
 import com.ecommerce.product.dto.ProductDto;
 import com.ecommerce.product.service.ProductService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
-@Validated
 public class ProductController {
 
     @Autowired
@@ -31,7 +27,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductDto productDto) {
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
         return new ResponseEntity<>(productService.createProduct(productDto), HttpStatus.CREATED);
     }
 
@@ -43,11 +39,6 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         return ResponseEntity.ok(productService.deleteProduct(id));
-    }
-
-    @PostMapping("/{productId}/comments")
-    public ResponseEntity<ProductDto> addComment(@PathVariable Long productId, @RequestBody CommentDto commentDto) {
-        return ResponseEntity.ok(productService.addComment(productId, commentDto));
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ecommerce.product.security;
+package com.ecommerce.category.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -44,10 +46,14 @@ public class SecurityConfig {
 		}));
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**", "/api/tvas", "/api/tvas/**").hasAuthority("PRODUCT_READ")
-						.requestMatchers(HttpMethod.POST, "/api/products", "/api/tvas").hasAuthority("PRODUCT_CREATE")
-						.requestMatchers(HttpMethod.PUT, "/api/products/**", "/api/tvas/**").hasAuthority("PRODUCT_UPDATE")
-						.requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/tvas/**").hasAuthority("PRODUCT_DELETE")
+						.requestMatchers(HttpMethod.GET, "/api/categories", "/api/categories/**").hasAuthority("CATEGORY_READ")
+						.requestMatchers(HttpMethod.POST, "/api/categories").hasAuthority("CATEGORY_CREATE")
+						.requestMatchers(HttpMethod.PUT, "/api/categories/**").hasAuthority("CATEGORY_UPDATE")
+						.requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasAuthority("CATEGORY_DELETE")
+//						.requestMatchers(HttpMethod.GET, "/api/categories", "/api/categories/**").hasAuthority("CATEGORY_READ")
+//						.requestMatchers(HttpMethod.POST, "/api/categories").hasAuthority("CATEGORY_CREATE")
+//						.requestMatchers(HttpMethod.PUT, "/api/categories/**").hasAuthority("CATEGORY_UPDATE")
+//						.requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasAuthority("CATEGORY_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)

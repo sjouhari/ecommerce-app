@@ -1,4 +1,4 @@
-package com.ecommerce.product.dto;
+package com.ecommerce.category.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentDto {
+public class SubCategoryDto {
 
     private Long id;
-    private String text;
+    private String name;
+    private String description;
+    private Long categoryId;
 
 }

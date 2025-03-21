@@ -1,16 +1,14 @@
 package com.ecommerce.product.service.impl;
 
-import com.ecommerce.product.dto.CommentDto;
 import com.ecommerce.product.dto.ProductDto;
-import com.ecommerce.product.entity.Category;
-import com.ecommerce.product.entity.Comment;
 import com.ecommerce.product.entity.Product;
+import com.ecommerce.product.entity.Tva;
 import com.ecommerce.product.exception.ResourceNotFoundException;
-import com.ecommerce.product.mapper.CommentMapper;
 import com.ecommerce.product.mapper.ProductMapper;
-import com.ecommerce.product.repository.CategoryRepository;
 import com.ecommerce.product.repository.ProductRepository;
+import com.ecommerce.product.repository.TvaRepository;
 import com.ecommerce.product.service.ProductService;
+import com.ecommerce.product.service.TvaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +21,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private TvaRepository tvaRepository;
 
     @Override
     public List<ProductDto> getAllProducts() {
@@ -42,11 +40,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto createProduct(ProductDto productDto) {
-        Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(
-                () -> new ResourceNotFoundException("Category", "id", productDto.getCategoryId().toString())
-        );
         Product product = ProductMapper.INSTANCE.productDtoToProduct(productDto);
-        product.setCategory(category);
+        Tva tva = tvaRepository.findById(productDto.getTva().getId()).orElseThrow(
+                () -> new ResourceNotFoundException("Tva", "id", productDto.getTva().getId().toString())
+        );
+        product.setTva(tva);
+        product.getMedias().forEach(media -> media.setProduct(product));
         Product savedProduct = productRepository.save(product);
         return ProductMapper.INSTANCE.productToProductDto(savedProduct);
     }
@@ -55,6 +54,11 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto updateProduct(Long id, ProductDto productDto) {
         getProductById(id);
         Product product = ProductMapper.INSTANCE.productDtoToProduct(productDto);
+        Tva tva = tvaRepository.findById(productDto.getTva().getId()).orElseThrow(
+                () -> new ResourceNotFoundException("Tva", "id", productDto.getTva().getId().toString())
+        );
+        product.setTva(tva);
+        product.getMedias().forEach(media -> media.setProduct(product));
         product.setId(id);
         Product updatedProduct = productRepository.save(product);
         return ProductMapper.INSTANCE.productToProductDto(updatedProduct);
@@ -65,18 +69,5 @@ public class ProductServiceImpl implements ProductService {
         getProductById(id);
         productRepository.deleteById(id);
         return "Product deleted successfully";
-    }
-
-    @Override
-    public ProductDto addComment(Long productId, CommentDto commentDto) {
-        Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ResourceNotFoundException("Product", "id", productId.toString())
-        );
-
-        Comment comment = CommentMapper.INSTANCE.commentDtoToComment(commentDto);
-        comment.setProduct(product);
-        product.getComments().add(comment);
-        Product savedProduct = productRepository.save(product);
-        return ProductMapper.INSTANCE.productToProductDto(savedProduct);
     }
 }

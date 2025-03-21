@@ -7,18 +7,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "comments")
+@Table(name = "medias")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment extends BaseEntity {
+public class Media {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String text;
+    private String url;
+
+    private String altText;
 
     @ManyToOne
     private Product product;

@@ -1,10 +1,13 @@
 package com.ecommerce.product.dto;
 
+import com.ecommerce.product.entity.Media;
+import com.ecommerce.product.entity.Tva;
 import com.ecommerce.product.enums.ProductColor;
 import com.ecommerce.product.enums.ProductStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,29 +23,34 @@ public class ProductDto {
 
     private Long id;
 
-    @NotBlank(message = "Product Name is required")
+    @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Product Description is required")
     private String description;
 
-    @NotNull(message = "Product Price is required")
-    @Positive(message = "Product Price must be positive")
-    private double price;
+    private String type;
 
-    @NotNull(message = "Product Quantity in Stock is required")
-    @Positive(message = "Product Quantity in Stock must be positive")
-    private int quantityInStock;
+    @NotNull(message = "Quantity in stock is required")
+    @Positive(message = "Quantity in stock must be positive")
+    private Integer quantityInStock;
 
-    @NotNull(message = "Product Colors is required")
-    private List<ProductColor> colors;
+    @NotNull(message = "Price is required")
+    @Positive(message = "Price must be positive")
+    private Double price;
 
-    @NotNull(message = "Product Status is required")
+    @NotNull(message = "Reduction percentage is required")
+    @Size(min = 0, max = 100, message = "Reduction percentage must be between 0 and 100")
+    private double reductionPercentage;
+
+    private List<ProductColor> productColors;
+
+    @NotNull(message = "Status is required")
     private ProductStatus status;
 
-    @NotNull(message = "Product Category is required")
-    private Long categoryId;
+    @NotNull(message = "Sub category id is required")
+    private Long subCategoryId;
 
-    private List<CommentDto> comments;
+    private TvaDto tva;
 
+    private List<MediaDto> medias;
 }

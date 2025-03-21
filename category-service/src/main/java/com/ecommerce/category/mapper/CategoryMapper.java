@@ -1,7 +1,7 @@
-package com.ecommerce.product.mapper;
+package com.ecommerce.category.mapper;
 
-import com.ecommerce.product.dto.CategoryDto;
-import com.ecommerce.product.entity.Category;
+import com.ecommerce.category.dto.CategoryDto;
+import com.ecommerce.category.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
