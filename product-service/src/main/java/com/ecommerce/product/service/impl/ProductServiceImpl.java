@@ -70,4 +70,9 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(id);
         return "Product deleted successfully";
     }
+
+    @Override
+    public boolean productExistsById(Long id) {
+        return productRepository.existsById(id);
+    }
 }

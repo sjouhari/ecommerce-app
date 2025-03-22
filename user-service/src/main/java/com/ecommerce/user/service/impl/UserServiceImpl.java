@@ -55,4 +55,9 @@ public class UserServiceImpl implements UserService {
         return "User deleted successfully";
     }
 
+    @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
+
 }

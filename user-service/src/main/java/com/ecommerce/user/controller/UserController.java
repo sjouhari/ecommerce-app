@@ -44,4 +44,9 @@ public class UserController {
         return userService.deleteUser(id);
     }
 
+    @GetMapping("/existsById/{id}")
+    public boolean existsById(@PathVariable Long id) {
+        return userService.existsById(id);
+    }
+
 }

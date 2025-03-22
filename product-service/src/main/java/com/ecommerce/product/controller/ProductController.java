@@ -41,4 +41,9 @@ public class ProductController {
         return ResponseEntity.ok(productService.deleteProduct(id));
     }
 
+    @GetMapping("/existsById/{id}")
+    public ResponseEntity<Boolean> productExistsById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.productExistsById(id));
+    }
+
 }

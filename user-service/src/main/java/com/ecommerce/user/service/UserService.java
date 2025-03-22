@@ -16,4 +16,6 @@ public interface UserService {
 
     String deleteUser(Long id);
 
+    boolean existsById(Long id);
+
 }

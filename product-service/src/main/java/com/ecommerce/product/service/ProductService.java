@@ -16,4 +16,6 @@ public interface ProductService {
 
     String deleteProduct(Long id);
 
+    boolean productExistsById(Long id);
+
 }
