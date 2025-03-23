@@ -66,4 +66,9 @@ public class SizeServiceImpl implements SizeService {
         sizeRepository.deleteById(id);
         return "Size deleted successfully";
     }
+
+    @Override
+    public boolean existsByIdAndSubCategoryId(Long id, Long subCategoryId) {
+        return sizeRepository.existsByIdAndSubCategoryId(id, subCategoryId);
+    }
 }

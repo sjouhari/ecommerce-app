@@ -1,6 +1,7 @@
 package com.ecommerce.product.controller;
 
-import com.ecommerce.product.dto.ProductDto;
+import com.ecommerce.product.dto.ProductRequestDto;
+import com.ecommerce.product.dto.ProductResponseDto;
 import com.ecommerce.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,22 +18,22 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> getAllProducts() {
+    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
-        return new ResponseEntity<>(productService.createProduct(productDto), HttpStatus.CREATED);
+    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody ProductRequestDto productDto, @RequestHeader("Authorization") String token) {
+        return new ResponseEntity<>(productService.createProduct(productDto, token), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id, @RequestBody ProductRequestDto productDto) {
         return ResponseEntity.ok(productService.updateProduct(id, productDto));
     }
 

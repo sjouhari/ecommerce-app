@@ -16,4 +16,6 @@ public interface SubCategoryService {
 
     String deleteSubCategory(Long id);
 
+    boolean existsById(Long id);
+
 }

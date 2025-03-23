@@ -1,12 +1,11 @@
 package com.ecommerce.product.mapper;
 
-import com.ecommerce.product.dto.MediaDto;
-import com.ecommerce.product.dto.ProductDto;
-import com.ecommerce.product.dto.TvaDto;
+import com.ecommerce.product.dto.*;
 import com.ecommerce.product.entity.Media;
 import com.ecommerce.product.entity.Product;
 import com.ecommerce.product.entity.Tva;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -16,11 +15,11 @@ public interface ProductMapper {
 
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
-    Product productDtoToProduct(ProductDto productDto);
+    Product productRequestDtoToProduct(ProductRequestDto productDto);
 
-    ProductDto productToProductDto(Product product);
+    ProductResponseDto productToProductResponseDto(Product product);
 
-    List<ProductDto> productsToProductDtos(List<Product> products);
+    List<ProductResponseDto> productsToProductResponseDtos(List<Product> products);
 
     List<MediaDto> mediasToMediaDtos(List<Media> medias);
 
@@ -33,5 +32,12 @@ public interface ProductMapper {
     Tva tvaDtoToTva(TvaDto tvaDto);
 
     TvaDto tvaToTvaDto(Tva tva);
+
+    @Mapping(target = "id", source = "inventoryDto.id")
+    @Mapping(target = "sizeId", source = "inventoryDto.sizeId")
+    @Mapping(target = "quantity", source = "inventoryDto.quantity")
+    SizeResponseDto inventoryDtoToSizeResponseDto(InventoryDto inventoryDto);
+
+    List<SizeResponseDto> inventoryDtosToSizeResponseDtos(List<InventoryDto> inventoryDtos);
 
 }

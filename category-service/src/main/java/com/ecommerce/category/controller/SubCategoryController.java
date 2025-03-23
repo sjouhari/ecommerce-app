@@ -40,5 +40,9 @@ public class SubCategoryController {
         return ResponseEntity.ok(subCategoryService.deleteSubCategory(id));
     }
 
+    @GetMapping("/existsById/{id}")
+    public boolean existsById(@PathVariable Long id) {
+        return subCategoryService.existsById(id);
+    }
 
 }

@@ -66,4 +66,9 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         subCategoryRepository.deleteById(id);
         return "Sub Category deleted successfully";
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return subCategoryRepository.existsById(id);
+    }
 }

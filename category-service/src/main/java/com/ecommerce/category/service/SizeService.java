@@ -15,4 +15,6 @@ public interface SizeService {
     SizeDto updateSize(Long id, SizeDto sizeDto);
 
     String deleteSize(Long id);
+
+    boolean existsByIdAndSubCategoryId(Long id, Long subCategoryId);
 }
