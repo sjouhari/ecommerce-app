@@ -21,18 +21,6 @@ public interface ProductMapper {
 
     List<ProductResponseDto> productsToProductResponseDtos(List<Product> products);
 
-    List<MediaDto> mediasToMediaDtos(List<Media> medias);
-
-    List<Media> mediaDtosToMedias(List<MediaDto> mediaDtos);
-
-    Media mediaDtoToMedia(MediaDto mediaDto);
-
-    MediaDto mediaToMediaDto(Media media);
-
-    Tva tvaDtoToTva(TvaDto tvaDto);
-
-    TvaDto tvaToTvaDto(Tva tva);
-
     @Mapping(target = "id", source = "inventoryDto.id")
     @Mapping(target = "sizeId", source = "inventoryDto.sizeId")
     @Mapping(target = "quantity", source = "inventoryDto.quantity")
