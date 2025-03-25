@@ -8,7 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
       </profile>
-      <profile name="Annotation profile for inventory-service" enabled="true">
+      <profile name="Annotation profile for user-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -20,9 +20,10 @@
         </processorPath>
         <module name="product-service" />
         <module name="comment-service" />
+        <module name="user-service" />
+        <module name="order-service" />
         <module name="inventory-service" />
         <module name="category-service" />
-        <module name="user-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -31,6 +32,7 @@
       <module name="category-service" options="-parameters" />
       <module name="comment-service" options="-parameters" />
       <module name="inventory-service" options="-parameters" />
+      <module name="order-service" options="-parameters" />
       <module name="product-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>

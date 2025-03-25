@@ -1,4 +1,4 @@
-package com.ecommerce.inventory.security;
+package com.ecommerce.order.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -44,10 +44,10 @@ public class SecurityConfig {
 		}));
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/api/inventories", "/api/inventories/checkAvailability").hasAuthority("PRODUCT_READ")
-						.requestMatchers(HttpMethod.POST, "/api/inventories", "/api/tvas").hasAuthority("PRODUCT_CREATE")
-						.requestMatchers(HttpMethod.PUT, "/api/inventories/**", "/api/tvas/**").hasAuthority("PRODUCT_UPDATE")
-						.requestMatchers(HttpMethod.DELETE, "/api/inventories/**", "/api/tvas/**").hasAuthority("PRODUCT_DELETE")
+						.requestMatchers(HttpMethod.GET, "/api/orders", "/api/orders/**").hasAuthority("USER_READ")
+						.requestMatchers(HttpMethod.POST, "/api/orders").hasAuthority("USER_CREATE")
+						.requestMatchers(HttpMethod.PUT, "/api/orders/**").hasAuthority("USER_UPDATE")
+						.requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasAuthority("USER_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)

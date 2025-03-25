@@ -14,9 +14,9 @@ public class InventoryController {
     @Autowired
     private InventoryService inventoryService;
 
-    @GetMapping("/checkAvailability")
-    public ResponseEntity<Boolean> checkAvailability(@RequestBody InventoryDto inventoryDto) {
-        return ResponseEntity.ok(inventoryService.checkAvailability(inventoryDto));
+    @PostMapping("/checkAvailability")
+    public boolean checkAvailability(@RequestBody InventoryDto inventoryDto) {
+        return inventoryService.checkAvailability(inventoryDto);
     }
 
     @PutMapping("/updateQuantity")
