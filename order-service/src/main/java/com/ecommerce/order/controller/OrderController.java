@@ -4,15 +4,18 @@ import com.ecommerce.order.dto.OrderRequestDto;
 import com.ecommerce.order.dto.OrderResponseDto;
 import com.ecommerce.order.dto.UpdateOrderStatusRequestDto;
 import com.ecommerce.order.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
+@Validated
 public class OrderController {
 
     @Autowired
@@ -34,12 +37,12 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderResponseDto> placeOrder(@RequestBody OrderRequestDto orderRequestDto, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<OrderResponseDto> placeOrder(@RequestBody @Valid OrderRequestDto orderRequestDto, @RequestHeader("Authorization") String token) {
         return new ResponseEntity<>(orderService.placeOrder(orderRequestDto, token), HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long id, @RequestBody UpdateOrderStatusRequestDto updateOrderStatusRequestDto) {
+    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long id, @RequestBody @Valid UpdateOrderStatusRequestDto updateOrderStatusRequestDto) {
         return ResponseEntity.ok(orderService.updateOrderStatus(id, updateOrderStatusRequestDto));
     }
 

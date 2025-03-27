@@ -1,5 +1,6 @@
 package com.ecommerce.order.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +18,7 @@ public class OrderRequestDto {
     @NotNull(message = "User id is required")
     private Long userId;
 
+    @NotBlank(message = "Mode payment is required")
     private String modePayment;
 
     @NotNull(message = "Order items is required")

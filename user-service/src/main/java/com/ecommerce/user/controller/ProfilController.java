@@ -3,15 +3,18 @@ package com.ecommerce.user.controller;
 import com.ecommerce.user.dto.ProfilDto;
 import com.ecommerce.user.dto.ProfilFeaturesDto;
 import com.ecommerce.user.service.ProfilService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/profils")
+@Validated
 public class ProfilController {
 
     @Autowired
@@ -28,12 +31,12 @@ public class ProfilController {
     }
 
     @PostMapping
-    public ResponseEntity<ProfilDto> createProfil(@RequestBody ProfilDto profilDto) {
+    public ResponseEntity<ProfilDto> createProfil(@RequestBody @Valid ProfilDto profilDto) {
         return new ResponseEntity<>(profilService.createProfil(profilDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProfilDto> updateProfil(@PathVariable Long id, @RequestBody ProfilDto profilDto) {
+    public ResponseEntity<ProfilDto> updateProfil(@PathVariable Long id, @RequestBody @Valid ProfilDto profilDto) {
         return ResponseEntity.ok(profilService.updateProfil(id, profilDto));
     }
 
@@ -43,12 +46,12 @@ public class ProfilController {
     }
 
     @PostMapping("/add-features")
-    public ResponseEntity<ProfilDto> addFeaturesToProfil(@RequestBody ProfilFeaturesDto profilFeaturesDto) {
+    public ResponseEntity<ProfilDto> addFeaturesToProfil(@RequestBody @Valid ProfilFeaturesDto profilFeaturesDto) {
         return new ResponseEntity<>(profilService.addFeaturesToProfil(profilFeaturesDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/remove-features")
-    public ResponseEntity<ProfilDto> removeFeaturesFromProfil(@RequestBody ProfilFeaturesDto profilFeaturesDto) {
+    public ResponseEntity<ProfilDto> removeFeaturesFromProfil(@RequestBody @Valid ProfilFeaturesDto profilFeaturesDto) {
         return new ResponseEntity<>(profilService.removeFeaturesFromProfil(profilFeaturesDto), HttpStatus.CREATED);
     }
 

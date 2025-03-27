@@ -14,8 +14,16 @@ import lombok.Setter;
 public class InventoryDto {
 
     private Long id;
+
+    @NotNull(message = "Product id is required")
+    @Positive(message = "Product id must be positive")
     private Long productId;
+
+    @NotNull(message = "Size id is required")
+    @Positive(message = "Size id must be positive")
     private Long sizeId;
+
+    @NotNull(message = "Quantity is required")
     private int quantity;
 
 }

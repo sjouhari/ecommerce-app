@@ -1,6 +1,7 @@
 package com.ecommerce.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class ProfilDto {
     @NotBlank(message = "Name is required")
     private String name;
 
+    @NotNull(message = "Features is required")
     Set<FeatureDto> features;
 
 }

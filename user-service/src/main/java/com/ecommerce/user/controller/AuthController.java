@@ -1,7 +1,7 @@
 package com.ecommerce.user.controller;
 
 import com.ecommerce.user.dto.JWTAuthResponse;
-import com.ecommerce.user.dto.LoginDTO;
+import com.ecommerce.user.dto.LoginDto;
 import com.ecommerce.user.dto.RegisterDto;
 import com.ecommerce.user.dto.UserDto;
 import com.ecommerce.user.service.AuthService;
@@ -24,7 +24,7 @@ public class AuthController {
 	private AuthService authService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<JWTAuthResponse> login(@RequestBody @Valid LoginDTO loginDTO) {
+	public ResponseEntity<JWTAuthResponse> login(@RequestBody @Valid LoginDto loginDTO) {
 		return ResponseEntity.ok(authService.login(loginDTO));
 	}
 	

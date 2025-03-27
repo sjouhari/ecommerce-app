@@ -2,15 +2,18 @@ package com.ecommerce.order.controller;
 
 import com.ecommerce.order.dto.ModePaymentDto;
 import com.ecommerce.order.service.ModePaymentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/mode-payment")
+@Validated
 public class ModePaymentController {
 
     @Autowired
@@ -27,12 +30,12 @@ public class ModePaymentController {
     }
 
     @PostMapping
-    public ResponseEntity<ModePaymentDto> createModePayment(@RequestBody ModePaymentDto modePaymentDto) {
+    public ResponseEntity<ModePaymentDto> createModePayment(@RequestBody @Valid ModePaymentDto modePaymentDto) {
         return new ResponseEntity<>(modePaymentService.createModePayment(modePaymentDto), HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ModePaymentDto> updateModePayment(@PathVariable Long id, @RequestBody ModePaymentDto modePaymentDto) {
+    public ResponseEntity<ModePaymentDto> updateModePayment(@PathVariable Long id, @RequestBody @Valid ModePaymentDto modePaymentDto) {
         return ResponseEntity.ok(modePaymentService.updateModePayment(id, modePaymentDto));
     }
 

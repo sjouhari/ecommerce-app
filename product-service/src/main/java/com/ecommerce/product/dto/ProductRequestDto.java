@@ -46,7 +46,9 @@ public class ProductRequestDto {
 
     private List<SizeRequestDto> sizes;
 
+    @NotNull(message = "Tva id is required")
     private TvaDto tva;
 
+    @NotNull(message = "Medias is required")
     private List<MediaDto> medias;
 }

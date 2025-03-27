@@ -1,7 +1,7 @@
 package com.ecommerce.user.service.impl;
 
 import com.ecommerce.user.dto.JWTAuthResponse;
-import com.ecommerce.user.dto.LoginDTO;
+import com.ecommerce.user.dto.LoginDto;
 import com.ecommerce.user.dto.RegisterDto;
 import com.ecommerce.user.dto.UserDto;
 import com.ecommerce.user.entity.Profil;
@@ -22,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -35,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
 	private JwtTokenProvider jwtTokenProvider;
 
 	@Override
-	public JWTAuthResponse login(LoginDTO loginDTO) {
+	public JWTAuthResponse login(LoginDto loginDTO) {
 		try {
 			Authentication authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(
