@@ -5,6 +5,6 @@ import com.ecommerce.category.entity.Size;
 
 public interface SizeRepository extends JpaRepository<Size, Long> {
 
-    boolean existsByIdAndSubCategoryId(Long id, Long subCategoryId);
+    boolean existsByLibelleAndSubCategoryId(String libelle, Long subCategoryId);
 
 }

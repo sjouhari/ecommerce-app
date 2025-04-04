@@ -1,6 +1,5 @@
 package com.ecommerce.product.entity;
 
-import com.ecommerce.product.enums.ProductColor;
 import com.ecommerce.product.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,16 +28,7 @@ public class Product extends BaseEntity {
 
     private String type;
 
-    private Integer quantityInStock;
-
-    private Double price;
-
     private double reductionPercentage;
-
-    @ElementCollection
-    @CollectionTable(name = "product_colors", joinColumns = @JoinColumn(name = "product_id"))
-    @Enumerated(EnumType.STRING)
-    private List<ProductColor> productColors;
 
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
@@ -50,4 +40,5 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Media> medias;
+
 }

@@ -1,5 +1,7 @@
 package com.ecommerce.inventory.dto;
 
+import com.ecommerce.inventory.enums.ProductColor;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -20,11 +22,18 @@ public class InventoryDto {
     @Positive(message = "Product id must be positive")
     private Long productId;
 
-    @NotNull(message = "Size id is required")
-    @Positive(message = "Size id must be positive")
-    private Long sizeId;
+    @NotBlank(message = "Size is required")
+    private String size;
+
+    @NotNull(message = "Color is required")
+    private ProductColor color;
 
     @NotNull(message = "Quantity is required")
+    @Positive(message = "Quantity must be positive")
     private int quantity;
+
+    @NotNull(message = "Price is required")
+    @PositiveOrZero(message = "Price must be positive or zero")
+    private double price;
 
 }

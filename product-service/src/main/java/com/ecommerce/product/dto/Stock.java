@@ -1,6 +1,8 @@
 package com.ecommerce.product.dto;
 
 import com.ecommerce.product.enums.ProductColor;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -14,18 +16,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InventoryDto {
+public class Stock {
 
     private Long id;
-
-    @NotNull(message = "Product id is required")
-    @Positive(message = "Product id must be positive")
-    private Long productId;
 
     @NotBlank(message = "Size is required")
     private String size;
 
-    @NotNull(message = "Color is required")
+    @Enumerated(EnumType.STRING)
     private ProductColor color;
 
     @NotNull(message = "Quantity is required")
@@ -33,7 +31,7 @@ public class InventoryDto {
     private int quantity;
 
     @NotNull(message = "Price is required")
-    @PositiveOrZero(message = "Price must be positive or zero")
+    @PositiveOrZero(message = "Price must be positive")
     private double price;
 
 }

@@ -1,5 +1,6 @@
 package com.ecommerce.inventory.entity;
 
+import com.ecommerce.inventory.enums.ProductColor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +20,12 @@ public class Inventory {
     private Long id;
 
     private Long productId;
-    private Long sizeId;
+    private String size;
+
+    @Enumerated(EnumType.STRING)
+    private ProductColor color;
+
     private int quantity;
+    private double price;
 
 }

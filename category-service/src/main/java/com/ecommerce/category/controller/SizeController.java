@@ -44,9 +44,9 @@ public class SizeController {
         return ResponseEntity.ok(sizeService.deleteSize(id));
     }
 
-    @GetMapping("/existsByIdAndSubCategoryId/{id}/{subCategoryId}")
-    public boolean existsByIdAndSubCategoryId(@PathVariable Long id, @PathVariable Long subCategoryId) {
-        return sizeService.existsByIdAndSubCategoryId(id, subCategoryId);
+    @GetMapping("/existsByLibelleAndSubCategoryId/{libelle}/{subCategoryId}")
+    public boolean existsByIdAndSubCategoryId(@PathVariable String libelle, @PathVariable Long subCategoryId) {
+        return sizeService.existsByLibelleAndSubCategoryId(libelle, subCategoryId);
     }
 
 }

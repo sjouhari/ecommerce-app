@@ -1,9 +1,8 @@
 package com.ecommerce.product.mapper;
 
+import com.ecommerce.product.dto.InventoryDto;
 import com.ecommerce.product.dto.*;
-import com.ecommerce.product.entity.Media;
 import com.ecommerce.product.entity.Product;
-import com.ecommerce.product.entity.Tva;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -21,11 +20,8 @@ public interface ProductMapper {
 
     List<ProductResponseDto> productsToProductResponseDtos(List<Product> products);
 
-    @Mapping(target = "id", source = "inventoryDto.id")
-    @Mapping(target = "sizeId", source = "inventoryDto.sizeId")
-    @Mapping(target = "quantity", source = "inventoryDto.quantity")
-    SizeResponseDto inventoryDtoToSizeResponseDto(InventoryDto inventoryDto);
+    Stock inventoryDtoToSizeResponseDto(InventoryDto inventoryDto);
 
-    List<SizeResponseDto> inventoryDtosToSizeResponseDtos(List<InventoryDto> inventoryDtos);
+    List<Stock> inventoryDtosToSizeResponseDtos(List<InventoryDto> inventoryDtos);
 
 }

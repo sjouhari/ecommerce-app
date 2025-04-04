@@ -17,7 +17,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public boolean checkAvailability(InventoryDto inventoryDto) {
-        Inventory inventory = inventoryRepository.findByProductIdAndSizeId(inventoryDto.getProductId(), inventoryDto.getSizeId()).orElseThrow(
+        Inventory inventory = inventoryRepository.findByProductIdAndSizeAndColor(inventoryDto.getProductId(), inventoryDto.getSize(), inventoryDto.getColor().toString()).orElseThrow(
                 () -> new ResourceNotFoundException("Inventory", "productId", String.valueOf(inventoryDto.getProductId()))
         );
         return inventory.getQuantity() >= inventoryDto.getQuantity();
@@ -25,7 +25,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public InventoryDto updateQuantity(InventoryDto inventoryDto) {
-        Inventory inventory = inventoryRepository.findByProductIdAndSizeId(inventoryDto.getProductId(), inventoryDto.getSizeId()).orElseThrow(
+        Inventory inventory = inventoryRepository.findByProductIdAndSizeAndColor(inventoryDto.getProductId(), inventoryDto.getSize(), inventoryDto.getColor().toString()).orElseThrow(
                 () -> new ResourceNotFoundException("Inventory", "productId", String.valueOf(inventoryDto.getProductId()))
         );
 

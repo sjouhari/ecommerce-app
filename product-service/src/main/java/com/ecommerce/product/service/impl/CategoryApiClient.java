@@ -13,7 +13,7 @@ public interface CategoryApiClient {
     @GetMapping("/subcategories/existsById/{id}")
     boolean categoryExistsById(@PathVariable Long id, @RequestHeader("Authorization") String token);
 
-    @GetMapping("/sizes/existsByIdAndSubCategoryId/{id}/{subCategoryId}")
-    boolean sizeExistsByIdAndSubCategoryId(@PathVariable Long id, @PathVariable Long subCategoryId, @RequestHeader("Authorization") String token);
+    @GetMapping("/sizes/existsByLibelleAndSubCategoryId/{name}/{subCategoryId}")
+    boolean sizeExistsByLibelleAndSubCategoryId(@PathVariable String name, @PathVariable Long subCategoryId, @RequestHeader("Authorization") String token);
 
 }

@@ -55,10 +55,10 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // Check if sizes exist and belongs to subCategory
-        productDto.getSizes()
-                .forEach(size -> {
-                    if(!categoryApiClient.sizeExistsByIdAndSubCategoryId(size.getSizeId(), productDto.getSubCategoryId(), token)) {
-                        throw new ResourceNotFoundException("Size", "id", size.getSizeId().toString());
+        productDto.getStock()
+                .forEach(stock -> {
+                    if(!categoryApiClient.sizeExistsByLibelleAndSubCategoryId(stock.getSize(), productDto.getSubCategoryId(), token)) {
+                        throw new ResourceNotFoundException("Size", "name", stock.getSize());
                     }
                 });
 
@@ -71,18 +71,20 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(product);
         // Create product in inventory service
         List<InventoryDto> inventoryDtos = new ArrayList<>();
-        productDto.getSizes().forEach(
-                size -> {
+        productDto.getStock().forEach(
+                stock -> {
                     InventoryDto inventoryDto = new InventoryDto();
                     inventoryDto.setProductId(savedProduct.getId());
-                    inventoryDto.setSizeId(size.getSizeId());
-                    inventoryDto.setQuantity(size.getQuantity());
+                    inventoryDto.setSize(stock.getSize());
+                    inventoryDto.setColor(stock.getColor());
+                    inventoryDto.setQuantity(stock.getQuantity());
+                    inventoryDto.setPrice(stock.getPrice());
                     InventoryDto createdInventory = inventoryApiClient.createInventory(inventoryDto, token);
                     inventoryDtos.add(createdInventory);
                 }
         );
         ProductResponseDto productResponseDto = ProductMapper.INSTANCE.productToProductResponseDto(savedProduct);
-        productResponseDto.setSizes(ProductMapper.INSTANCE.inventoryDtosToSizeResponseDtos(inventoryDtos));
+        productResponseDto.setStock(ProductMapper.INSTANCE.inventoryDtosToSizeResponseDtos(inventoryDtos));
         return productResponseDto;
     }
 
