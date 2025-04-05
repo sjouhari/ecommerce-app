@@ -4,50 +4,39 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2892c1b-14c5-4237-b45f-0219b842d892" name="Changes" comment="contact service + common service creation + adding validation in all services">
-      <change afterPath="$PROJECT_DIR$/email-service/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/EmailServiceApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/controller/EmailController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/dto/EmailDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/service/EmailService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/src/test/java/com/ecommerce/email/EmailServiceApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/enums/ProductColor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/dto/Stock.java" afterDir="false" />
+    <list default="true" id="f2892c1b-14c5-4237-b45f-0219b842d892" name="Changes" comment="removing common service + email service + product stock management fix">
+      <change afterPath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/dto/NewsletterDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/dto/ProductItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registry-service/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registry-service/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registry-service/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registry-service/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registry-service/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registry-service/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registry-service/src/main/java/com/ecommerce/registry/RegistryServiceApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registry-service/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registry-service/src/test/java/com/ecommerce/registry/RegistryServiceApplicationTests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/category-service/src/main/java/com/ecommerce/category/controller/SizeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/category-service/src/main/java/com/ecommerce/category/controller/SizeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/category-service/src/main/java/com/ecommerce/category/repository/SizeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/category-service/src/main/java/com/ecommerce/category/repository/SizeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/category-service/src/main/java/com/ecommerce/category/service/SizeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/category-service/src/main/java/com/ecommerce/category/service/SizeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/category-service/src/main/java/com/ecommerce/category/service/impl/SizeServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/category-service/src/main/java/com/ecommerce/category/service/impl/SizeServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/common-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-service/src/main/java/com/ecommerce/common/audit/AuditAwareImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-service/src/main/java/com/ecommerce/common/entity/BaseEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-service/src/main/java/com/ecommerce/common/exception/GlobalExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-service/src/main/java/com/ecommerce/common/exception/ResourceNotFoundException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-service/src/main/java/com/ecommerce/common/exception/StockInsufficientException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/category-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/category-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/category-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/category-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/comment-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/comment-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/comment-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/comment-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contact-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/contact-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contact-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/contact-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/email-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/email-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/controller/EmailController.java" beforeDir="false" afterPath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/controller/EmailController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/email-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/email-service/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/dto/ErrorResponseDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/dto/InventoryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/dto/InventoryDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/entity/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/entity/Inventory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/repository/InventoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/repository/InventoryRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/service/impl/InventoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/service/impl/InventoryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/product-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/dto/InventoryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/dto/InventoryDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/dto/ProductRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/dto/ProductRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/dto/ProductResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/dto/ProductResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/entity/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/entity/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/mapper/ProductMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/mapper/ProductMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/impl/CategoryApiClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/impl/CategoryApiClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,12 +89,14 @@
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "Application.CategoryServiceApplication.executor": "Run",
+    "Application.CommentServiceApplication.executor": "Run",
     "Application.CommonServiceApplication.executor": "Run",
     "Application.ContactServiceApplication.executor": "Run",
     "Application.EmailServiceApplication.executor": "Run",
     "Application.InventoryServiceApplication.executor": "Run",
     "Application.OrderServiceApplication.executor": "Run",
     "Application.ProductServiceApplication.executor": "Run",
+    "Application.RegistryServiceApplication.executor": "Run",
     "Application.UserServiceApplication.executor": "Run",
     "Maven.common [clean].executor": "Run",
     "Maven.common [install].executor": "Run",
@@ -128,7 +119,7 @@
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/HP/Desktop/ecommerce/common-service",
+    "last_opened_file_path": "C:/Users/HP/Desktop/ecommerce/registry-service",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
@@ -200,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742874072753</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="removing common service + email service + product stock management fix">
+      <option name="closed" value="true" />
+      <created>1743809732194</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1743809732194</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -209,7 +208,8 @@
     <MESSAGE value="INVENTORY SERVICE" />
     <MESSAGE value="fix product mapper" />
     <MESSAGE value="order service" />
-    <option name="LAST_COMMIT_MESSAGE" value="order service" />
+    <MESSAGE value="removing common service + email service + product stock management fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="removing common service + email service + product stock management fix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
