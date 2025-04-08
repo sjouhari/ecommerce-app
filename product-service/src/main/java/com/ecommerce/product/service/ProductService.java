@@ -9,7 +9,7 @@ public interface ProductService {
 
     List<ProductResponseDto> getAllProducts();
 
-    ProductResponseDto getProductById(Long id);
+    ProductResponseDto getProductById(Long id, String token);
 
     ProductResponseDto createProduct(ProductRequestDto productDto, String token);
 

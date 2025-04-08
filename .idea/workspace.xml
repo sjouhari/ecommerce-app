@@ -4,38 +4,47 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2892c1b-14c5-4237-b45f-0219b842d892" name="Changes" comment="removing common service + email service + product stock management fix">
-      <change afterPath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/dto/NewsletterDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/dto/ProductItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/registry-service/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/registry-service/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/registry-service/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/registry-service/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/registry-service/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/registry-service/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/registry-service/src/main/java/com/ecommerce/registry/RegistryServiceApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/registry-service/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/registry-service/src/test/java/com/ecommerce/registry/RegistryServiceApplicationTests.java" afterDir="false" />
+    <list default="true" id="39b171dd-6507-4784-8db8-cae5842e8e95" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/api-gateway/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api-gateway/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api-gateway/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api-gateway/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api-gateway/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api-gateway/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api-gateway/src/main/java/com/ecommerce/api/gateway/ApiGatewayApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api-gateway/src/test/java/com/ecommerce/api/gateway/ApiGatewayApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/category-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/category-service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/category-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/category-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/comment-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/comment-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/comment-service/src/main/java/com/ecommerce/comment/service/impl/ProductApiClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/comment-service/src/main/java/com/ecommerce/comment/service/impl/ProductApiClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/comment-service/src/main/java/com/ecommerce/comment/service/impl/UserApiClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/comment-service/src/main/java/com/ecommerce/comment/service/impl/UserApiClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/comment-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/comment-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contact-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/contact-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contact-service/src/main/java/com/ecommerce/contact/controller/ContactController.java" beforeDir="false" afterPath="$PROJECT_DIR$/contact-service/src/main/java/com/ecommerce/contact/controller/ContactController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contact-service/src/main/java/com/ecommerce/contact/service/impl/UserApiClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/contact-service/src/main/java/com/ecommerce/contact/service/impl/UserApiClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contact-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/contact-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/email-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/email-service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/controller/EmailController.java" beforeDir="false" afterPath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/controller/EmailController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/dto/NewsletterDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/email-service/src/main/java/com/ecommerce/email/dto/NewsletterDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/email-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/email-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/controller/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/controller/InventoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/mapper/InventoryMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/mapper/InventoryMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/repository/InventoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/repository/InventoryRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/service/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/service/InventoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/service/impl/InventoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/ecommerce/inventory/service/impl/InventoryServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/src/main/java/com/ecommerce/order/service/impl/InventoryApiClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/java/com/ecommerce/order/service/impl/InventoryApiClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/src/main/java/com/ecommerce/order/service/impl/UserApiClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/java/com/ecommerce/order/service/impl/UserApiClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/order-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/impl/CategoryApiClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/impl/CategoryApiClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/impl/InventoryApiClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/impl/InventoryApiClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/ecommerce/product/service/impl/ProductServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,54 +52,34 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="CompilerWorkspaceConfiguration">
-    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
-    <option name="PARALLEL_COMPILATION" value="true" />
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Enum" />
-        <option value="Interface" />
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;sjouhari&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "sjouhari"
   }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/sjouhari/ecommerce-app&quot;,
-    &quot;accountId&quot;: &quot;b18a3c3a-e654-4e68-aae1-9a16a318d95f&quot;
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/sjouhari/ecommerce-app",
+    "accountId": "b18a3c3a-e654-4e68-aae1-9a16a318d95f"
   }
-}</component>
-  <component name="MavenRunner">
-    <option name="skipTests" value="true" />
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 8
-}</component>
-  <component name="ProjectId" id="2uhMhrUWBzfmUXAdO9sDEi0sg6D" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2vSh7MP9hrOR45P0CfsWdhCC3YU" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Application.ApiGatewayApplication.executor": "Run",
     "Application.CategoryServiceApplication.executor": "Run",
     "Application.CommentServiceApplication.executor": "Run",
-    "Application.CommonServiceApplication.executor": "Run",
     "Application.ContactServiceApplication.executor": "Run",
     "Application.EmailServiceApplication.executor": "Run",
     "Application.InventoryServiceApplication.executor": "Run",
@@ -98,133 +87,30 @@
     "Application.ProductServiceApplication.executor": "Run",
     "Application.RegistryServiceApplication.executor": "Run",
     "Application.UserServiceApplication.executor": "Run",
-    "Maven.common [clean].executor": "Run",
-    "Maven.common [install].executor": "Run",
-    "Maven.common-service [clean,install].executor": "Run",
-    "Maven.common-service [clean].executor": "Run",
-    "Maven.common-service [install].executor": "Run",
-    "Maven.email-service [clean].executor": "Run",
-    "Maven.email-service [install].executor": "Run",
-    "Maven.inventory-service [clean,install].executor": "Run",
-    "Maven.inventory-service [clean].executor": "Run",
-    "Maven.inventory-service [compile].executor": "Run",
-    "Maven.inventory-service [install].executor": "Run",
-    "Maven.order-service [clean,install].executor": "Run",
-    "Maven.order-service [clean].executor": "Run",
-    "Maven.product-service [clean].executor": "Run",
-    "Maven.product-service [install].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "com.codeium.enabled": "true",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/HP/Desktop/ecommerce/registry-service",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors",
-    "settings.editor.splitter.proportion": "0.24295774"
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\HP\Desktop\ecommerce\inventory-service\src\main\java\com\ecommerce\inventory" />
-      <recent name="C:\Users\HP\Desktop\ecommerce\common-service\src\main\java\com\ecommerce\common" />
-      <recent name="C:\Users\HP\Desktop\ecommerce\contact-service\src\main\java\com\ecommerce\contact_service" />
-      <recent name="C:\Users\HP\Desktop\ecommerce\order-service\src\main\java\com\ecommerce\order" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.ecommerce.product.enums" />
-      <recent name="com.ecommerce.product.dto" />
-      <recent name="com.ecommerce.inventory.dto" />
-      <recent name="com.ecommerce.common.enums" />
-      <recent name="com.ecommerce.common.dto" />
-    </key>
-  </component>
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
         <option value="Application" />
-        <option value="JarApplication" />
       </set>
     </option>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="f2892c1b-14c5-4237-b45f-0219b842d892" name="Changes" comment="" />
-      <created>1742696477522</created>
+      <changelist id="39b171dd-6507-4784-8db8-cae5842e8e95" name="Changes" comment="" />
+      <created>1744144216799</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1742696477522</updated>
+      <updated>1744144216799</updated>
     </task>
-    <task id="LOCAL-00001" summary="project setup">
-      <option name="closed" value="true" />
-      <created>1742697103848</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1742697103848</updated>
-    </task>
-    <task id="LOCAL-00002" summary="INVENTORY SERVICE">
-      <option name="closed" value="true" />
-      <created>1742750390259</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1742750390259</updated>
-    </task>
-    <task id="LOCAL-00003" summary="fix product mapper">
-      <option name="closed" value="true" />
-      <created>1742839900609</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1742839900609</updated>
-    </task>
-    <task id="LOCAL-00004" summary="order service">
-      <option name="closed" value="true" />
-      <created>1742874072753</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1742874072753</updated>
-    </task>
-    <task id="LOCAL-00005" summary="removing common service + email service + product stock management fix">
-      <option name="closed" value="true" />
-      <created>1743809732194</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1743809732194</updated>
-    </task>
-    <option name="localTasksCounter" value="6" />
     <servers />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="project setup" />
-    <MESSAGE value="INVENTORY SERVICE" />
-    <MESSAGE value="fix product mapper" />
-    <MESSAGE value="order service" />
-    <MESSAGE value="removing common service + email service + product stock management fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="removing common service + email service + product stock management fix" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/order-service/src/main/java/com/ecommerce/order/service/impl/OrderServiceImpl.java</url>
-          <line>87</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/order-service/src/main/java/com/ecommerce/order/service/impl/OrderServiceImpl.java</url>
-          <line>86</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

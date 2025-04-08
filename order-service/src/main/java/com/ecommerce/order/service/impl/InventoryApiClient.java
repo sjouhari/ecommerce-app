@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(url = "http://localhost:8084/api/inventories", name = "inventory-service")
+@FeignClient("INVENTORY-SERVICE")
 @Headers("Authorization: {token}")
 public interface InventoryApiClient {
 
-    @PostMapping("/checkAvailability")
+    @PostMapping("/api/inventories/checkAvailability")
     boolean checkAvailability(@RequestBody InventoryDto inventoryDto, @RequestHeader("Authorization") String token);
 
 }

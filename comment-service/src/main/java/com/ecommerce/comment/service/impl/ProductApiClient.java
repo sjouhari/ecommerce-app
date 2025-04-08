@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(url = "http://localhost:8082/api/products", name = "product-service")
+@FeignClient("PRODUCT-SERVICE")
 @Headers("Authorization: {token}")
 public interface ProductApiClient {
 
-    @GetMapping("/existsById/{id}")
+    @GetMapping("/api/products/existsById/{id}")
     boolean productExistsById(@PathVariable Long id, @RequestHeader("Authorization") String token);
 
 }

@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/inventories")
 @Validated
@@ -16,6 +18,11 @@ public class InventoryController {
 
     @Autowired
     private InventoryService inventoryService;
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<List<InventoryDto>> getInventoryByProductId(@PathVariable Long productId) {
+        return ResponseEntity.ok(inventoryService.getInventoriesByProductId(productId));
+    }
 
     @PostMapping("/checkAvailability")
     public boolean checkAvailability(@RequestBody InventoryDto inventoryDto) {

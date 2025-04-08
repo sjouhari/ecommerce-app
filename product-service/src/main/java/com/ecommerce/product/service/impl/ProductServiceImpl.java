@@ -3,6 +3,7 @@ package com.ecommerce.product.service.impl;
 import com.ecommerce.product.dto.InventoryDto;
 import com.ecommerce.product.dto.ProductRequestDto;
 import com.ecommerce.product.dto.ProductResponseDto;
+import com.ecommerce.product.dto.Stock;
 import com.ecommerce.product.entity.Product;
 import com.ecommerce.product.entity.Tva;
 import com.ecommerce.product.exception.ResourceNotFoundException;
@@ -38,12 +39,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponseDto getProductById(Long id) {
+    public ProductResponseDto getProductById(Long id, String token) {
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Product", "id", id.toString())
         );
-
-        return ProductMapper.INSTANCE.productToProductResponseDto(product);
+        List<InventoryDto> inventories = inventoryApiClient.getInventoriesByProductId(id, token);
+        List<Stock> stocks = ProductMapper.INSTANCE.inventoryDtosToSizeResponseDtos(inventories);
+        ProductResponseDto productResponseDto = ProductMapper.INSTANCE.productToProductResponseDto(product);
+        productResponseDto.setStock(stocks);
+        return productResponseDto;
     }
 
     @Override
@@ -90,7 +94,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto updateProduct(Long id, ProductRequestDto productDto) {
-        getProductById(id);
+        productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "id", id.toString())
+        );
         Product product = ProductMapper.INSTANCE.productRequestDtoToProduct(productDto);
         Tva tva = tvaRepository.findById(productDto.getTva().getId()).orElseThrow(
                 () -> new ResourceNotFoundException("Tva", "id", productDto.getTva().getId().toString())
@@ -104,7 +110,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public String deleteProduct(Long id) {
-        getProductById(id);
+        productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "id", id.toString())
+        );
         productRepository.deleteById(id);
         return "Product deleted successfully";
     }

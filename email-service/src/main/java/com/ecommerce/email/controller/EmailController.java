@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/email")
+@RequestMapping("/api/email")
 public class EmailController {
 
     @Autowired
@@ -34,4 +34,5 @@ public class EmailController {
         emailService.sendEmail(emailDto);
         return ResponseEntity.ok("Email sent successfully");
     }
+
 }

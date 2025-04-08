@@ -9,11 +9,19 @@ import com.ecommerce.inventory.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class InventoryServiceImpl implements InventoryService {
 
     @Autowired
     private InventoryRepository inventoryRepository;
+
+    @Override
+    public List<InventoryDto> getInventoriesByProductId(Long productId) {
+        List<Inventory> inventories = inventoryRepository.findAllByProductId(productId);
+        return InventoryMapper.INSTANCE.inventoryListToInventoryDtoList(inventories);
+    }
 
     @Override
     public boolean checkAvailability(InventoryDto inventoryDto) {

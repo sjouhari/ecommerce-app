@@ -5,6 +5,8 @@ import com.ecommerce.inventory.entity.Inventory;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface InventoryMapper {
 
@@ -13,5 +15,7 @@ public interface InventoryMapper {
     InventoryDto inventoryToInventoryDto(Inventory inventory);
 
     Inventory inventoryDtoToInventory(InventoryDto inventoryDto);
+
+    List<InventoryDto> inventoryListToInventoryDtoList(List<Inventory> inventoryList);
 
 }

@@ -10,6 +10,4 @@ import java.util.List;
 public class NewsletterDto {
     private String email;
     List<ProductItem> products;
-
-
 }
