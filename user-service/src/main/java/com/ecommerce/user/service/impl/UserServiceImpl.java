@@ -1,8 +1,11 @@
 package com.ecommerce.user.service.impl;
 
+import com.ecommerce.shared.dto.UserEvent;
 import com.ecommerce.user.dto.UserDto;
 import com.ecommerce.user.entity.User;
+import com.ecommerce.user.exception.EmailVerificationException;
 import com.ecommerce.user.exception.ResourceNotFoundException;
+import com.ecommerce.user.kafka.KafkaUserConfirmedProducer;
 import com.ecommerce.user.mapper.UserMapper;
 import com.ecommerce.user.repository.UserRepository;
 import com.ecommerce.user.service.UserService;
@@ -16,6 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private KafkaUserConfirmedProducer kafkaUserConfirmedProducer;
 
     @Override
     public List<UserDto> getAllUsers() {
@@ -58,6 +64,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsById(Long id) {
         return userRepository.existsById(id);
+    }
+
+    @Override
+    public String verifyUserEmail(int verificationCode) {
+        User user = userRepository.findByVerificationCode(verificationCode).orElseThrow(
+                () -> new EmailVerificationException("Email not verified. The given code was expired or incorrect.")
+        );
+        user.setEnabled(true);
+        user.setVerificationCode(0);
+        userRepository.save(user);
+
+
+        UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), 0);
+        kafkaUserConfirmedProducer.sendMessage(userEvent);
+        return "Your email verified successfully";
     }
 
 }

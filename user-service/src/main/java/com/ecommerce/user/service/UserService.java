@@ -18,4 +18,6 @@ public interface UserService {
 
     boolean existsById(Long id);
 
+    String verifyUserEmail(int verificationCode);
+
 }

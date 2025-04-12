@@ -53,7 +53,7 @@ public class SecurityConfig {
 		}));
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register").permitAll()
+						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/users/verify").permitAll()
 
 						.requestMatchers(HttpMethod.GET, "/api/profils", "/api/profils/**").hasAuthority("PROFIL_READ")
 						.requestMatchers(HttpMethod.POST, "/api/profils").hasAuthority("PROFIL_CREATE")

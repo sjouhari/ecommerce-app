@@ -1,12 +1,11 @@
 package com.ecommerce.user.service.impl;
 
-import com.ecommerce.user.dto.JWTAuthResponse;
-import com.ecommerce.user.dto.LoginDto;
-import com.ecommerce.user.dto.RegisterDto;
-import com.ecommerce.user.dto.UserDto;
+import com.ecommerce.shared.dto.UserEvent;
+import com.ecommerce.user.dto.*;
 import com.ecommerce.user.entity.Profil;
 import com.ecommerce.user.entity.User;
 import com.ecommerce.user.exception.ResourceNotFoundException;
+import com.ecommerce.user.kafka.KafkaUserConfirmationProducer;
 import com.ecommerce.user.mapper.UserMapper;
 import com.ecommerce.user.repository.ProfilRepository;
 import com.ecommerce.user.repository.UserRepository;
@@ -22,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 @Service
@@ -32,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
 	private UserRepository userRepository;
 	private ProfilRepository profilRepository;
 	private JwtTokenProvider jwtTokenProvider;
+	private KafkaUserConfirmationProducer kafkaUserConfirmationProducer;
 
 	@Override
 	public JWTAuthResponse login(LoginDto loginDTO) {
@@ -45,6 +46,10 @@ public class AuthServiceImpl implements AuthService {
 			User currentUser = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow(
 					() -> new ResourceNotFoundException("User", "email", loginDTO.getEmail())
 			);
+
+			if(!currentUser.isEnabled()) {
+				throw new RuntimeException("Your account is not verified. Please check your email.");
+			}
 			
 			String generatedToken = jwtTokenProvider.generateToken(authentication);
 			
@@ -54,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
 		} catch (BadCredentialsException badCredentialsException) {
 			throw new RuntimeException("Username or password incorrect.");
 		} catch (Exception e) {
-			throw new RuntimeException("Something went wrong, try again later." + e.getMessage());
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
@@ -80,6 +85,13 @@ public class AuthServiceImpl implements AuthService {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setProfils(profils);
 
+		Random randomCode = new Random();
+		int verificationCode = randomCode.nextInt(900000) + 100000;
+		UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), verificationCode);
+		kafkaUserConfirmationProducer.sendMessage(userEvent);
+
+		user.setEnabled(false);
+		user.setVerificationCode(verificationCode);
 		return UserMapper.INSTANCE.userToUserDto(userRepository.save(user));
 	}
 

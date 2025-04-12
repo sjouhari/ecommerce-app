@@ -3,6 +3,7 @@ package com.ecommerce.user.controller;
 import com.ecommerce.user.dto.UserDto;
 import com.ecommerce.user.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.QueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,11 @@ public class UserController {
     @GetMapping("/existsById/{id}")
     public boolean existsById(@PathVariable Long id) {
         return userService.existsById(id);
+    }
+
+    @GetMapping("/verify")
+    public String verifyUserEmail(@RequestParam("code") int verificationCode) {
+        return userService.verifyUserEmail(verificationCode);
     }
 
 }
