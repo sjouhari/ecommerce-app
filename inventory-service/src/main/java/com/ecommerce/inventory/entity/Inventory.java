@@ -1,6 +1,6 @@
 package com.ecommerce.inventory.entity;
 
-import com.ecommerce.inventory.enums.ProductColor;
+import com.ecommerce.shared.enums.ProductColor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,11 +1,12 @@
 package com.ecommerce.inventory.service.impl;
 
-import com.ecommerce.inventory.dto.InventoryDto;
 import com.ecommerce.inventory.entity.Inventory;
-import com.ecommerce.inventory.exception.ResourceNotFoundException;
 import com.ecommerce.inventory.mapper.InventoryMapper;
 import com.ecommerce.inventory.repository.InventoryRepository;
 import com.ecommerce.inventory.service.InventoryService;
+import com.ecommerce.shared.dto.InventoryDto;
+import com.ecommerce.shared.exception.StockInsufficientException;
+import com.ecommerce.shared.exception.StockNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +26,16 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public boolean checkAvailability(InventoryDto inventoryDto) {
-        Inventory inventory = inventoryRepository.findByProductIdAndSizeAndColor(inventoryDto.getProductId(), inventoryDto.getSize(), inventoryDto.getColor().toString()).orElseThrow(
-                () -> new ResourceNotFoundException("Inventory", "productId", String.valueOf(inventoryDto.getProductId()))
+        Inventory inventory = inventoryRepository.findByProductIdAndSizeAndColor(inventoryDto.getProductId(), inventoryDto.getSize(), inventoryDto.getColor()).orElseThrow(
+                () -> new StockInsufficientException(inventoryDto.getProductId(), inventoryDto.getSize(), inventoryDto.getColor().toString())
         );
         return inventory.getQuantity() >= inventoryDto.getQuantity();
     }
 
     @Override
     public InventoryDto updateQuantity(InventoryDto inventoryDto) {
-        Inventory inventory = inventoryRepository.findByProductIdAndSizeAndColor(inventoryDto.getProductId(), inventoryDto.getSize(), inventoryDto.getColor().toString()).orElseThrow(
-                () -> new ResourceNotFoundException("Inventory", "productId", String.valueOf(inventoryDto.getProductId()))
+        Inventory inventory = inventoryRepository.findByProductIdAndSizeAndColor(inventoryDto.getProductId(), inventoryDto.getSize(), inventoryDto.getColor()).orElseThrow(
+                () -> new StockNotFoundException(inventoryDto)
         );
 
         inventory.setQuantity(inventory.getQuantity() + inventoryDto.getQuantity());

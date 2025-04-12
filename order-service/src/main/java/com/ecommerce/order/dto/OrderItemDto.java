@@ -1,5 +1,7 @@
 package com.ecommerce.order.dto;
 
+import com.ecommerce.shared.enums.ProductColor;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -11,13 +13,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItemRequestDto {
+public class OrderItemDto {
+    private Long id;
 
     @NotNull(message = "Product id is required")
     private Long productId;
 
-    @NotNull(message = "Size id is required")
-    private Long sizeId;
+    @NotBlank(message = "Size is required")
+    private String size;
+
+    @NotNull(message = "Color is required")
+    private ProductColor color;
 
     @NotNull(message = "Quantity is required")
     @Positive(message = "Quantity must be greater than 0")

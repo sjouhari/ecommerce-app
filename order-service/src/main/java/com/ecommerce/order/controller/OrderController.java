@@ -42,8 +42,8 @@ public class OrderController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long id, @RequestBody @Valid UpdateOrderStatusRequestDto updateOrderStatusRequestDto) {
-        return ResponseEntity.ok(orderService.updateOrderStatus(id, updateOrderStatusRequestDto));
+    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long id, @RequestBody @Valid UpdateOrderStatusRequestDto updateOrderStatusRequestDto, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, updateOrderStatusRequestDto, token));
     }
 
     @DeleteMapping("{id}")

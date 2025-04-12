@@ -1,6 +1,6 @@
 package com.ecommerce.order.service.impl;
 
-import com.ecommerce.order.dto.InventoryDto;
+import com.ecommerce.shared.dto.InventoryDto;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;

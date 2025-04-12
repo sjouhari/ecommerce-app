@@ -1,7 +1,7 @@
 package com.ecommerce.inventory.controller;
 
-import com.ecommerce.inventory.dto.InventoryDto;
 import com.ecommerce.inventory.service.InventoryService;
+import com.ecommerce.shared.dto.InventoryDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

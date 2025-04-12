@@ -1,7 +1,7 @@
 package com.ecommerce.inventory.mapper;
 
-import com.ecommerce.inventory.dto.InventoryDto;
 import com.ecommerce.inventory.entity.Inventory;
+import com.ecommerce.shared.dto.InventoryDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

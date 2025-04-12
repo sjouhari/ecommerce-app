@@ -1,6 +1,5 @@
 package com.ecommerce.order.entity;
 
-import com.ecommerce.shared.enums.ProductColor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,29 +7,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "order_items")
+@Table(name = "address")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class OrderItem {
+@NoArgsConstructor
+public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     private Order order;
 
-    private Long productId;
-
-    private String size;
-
-    @Enumerated(EnumType.STRING)
-    private ProductColor color;
-
-    private int quantity;
-
-    private double price;
+    private String country;
+    private String city;
+    private String street;
+    private String postalCode;
 
 }

@@ -16,7 +16,7 @@ public interface OrderService {
 
     OrderResponseDto placeOrder(OrderRequestDto orderRequestDto, String token);
 
-    OrderResponseDto updateOrderStatus(Long orderId, UpdateOrderStatusRequestDto updateOrderStatusRequestDto);
+    OrderResponseDto updateOrderStatus(Long orderId, UpdateOrderStatusRequestDto updateOrderStatusRequestDto, String token);
 
     String deleteOrder(Long orderId);
 

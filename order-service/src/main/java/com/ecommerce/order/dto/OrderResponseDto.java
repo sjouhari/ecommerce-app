@@ -17,8 +17,9 @@ public class OrderResponseDto {
     private Long id;
     private Long userId;
     private OrderStatus status;
-    private List<OrderItemRequestDto> orderItems;
+    private List<OrderItemDto> orderItems;
     private FactureDto facture;
+    private AddressDto deliveryAddress;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

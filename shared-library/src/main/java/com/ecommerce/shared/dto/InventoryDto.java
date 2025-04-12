@@ -1,6 +1,6 @@
-package com.ecommerce.inventory.dto;
+package com.ecommerce.shared.dto;
 
-import com.ecommerce.inventory.enums.ProductColor;
+import com.ecommerce.shared.enums.ProductColor;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

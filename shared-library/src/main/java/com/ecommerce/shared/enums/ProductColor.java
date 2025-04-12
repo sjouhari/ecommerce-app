@@ -1,4 +1,4 @@
-package com.ecommerce.inventory.enums;
+package com.ecommerce.shared.enums;
 
 public enum ProductColor {
     RED,

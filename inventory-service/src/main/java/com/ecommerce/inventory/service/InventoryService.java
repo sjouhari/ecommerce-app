@@ -1,6 +1,6 @@
 package com.ecommerce.inventory.service;
 
-import com.ecommerce.inventory.dto.InventoryDto;
+import com.ecommerce.shared.dto.InventoryDto;
 
 import java.util.List;
 

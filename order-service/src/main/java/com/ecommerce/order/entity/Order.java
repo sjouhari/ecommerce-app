@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -31,5 +32,12 @@ public class Order extends BaseEntity {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
+
+    private LocalDateTime deliveryDate;
+
+    private LocalDateTime expectedDeliveryDate;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Address deliveryAddress;
 
 }

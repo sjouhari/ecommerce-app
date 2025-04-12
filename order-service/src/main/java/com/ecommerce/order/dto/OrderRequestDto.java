@@ -18,11 +18,14 @@ public class OrderRequestDto {
     @NotNull(message = "User id is required")
     private Long userId;
 
+    @NotNull(message = "Delivery address is required")
+    private AddressDto deliveryAddress;
+
     @NotBlank(message = "Mode payment is required")
     private String modePayment;
 
     @NotNull(message = "Order items is required")
-    private List<OrderItemRequestDto> orderItems;
+    private List<OrderItemDto> orderItems;
 
 
 }
