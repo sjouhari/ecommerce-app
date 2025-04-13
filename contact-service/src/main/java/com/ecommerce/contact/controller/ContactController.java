@@ -1,6 +1,6 @@
 package com.ecommerce.contact.controller;
 
-import com.ecommerce.contact.dto.ContactDto;
+import com.ecommerce.shared.dto.ContactDto;
 import com.ecommerce.contact.service.ContactService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

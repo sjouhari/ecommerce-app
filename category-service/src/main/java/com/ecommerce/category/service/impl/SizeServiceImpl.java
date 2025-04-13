@@ -3,11 +3,11 @@ package com.ecommerce.category.service.impl;
 import com.ecommerce.category.dto.SizeDto;
 import com.ecommerce.category.entity.Size;
 import com.ecommerce.category.entity.SubCategory;
-import com.ecommerce.category.exception.ResourceNotFoundException;
 import com.ecommerce.category.mapper.SizeMapper;
 import com.ecommerce.category.repository.SizeRepository;
 import com.ecommerce.category.repository.SubCategoryRepository;
 import com.ecommerce.category.service.SizeService;
+import com.ecommerce.shared.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

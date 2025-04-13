@@ -1,4 +1,4 @@
-package com.ecommerce.category.dto;
+package com.ecommerce.shared.dto;
 
 
 import lombok.AllArgsConstructor;

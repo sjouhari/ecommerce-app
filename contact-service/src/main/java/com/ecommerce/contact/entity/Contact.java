@@ -22,7 +22,9 @@ public class Contact extends BaseEntity {
 
     private String email;
 
-    private String mobile;
+    private String subject;
+
+    private String phone;
 
     private String message;
 

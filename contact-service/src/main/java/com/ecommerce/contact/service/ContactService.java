@@ -1,6 +1,6 @@
 package com.ecommerce.contact.service;
 
-import com.ecommerce.contact.dto.ContactDto;
+import com.ecommerce.shared.dto.ContactDto;
 
 import java.util.List;
 

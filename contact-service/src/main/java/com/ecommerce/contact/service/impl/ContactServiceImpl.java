@@ -1,11 +1,12 @@
 package com.ecommerce.contact.service.impl;
 
-import com.ecommerce.contact.dto.ContactDto;
+import com.ecommerce.contact.kafka.ContactProducer;
+import com.ecommerce.shared.dto.ContactDto;
 import com.ecommerce.contact.entity.Contact;
-import com.ecommerce.contact.exception.ResourceNotFoundException;
 import com.ecommerce.contact.mapper.ContactMapper;
 import com.ecommerce.contact.repository.ContactRepository;
 import com.ecommerce.contact.service.ContactService;
+import com.ecommerce.shared.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,9 @@ public class ContactServiceImpl implements ContactService {
 
     @Autowired
     private UserApiClient userApiClient;
+
+    @Autowired
+    private ContactProducer contactProducer;
 
     @Override
     public List<ContactDto> getAllContacts() {
@@ -41,6 +45,7 @@ public class ContactServiceImpl implements ContactService {
         }
         Contact contact = ContactMapper.INSTANCE.contactDtoToContact(contactDto);
         Contact savedContact = contactRepository.save(contact);
+        contactProducer.sendMessage(contactDto);
         return ContactMapper.INSTANCE.contactToContactDto(savedContact);
     }
 

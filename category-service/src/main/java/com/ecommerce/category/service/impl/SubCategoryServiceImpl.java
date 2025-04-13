@@ -3,11 +3,11 @@ package com.ecommerce.category.service.impl;
 import com.ecommerce.category.dto.SubCategoryDto;
 import com.ecommerce.category.entity.Category;
 import com.ecommerce.category.entity.SubCategory;
-import com.ecommerce.category.exception.ResourceNotFoundException;
 import com.ecommerce.category.mapper.SubCategoryMapper;
 import com.ecommerce.category.repository.CategoryRepository;
 import com.ecommerce.category.repository.SubCategoryRepository;
 import com.ecommerce.category.service.SubCategoryService;
+import com.ecommerce.shared.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

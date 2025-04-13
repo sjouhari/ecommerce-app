@@ -1,6 +1,6 @@
 package com.ecommerce.contact.mapper;
 
-import com.ecommerce.contact.dto.ContactDto;
+import com.ecommerce.shared.dto.ContactDto;
 import com.ecommerce.contact.entity.Contact;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

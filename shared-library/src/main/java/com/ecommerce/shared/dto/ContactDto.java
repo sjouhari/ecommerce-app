@@ -1,4 +1,4 @@
-package com.ecommerce.contact.dto;
+package com.ecommerce.shared.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -23,8 +23,11 @@ public class ContactDto {
     @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank(message = "Mobile is required")
-    private String mobile;
+    @NotBlank(message = "Subject is required")
+    private String subject;
+
+    @NotBlank(message = "Phone number is required")
+    private String phone;
 
     @NotBlank(message = "Message is required")
     private String message;

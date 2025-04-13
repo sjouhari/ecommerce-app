@@ -2,10 +2,10 @@ package com.ecommerce.product.service.impl;
 
 import com.ecommerce.product.dto.TvaDto;
 import com.ecommerce.product.entity.Tva;
-import com.ecommerce.product.exception.ResourceNotFoundException;
 import com.ecommerce.product.mapper.TvaMapper;
 import com.ecommerce.product.repository.TvaRepository;
 import com.ecommerce.product.service.TvaService;
+import com.ecommerce.shared.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

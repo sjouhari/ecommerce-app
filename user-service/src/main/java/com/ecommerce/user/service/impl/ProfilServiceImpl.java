@@ -1,10 +1,10 @@
 package com.ecommerce.user.service.impl;
 
+import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.ecommerce.user.dto.ProfilDto;
 import com.ecommerce.user.dto.ProfilFeaturesDto;
 import com.ecommerce.user.entity.Feature;
 import com.ecommerce.user.entity.Profil;
-import com.ecommerce.user.exception.ResourceNotFoundException;
 import com.ecommerce.user.mapper.ProfilMapper;
 import com.ecommerce.user.repository.FeatureRepository;
 import com.ecommerce.user.repository.ProfilRepository;

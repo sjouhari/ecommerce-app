@@ -6,11 +6,11 @@ import com.ecommerce.product.dto.ProductResponseDto;
 import com.ecommerce.product.dto.Stock;
 import com.ecommerce.product.entity.Product;
 import com.ecommerce.product.entity.Tva;
-import com.ecommerce.product.exception.ResourceNotFoundException;
 import com.ecommerce.product.mapper.ProductMapper;
 import com.ecommerce.product.repository.ProductRepository;
 import com.ecommerce.product.repository.TvaRepository;
 import com.ecommerce.product.service.ProductService;
+import com.ecommerce.shared.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

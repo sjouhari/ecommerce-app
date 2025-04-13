@@ -2,10 +2,10 @@ package com.ecommerce.comment.service.impl;
 
 import com.ecommerce.comment.dto.CommentDto;
 import com.ecommerce.comment.entity.Comment;
-import com.ecommerce.comment.exception.ResourceNotFoundException;
 import com.ecommerce.comment.mapper.CommentMapper;
 import com.ecommerce.comment.repository.CommentRepository;
 import com.ecommerce.comment.service.CommentService;
+import com.ecommerce.shared.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

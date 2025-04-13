@@ -1,4 +1,4 @@
-package com.ecommerce.comment.exception;
+package com.ecommerce.shared.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 

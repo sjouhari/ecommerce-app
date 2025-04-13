@@ -1,8 +1,8 @@
 package com.ecommerce.user.service.impl;
 
+import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.ecommerce.user.dto.FeatureDto;
 import com.ecommerce.user.entity.Feature;
-import com.ecommerce.user.exception.ResourceNotFoundException;
 import com.ecommerce.user.mapper.FeatureMapper;
 import com.ecommerce.user.repository.FeatureRepository;
 import com.ecommerce.user.service.FeatureService;

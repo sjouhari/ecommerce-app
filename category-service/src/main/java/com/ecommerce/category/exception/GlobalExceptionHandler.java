@@ -1,6 +1,7 @@
 package com.ecommerce.category.exception;
 
-import com.ecommerce.category.dto.ErrorResponseDto;
+import com.ecommerce.shared.dto.ErrorResponseDto;
+import com.ecommerce.shared.exception.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

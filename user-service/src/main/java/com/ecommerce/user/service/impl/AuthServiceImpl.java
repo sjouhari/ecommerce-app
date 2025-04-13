@@ -1,10 +1,10 @@
 package com.ecommerce.user.service.impl;
 
 import com.ecommerce.shared.dto.UserEvent;
+import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.ecommerce.user.dto.*;
 import com.ecommerce.user.entity.Profil;
 import com.ecommerce.user.entity.User;
-import com.ecommerce.user.exception.ResourceNotFoundException;
 import com.ecommerce.user.kafka.KafkaUserConfirmationProducer;
 import com.ecommerce.user.mapper.UserMapper;
 import com.ecommerce.user.repository.ProfilRepository;
