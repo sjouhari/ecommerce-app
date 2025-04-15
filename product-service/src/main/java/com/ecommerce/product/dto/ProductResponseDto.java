@@ -1,6 +1,5 @@
 package com.ecommerce.product.dto;
 
-import com.ecommerce.product.enums.ProductColor;
 import com.ecommerce.product.enums.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +21,8 @@ public class ProductResponseDto {
     private double reductionPercentage;
     private ProductStatus status;
     private Long subCategoryId;
+    private Long sellerId;
     private TvaDto tva;
     private List<MediaDto> medias;
-    private List<Stock> stock;
+    private List<StockDto> stock;
 }

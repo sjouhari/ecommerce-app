@@ -4,7 +4,6 @@ import com.ecommerce.product.dto.InventoryDto;
 import com.ecommerce.product.dto.*;
 import com.ecommerce.product.entity.Product;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -20,8 +19,8 @@ public interface ProductMapper {
 
     List<ProductResponseDto> productsToProductResponseDtos(List<Product> products);
 
-    Stock inventoryDtoToSizeResponseDto(InventoryDto inventoryDto);
+    StockDto inventoryDtoToStockDto(InventoryDto inventoryDto);
 
-    List<Stock> inventoryDtosToSizeResponseDtos(List<InventoryDto> inventoryDtos);
+    List<StockDto> inventoryDtosToStockDtos(List<InventoryDto> inventoryDtos);
 
 }

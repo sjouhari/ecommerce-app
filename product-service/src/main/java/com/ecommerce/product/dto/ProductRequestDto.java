@@ -35,11 +35,11 @@ public class ProductRequestDto {
     @NotNull(message = "Sub category id is required")
     private Long subCategoryId;
 
+    @NotNull(message = "Seller id is required")
+    private Long sellerId;
+
     @NotNull(message = "Tva id is required")
     private TvaDto tva;
 
-    @NotNull(message = "Medias is required")
-    private List<MediaDto> medias;
-
-    private List<Stock> stock;
+    private List<StockDto> stock;
 }

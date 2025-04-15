@@ -30,6 +30,8 @@ public class Product extends BaseEntity {
 
     private double reductionPercentage;
 
+    private Long sellerId;
+
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
