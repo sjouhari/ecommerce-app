@@ -1,5 +1,6 @@
 package com.ecommerce.user.service;
 
+import com.ecommerce.user.dto.ResetPasswordRequestDto;
 import com.ecommerce.user.dto.UserDto;
 
 import java.util.List;
@@ -19,5 +20,9 @@ public interface UserService {
     boolean existsById(Long id);
 
     String verifyUserEmail(int verificationCode);
+
+    void forgotPassword(String email);
+
+    void resetPassword(Long id, ResetPasswordRequestDto resetPasswordRequestDto);
 
 }

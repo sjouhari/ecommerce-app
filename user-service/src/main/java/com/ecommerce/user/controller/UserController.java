@@ -1,5 +1,6 @@
 package com.ecommerce.user.controller;
 
+import com.ecommerce.user.dto.ResetPasswordRequestDto;
 import com.ecommerce.user.dto.UserDto;
 import com.ecommerce.user.service.UserService;
 import jakarta.validation.Valid;
@@ -53,6 +54,16 @@ public class UserController {
     @GetMapping("/verify")
     public String verifyUserEmail(@RequestParam("code") int verificationCode) {
         return userService.verifyUserEmail(verificationCode);
+    }
+
+    @GetMapping("/forgot-password")
+    public void forgotPassword(@RequestParam("email") String email) {
+        userService.forgotPassword(email);
+    }
+
+    @PutMapping("/reset-password/{id}")
+    public void resetPassword(@PathVariable Long id, @RequestBody @Valid ResetPasswordRequestDto resetPasswordRequestDto) {
+        userService.resetPassword(id, resetPasswordRequestDto);
     }
 
 }

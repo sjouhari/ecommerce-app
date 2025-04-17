@@ -5,7 +5,7 @@ import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.ecommerce.user.dto.*;
 import com.ecommerce.user.entity.Profil;
 import com.ecommerce.user.entity.User;
-import com.ecommerce.user.kafka.KafkaUserConfirmationProducer;
+import com.ecommerce.user.kafka.KafkaUserProducer;
 import com.ecommerce.user.mapper.UserMapper;
 import com.ecommerce.user.repository.ProfilRepository;
 import com.ecommerce.user.repository.UserRepository;
@@ -32,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
 	private UserRepository userRepository;
 	private ProfilRepository profilRepository;
 	private JwtTokenProvider jwtTokenProvider;
-	private KafkaUserConfirmationProducer kafkaUserConfirmationProducer;
+	private KafkaUserProducer kafkaUserConfirmationProducer;
 
 	@Override
 	public JWTAuthResponse login(LoginDto loginDTO) {
@@ -88,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
 		Random randomCode = new Random();
 		int verificationCode = randomCode.nextInt(900000) + 100000;
 		UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), verificationCode);
-		kafkaUserConfirmationProducer.sendMessage(userEvent);
+		kafkaUserConfirmationProducer.sendMessage(userEvent, "user-confirmation");
 
 		user.setEnabled(false);
 		user.setVerificationCode(verificationCode);

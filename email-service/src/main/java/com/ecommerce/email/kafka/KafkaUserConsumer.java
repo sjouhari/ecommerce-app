@@ -10,8 +10,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserConfirmationConsumer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserConfirmationConsumer.class);
+public class KafkaUserConsumer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaUserConsumer.class);
 
     @Autowired
     private EmailService emailService;
@@ -40,6 +40,30 @@ public class UserConfirmationConsumer {
         emailDto.setTo(userEvent.getEmail());
         emailDto.setSubject("Account Verified Successfully");
         String content = "Hello " + userEvent.getName() + ", \n\nYour account has been verified successfully.";
+        emailDto.setBody(content);
+        emailService.sendEmail(emailDto);
+    }
+
+    @KafkaListener(topics = "${kafka.topic.forgot.password.name}", groupId = "user_forgot_password_group_id")
+    public void forgotPassword(UserEvent userEvent) {
+        LOGGER.info(String.format("#### -> Received message -> %s", userEvent.toString()));
+        EmailDto emailDto = new EmailDto();
+        emailDto.setTo(userEvent.getEmail());
+        emailDto.setSubject("Mot de passe oublié");
+        String content = "Bonjour " + userEvent.getName() +
+                ", \n\nVotre code de réinitialisation de mot de passe :\n" + userEvent.getCode();
+        emailDto.setBody(content);
+        emailService.sendEmail(emailDto);
+    }
+
+    @KafkaListener(topics = "${kafka.topic.reset.password.name}", groupId = "user_forgot_password_group_id")
+    public void resetPassword(UserEvent userEvent) {
+        LOGGER.info(String.format("#### -> Received message -> %s", userEvent.toString()));
+        EmailDto emailDto = new EmailDto();
+        emailDto.setTo(userEvent.getEmail());
+        emailDto.setSubject("Modification de mot de passe");
+        String content = "Bonjour " + userEvent.getName() +
+                ", \n\nVotre code mot de passe a été réinitialisé avec succès.";
         emailDto.setBody(content);
         emailService.sendEmail(emailDto);
     }
