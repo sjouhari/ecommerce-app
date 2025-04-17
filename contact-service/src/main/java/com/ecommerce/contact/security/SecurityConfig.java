@@ -35,19 +35,11 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-		httpSecurity.cors(cors -> cors.configurationSource(request -> {
-			CorsConfiguration corsConfiguration = new CorsConfiguration();
-			corsConfiguration.setAllowedOrigins(List.of("*"));
-			corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE"));
-			corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-			return corsConfiguration;
-		}));
-
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/api/contact", "/api/contact/**").hasAuthority("USER_READ")
-						.requestMatchers(HttpMethod.POST, "/api/contact").hasAuthority("USER_CREATE")
-						.requestMatchers(HttpMethod.PUT, "/api/contact/**").hasAuthority("USER_UPDATE")
-						.requestMatchers(HttpMethod.DELETE, "/api/contact/**").hasAuthority("USER_DELETE")
+						.requestMatchers(HttpMethod.GET, "/api/contacts", "/api/contacts/**").hasAuthority("USER_READ")
+						.requestMatchers(HttpMethod.POST, "/api/contacts").hasAuthority("USER_CREATE")
+						.requestMatchers(HttpMethod.PUT, "/api/contacts/**").hasAuthority("USER_UPDATE")
+						.requestMatchers(HttpMethod.DELETE, "/api/contacts/**").hasAuthority("USER_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)
