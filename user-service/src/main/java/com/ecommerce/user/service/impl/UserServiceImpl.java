@@ -11,6 +11,7 @@ import com.ecommerce.user.mapper.UserMapper;
 import com.ecommerce.user.repository.UserRepository;
 import com.ecommerce.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,15 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("${kafka.topic.user.confirmed.name}")
+    private String userConfirmedTopicName;
+
+    @Value("${kafka.topic.forgot.password.name}")
+    private String userForgotPasswordTopicName;
+
+    @Value("${kafka.topic.reset.password.name}")
+    private String userResetPasswordTopicName;
 
     @Override
     public List<UserDto> getAllUsers() {
@@ -83,8 +93,8 @@ public class UserServiceImpl implements UserService {
 
 
         UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), 0);
-        kafkaUserProducer.sendMessage(userEvent, "user-confirmed");
-        return "Your email verified successfully";
+        kafkaUserProducer.sendMessage(userEvent, userConfirmedTopicName);
+        return "Votre compte a été verifié avec succès. Vous pouvez maintenant vous connecter.";
     }
 
     @Override
@@ -96,7 +106,7 @@ public class UserServiceImpl implements UserService {
         Random randomCode = new Random();
         int verificationCode = randomCode.nextInt(900000) + 100000;
         UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), verificationCode);
-        kafkaUserProducer.sendMessage(userEvent, "forgot_password");
+        kafkaUserProducer.sendMessage(userEvent, userForgotPasswordTopicName);
     }
 
     @Override
@@ -113,7 +123,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), 0);
-        kafkaUserProducer.sendMessage(userEvent, "reset_password");
+        kafkaUserProducer.sendMessage(userEvent, userResetPasswordTopicName);
 
     }
 

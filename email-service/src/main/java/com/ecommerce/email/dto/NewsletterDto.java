@@ -9,5 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 public class NewsletterDto {
     private String email;
+    private String name;
     List<ProductItem> products;
 }

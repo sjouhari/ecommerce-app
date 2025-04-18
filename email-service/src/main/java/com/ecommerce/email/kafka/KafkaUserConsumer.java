@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class KafkaUserConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaUserConsumer.class);
@@ -17,19 +19,21 @@ public class KafkaUserConsumer {
     private EmailService emailService;
 
     @KafkaListener(topics = "${kafka.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
-    public void consume(UserEvent userEvent) {
+    public void userConfirmation(UserEvent userEvent) {
         LOGGER.info(String.format("#### -> Received message -> %s", userEvent.toString()));
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(userEvent.getEmail());
-        emailDto.setSubject("Email Confirmation");
+        emailDto.setSubject("Confirmation de compte");
 
         String verificationUrl = "http://localhost:8080/api/users/verify?code=" + userEvent.getCode();
-        String content = "Hello " + userEvent.getName() +
-                ", \n\nYour account has been created successfully.\n" +
-                "Please click the link below to verify your account.\n\n" +
-                verificationUrl;
-        emailDto.setBody(content);
-        emailService.sendEmail(emailDto);
+
+        Map<String, Object> variables = Map.of(
+                "subject", "Confirmation de compte",
+                "name", userEvent.getName(),
+                "message", "Bienvenue sur notre site, pour contniuer veuillez confirmer votre compte",
+                "verificationUrl", verificationUrl
+        );
+        emailService.sendEmail(emailDto, variables);
     }
 
     @KafkaListener(topics = "${kafka.topic.user.confirmed.name}", groupId = "${spring.kafka.consumer.group-id}")
@@ -38,10 +42,14 @@ public class KafkaUserConsumer {
 
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(userEvent.getEmail());
-        emailDto.setSubject("Account Verified Successfully");
-        String content = "Hello " + userEvent.getName() + ", \n\nYour account has been verified successfully.";
-        emailDto.setBody(content);
-        emailService.sendEmail(emailDto);
+        emailDto.setSubject("Compte verifié avec succès");
+
+        Map<String, Object> variables = Map.of(
+                "subject", "Compte verifié avec succès",
+                "name", userEvent.getName(),
+                "message", "Votre compte a été verifié avec succès. Vous pouvez maintenant vous connecter."
+        );
+        emailService.sendEmail(emailDto, variables);
     }
 
     @KafkaListener(topics = "${kafka.topic.forgot.password.name}", groupId = "user_forgot_password_group_id")
@@ -50,10 +58,14 @@ public class KafkaUserConsumer {
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(userEvent.getEmail());
         emailDto.setSubject("Mot de passe oublié");
-        String content = "Bonjour " + userEvent.getName() +
-                ", \n\nVotre code de réinitialisation de mot de passe :\n" + userEvent.getCode();
-        emailDto.setBody(content);
-        emailService.sendEmail(emailDto);
+
+        Map<String, Object> variables = Map.of(
+                "subject", "Mot de passe oublié",
+                "name", userEvent.getName(),
+                "message", "Vous avez oublié votre mot de passe, c'est possible. Vous pouvez le réinitiliser !",
+                "resetPasswordUrl", "http://localhost:8080/api/users/reset-password?code=" + userEvent.getCode()
+        );
+        emailService.sendEmail(emailDto, variables);
     }
 
     @KafkaListener(topics = "${kafka.topic.reset.password.name}", groupId = "user_forgot_password_group_id")
@@ -62,9 +74,12 @@ public class KafkaUserConsumer {
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(userEvent.getEmail());
         emailDto.setSubject("Modification de mot de passe");
-        String content = "Bonjour " + userEvent.getName() +
-                ", \n\nVotre code mot de passe a été réinitialisé avec succès.";
-        emailDto.setBody(content);
-        emailService.sendEmail(emailDto);
+
+        Map<String, Object> variables = Map.of(
+                "subject", "Modification de mot de passe",
+                "name", userEvent.getName(),
+                "message", "Votre mot de passe a été modifié avec succès."
+        );
+        emailService.sendEmail(emailDto, variables);
     }
 }

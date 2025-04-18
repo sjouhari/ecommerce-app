@@ -12,6 +12,8 @@ import com.ecommerce.user.repository.UserRepository;
 import com.ecommerce.user.security.JwtTokenProvider;
 import com.ecommerce.user.service.AuthService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,14 +27,28 @@ import java.util.Random;
 import java.util.Set;
 
 @Service
-@AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
+	@Autowired
 	private AuthenticationManager authenticationManager;
+
+	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
 	private ProfilRepository profilRepository;
+
+	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
+
+	@Autowired
 	private KafkaUserProducer kafkaUserConfirmationProducer;
+
+	@Value("${kafka.topic.user.confirmation.name}")
+	private String userConfirmationTopicName;
 
 	@Override
 	public JWTAuthResponse login(LoginDto loginDTO) {
@@ -88,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
 		Random randomCode = new Random();
 		int verificationCode = randomCode.nextInt(900000) + 100000;
 		UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), verificationCode);
-		kafkaUserConfirmationProducer.sendMessage(userEvent, "user-confirmation");
+		kafkaUserConfirmationProducer.sendMessage(userEvent, userConfirmationTopicName);
 
 		user.setEnabled(false);
 		user.setVerificationCode(verificationCode);

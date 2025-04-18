@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email</title>
+    <style>
+        body {
+            background-color: #eeeeee;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #f2f2f2;
+            border: .5px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-decoration: underline;
+        }
+
+        p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 12px 0;
+        }
+
+        .code-container {
+            background-color: #fff8dc;
+            border: 1px solid #f0e68c;
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 6px;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 10px;
+            color: #333;
+        }
+
+        .link {
+            margin-top: 25px;
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 16px;
+            color: white !important;
+            background-color: #28a745;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .link:hover {
+            background-color: #218838;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .signature {
+            font-weight: bold;
+            margin-top: 4px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 th:text="${subject}"></h1>
+
+        <p>Bonjour <span th:text="${name}"></span>,</p>
+
+        <p th:text="${message}"></p>
+
+        <!-- Order Status -->
+        <div th:if="${status != null}">
+            <p style="font-weight: bold; font-size: 18px;">Le nouveau statut de votre commande :</p>
+            <p style="font-weight: bold; font-size: 20px;" class="code-container" th:text="${status}"></p>
+        </div>
+
+        <!-- Code de vérification -->
+        <div th:if="${code != null}">
+            <p style="font-weight: bold; font-size: 18px;">Voici votre code de vérification :</p>
+            <p class="code-container" th:text="${code}"></p>
+        </div>
+
+        <!-- Lien de validation -->
+        <div th:if="${verificationUrl != null}">
+            <p>Veuillez cliquer sur le bouton ci-dessous pour valider votre compte :</p>
+            <a th:href="${verificationUrl}" class="link">Valider mon compte</a>
+        </div>
+
+        <!-- Lien de réinitialisation -->
+        <div th:if="${resetPasswordUrl != null}">
+            <p>Vous pouvez réinitialiser votre mot de passe en cliquant ci-dessous :</p>
+            <a th:href="${resetPasswordUrl}" class="link">Réinitialiser mon mot de passe</a>
+        </div>
+
+        <ul style="list-style: none; padding: 0;">
+            <li th:each="product : ${products}" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                <!-- Using imageUrl as CID reference -->
+                <img th:src="'cid:' + ${product.imageUrl}"
+                     th:alt="${product.name}"
+                     style="height: 80px; vertical-align: middle; margin-right: 15px;"/>
+                <div style="display: inline-block; vertical-align: middle;">
+                    <h3 style="margin: 0 0 5px 0;" th:text="${product.name}"></h3>
+                    <p style="margin: 0; color: #e67e22; font-weight: bold;"
+                       th:text="${product.price} + ' €'"></p>
+                    <p style="margin: 5px 0 0 0; font-size: 0.9em; color: #666;"
+                       th:text="'Quantité disponible : ' + ${product.quantity}"></p>
+                </div>
+            </li>
+        </ul>
+
+
+        <footer>
+            <p>Cordialement,</p>
+            <p class="signature">L’équipe EcomApp</p>
+        </footer>
+    </div>
+</body>
+</html>

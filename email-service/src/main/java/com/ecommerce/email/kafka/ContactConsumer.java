@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class ContactConsumer {
 
@@ -27,15 +29,15 @@ public class ContactConsumer {
 
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(email);
-        emailDto.setSubject("Contact Form Message Received");
-        String message = "Hello Admin,\n\n" +
-                "You have received a new message from " + contactDto.getName() + ".\n\n" +
-                "Email: " + contactDto.getEmail() + "\n\n" +
-                "Subject: " + contactDto.getSubject() + "\n\n" +
-                "Phone: " + contactDto.getPhone() + "\n\n" +
-                "Message: " + contactDto.getMessage();
-        emailDto.setBody(message);
-        emailService.sendEmail(emailDto);
+        emailDto.setSubject("Nouveau contact message");
+
+        Map<String, Object> variables = Map.of(
+                "subject", "Nouveau contact message",
+                "name", "Admin",
+                "message", contactDto.getMessage() + " de " + contactDto.getEmail()
+        );
+
+        emailService.sendEmail(emailDto, variables);
     }
 
 }
