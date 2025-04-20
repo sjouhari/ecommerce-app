@@ -1,5 +1,6 @@
 package com.ecommerce.user.security;
 
+import com.ecommerce.user.dto.CurrentUserDto;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -33,7 +34,7 @@ public class JwtTokenProvider {
 	}
 	
 	// Generate JWT Token
-	public String generateToken(Authentication authentication) {
+	public String generateToken(Authentication authentication, CurrentUserDto currentUserDto) {
 		// Get username from authentication
 		String username = authentication.getName();
 
@@ -51,6 +52,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
 				.subject(username)
 				.claim("roles", roles)
+				.claim("user", currentUserDto)
 				.issuedAt(currentDate)
 				.expiration(expirationDate)
 				.signWith(key())

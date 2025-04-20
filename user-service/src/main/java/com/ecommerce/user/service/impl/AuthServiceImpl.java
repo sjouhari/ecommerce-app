@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -63,26 +64,32 @@ public class AuthServiceImpl implements AuthService {
 					() -> new ResourceNotFoundException("User", "email", loginDTO.getEmail())
 			);
 
-			if(!currentUser.isEnabled()) {
-				throw new RuntimeException("Your account is not verified. Please check your email.");
+			if(!currentUser.isVerified()) {
+				throw new RuntimeException("Votre compte n'a pas encore été verifié. Veuillez verifier votre boite mail.");
 			}
+
+			if(!currentUser.isEnabled()) {
+				throw new RuntimeException("Votre compte a été désactivé. Veuillez contactez l'administrateur.");
+			}
+
+			CurrentUserDto currentUserDto = UserMapper.INSTANCE.userToCurrentUserDto(currentUser);
 			
-			String generatedToken = jwtTokenProvider.generateToken(authentication);
+			String generatedToken = jwtTokenProvider.generateToken(authentication, currentUserDto);
 			
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            return new JWTAuthResponse(generatedToken, UserMapper.INSTANCE.userToUserDto(currentUser));
+            return new JWTAuthResponse(generatedToken);
 		} catch (BadCredentialsException badCredentialsException) {
-			throw new RuntimeException("Username or password incorrect.");
+			throw new RuntimeException("Adresse email ou mot de passe incorrect");
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
 
 	@Override
-	public UserDto register(RegisterDto registerDTO) {
+	public MessageResponseDto register(RegisterDto registerDTO) {
 		if(userRepository.existsByEmail(registerDTO.getEmail())) {
-			throw new RuntimeException("Email already used by another account");
+			throw new RuntimeException("Adresse email deja utilisé par un autre utilisateur.");
 		}
 
 		Set<Profil> profils = new HashSet<>();
@@ -107,8 +114,11 @@ public class AuthServiceImpl implements AuthService {
 		kafkaUserConfirmationProducer.sendMessage(userEvent, userConfirmationTopicName);
 
 		user.setEnabled(false);
+		user.setVerified(false);
 		user.setVerificationCode(verificationCode);
-		return UserMapper.INSTANCE.userToUserDto(userRepository.save(user));
+		user.setVerificationCodeExpireAt(LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+		return new MessageResponseDto("Votre compte a été créé avec success. Veuillez verifier votre boite mail pour confirmer votre compte.");
 	}
 
 }

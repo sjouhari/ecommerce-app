@@ -2,6 +2,7 @@ package com.ecommerce.user.service.impl;
 
 import com.ecommerce.shared.dto.UserEvent;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
+import com.ecommerce.user.dto.MessageResponseDto;
 import com.ecommerce.user.dto.ResetPasswordRequestDto;
 import com.ecommerce.user.dto.UserDto;
 import com.ecommerce.user.entity.User;
@@ -15,7 +16,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -84,13 +87,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String verifyUserEmail(int verificationCode) {
-        User user = userRepository.findByVerificationCode(verificationCode).orElseThrow(
-                () -> new EmailVerificationException("Email not verified. The given code was expired or incorrect.")
-        );
-        user.setEnabled(true);
-        user.setVerificationCode(0);
-        userRepository.save(user);
+        Optional<User> optionalUser = userRepository.findByVerificationCode(verificationCode);
 
+        if(optionalUser.isEmpty()) {
+            throw new EmailVerificationException("Le code de vérification est incorrect.");
+        }
+
+        User user = optionalUser.get();
+
+        if(user.getVerificationCodeExpireAt() != null && user.getVerificationCodeExpireAt().isBefore(LocalDateTime.now())) {
+            throw new EmailVerificationException("Le code de verification a expiré.");
+        }
+
+        user.setEnabled(true);
+        user.setVerified(true);
+        userRepository.save(user);
 
         UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), 0);
         kafkaUserProducer.sendMessage(userEvent, userConfirmedTopicName);
@@ -98,19 +109,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void forgotPassword(String email) {
+    public MessageResponseDto forgotPassword(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new ResourceNotFoundException("User", "email", email)
         );
 
         Random randomCode = new Random();
         int verificationCode = randomCode.nextInt(900000) + 100000;
+
+        user.setVerificationCode(verificationCode);
+        user.setVerificationCodeExpireAt(LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+
         UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), verificationCode);
         kafkaUserProducer.sendMessage(userEvent, userForgotPasswordTopicName);
+        return new MessageResponseDto("Veuillez vérifié votre boite mail pour réinitialiser votre mot de passe.");
     }
 
     @Override
-    public void resetPassword(Long id, ResetPasswordRequestDto resetPasswordRequestDto) {
+    public void updatePassword(Long id, ResetPasswordRequestDto resetPasswordRequestDto) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User", "id", id.toString())
         );
@@ -124,7 +141,6 @@ public class UserServiceImpl implements UserService {
 
         UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), 0);
         kafkaUserProducer.sendMessage(userEvent, userResetPasswordTopicName);
-
     }
 
 }

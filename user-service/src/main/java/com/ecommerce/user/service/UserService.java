@@ -1,5 +1,6 @@
 package com.ecommerce.user.service;
 
+import com.ecommerce.user.dto.MessageResponseDto;
 import com.ecommerce.user.dto.ResetPasswordRequestDto;
 import com.ecommerce.user.dto.UserDto;
 
@@ -21,8 +22,8 @@ public interface UserService {
 
     String verifyUserEmail(int verificationCode);
 
-    void forgotPassword(String email);
+    MessageResponseDto forgotPassword(String email);
 
-    void resetPassword(Long id, ResetPasswordRequestDto resetPasswordRequestDto);
+    void updatePassword(Long id, ResetPasswordRequestDto resetPasswordRequestDto);
 
 }

@@ -1,9 +1,6 @@
 package com.ecommerce.user.controller;
 
-import com.ecommerce.user.dto.JWTAuthResponse;
-import com.ecommerce.user.dto.LoginDto;
-import com.ecommerce.user.dto.RegisterDto;
-import com.ecommerce.user.dto.UserDto;
+import com.ecommerce.user.dto.*;
 import com.ecommerce.user.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +26,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/register")
-	public ResponseEntity<UserDto> register(@RequestBody @Valid RegisterDto registerDTO) {
+	public ResponseEntity<MessageResponseDto> register(@RequestBody @Valid RegisterDto registerDTO) {
 		return new ResponseEntity<>(authService.register(registerDTO), HttpStatus.CREATED);
 	}
 

@@ -45,7 +45,12 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/users/verify").permitAll()
+						.requestMatchers(
+								"/api/auth/login",
+								"/api/auth/register",
+								"/api/users/verify",
+								"/api/users/forgot-password",
+								"/api/users/reset-password").permitAll()
 
 						.requestMatchers(HttpMethod.GET, "/api/profils", "/api/profils/**").hasAuthority("PROFIL_READ")
 						.requestMatchers(HttpMethod.POST, "/api/profils").hasAuthority("PROFIL_CREATE")

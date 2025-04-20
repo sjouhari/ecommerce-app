@@ -1,5 +1,6 @@
 package com.ecommerce.user.controller;
 
+import com.ecommerce.user.dto.MessageResponseDto;
 import com.ecommerce.user.dto.ResetPasswordRequestDto;
 import com.ecommerce.user.dto.UserDto;
 import com.ecommerce.user.service.UserService;
@@ -57,13 +58,13 @@ public class UserController {
     }
 
     @GetMapping("/forgot-password")
-    public void forgotPassword(@RequestParam("email") String email) {
-        userService.forgotPassword(email);
+    public ResponseEntity<MessageResponseDto> forgotPassword(@RequestParam("email") String email) {
+        return ResponseEntity.ok(userService.forgotPassword(email));
     }
 
     @PutMapping("/reset-password/{id}")
-    public void resetPassword(@PathVariable Long id, @RequestBody @Valid ResetPasswordRequestDto resetPasswordRequestDto) {
-        userService.resetPassword(id, resetPasswordRequestDto);
+    public void updatePassword(@PathVariable Long id, @RequestBody @Valid ResetPasswordRequestDto resetPasswordRequestDto) {
+        userService.updatePassword(id, resetPasswordRequestDto);
     }
 
 }

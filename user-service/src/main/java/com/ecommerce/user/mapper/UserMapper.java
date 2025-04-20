@@ -1,5 +1,6 @@
 package com.ecommerce.user.mapper;
 
+import com.ecommerce.user.dto.CurrentUserDto;
 import com.ecommerce.user.dto.RegisterDto;
 import com.ecommerce.user.dto.UserDto;
 import com.ecommerce.user.entity.User;
@@ -23,5 +24,7 @@ public interface UserMapper {
 
     @Mapping(target = "profils", ignore = true)
     User registerDtoToUser(RegisterDto registerDto);
+
+    CurrentUserDto userToCurrentUserDto(User user);
 
 }

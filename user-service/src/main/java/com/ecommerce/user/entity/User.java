@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -23,8 +24,13 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private boolean enabled;
+    private boolean enabled; // account activation
+    private boolean verified; // email verification
     private int verificationCode;
+    private LocalDateTime verificationCodeExpireAt;
+
+    private boolean seller;
+    private String storeName;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_profil",

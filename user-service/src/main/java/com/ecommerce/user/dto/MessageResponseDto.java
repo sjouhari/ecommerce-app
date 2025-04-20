@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class JWTAuthResponse {
-    private String token;
+public class MessageResponseDto {
+    private String message;
 }
