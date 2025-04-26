@@ -1,8 +1,7 @@
 package com.ecommerce.product.enums;
 
 public enum ProductStatus {
-    ACTIVE,
-    INACTIVE,
-    AVAILABLE,
-    UNAVAILABLE
+    NEW,
+    OLD,
+    REFURBISHED
 }
