@@ -18,6 +18,8 @@ public class Feature {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String libelle; // Ex: Ajouter un utilisateur, Supprimer un utilisateur, Modifier un utilisateur, ...
+
     @Column(nullable = false)
     private String resourceName; // Ex: USER, PRODUCT, CATEGORY, ...
 
