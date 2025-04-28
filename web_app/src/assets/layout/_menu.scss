@@ -66,7 +66,7 @@
             outline: 0 none;
             color: var(--text-color);
             cursor: pointer;
-            padding: 0.75rem 1rem;
+            padding: 1rem;
             border-radius: var(--content-border-radius);
             transition:
                 background-color var(--element-transition-duration),
@@ -74,10 +74,11 @@
 
             .layout-menuitem-icon {
                 margin-right: 0.5rem;
+                font-size: 1.5rem;
             }
 
             .layout-submenu-toggler {
-                font-size: 75%;
+                font-size: 90%;
                 margin-left: auto;
                 transition: transform var(--element-transition-duration);
             }

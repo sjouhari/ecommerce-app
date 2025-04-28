@@ -35,7 +35,7 @@ export class CustomerService {
                 },
                 company: 'Benton, John B Jr',
                 date: '2015-09-13',
-                status: 'unqualified',
+                status: 'Active',
                 verified: true,
                 activity: 17,
                 representative: {
@@ -53,7 +53,7 @@ export class CustomerService {
                 },
                 company: 'Chanay, Jeffrey A Esq',
                 date: '2019-02-09',
-                status: 'negotiation',
+                status: 'Inactive',
                 verified: true,
                 activity: 0,
                 representative: {
