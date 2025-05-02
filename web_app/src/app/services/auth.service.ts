@@ -3,8 +3,8 @@ import { ForgotPasswordRequest } from './../models/auth/forgot-password.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LoginRequest, LoginResponse } from '../models/login.model';
-import { RegisterRequest, RegisterResponse } from '../models/register.model';
+import { LoginRequest, LoginResponse } from '../models/auth/login.model';
+import { RegisterRequest, RegisterResponse } from '../models/auth/register.model';
 import { ForgotPasswordResponse } from '../models/auth/forgot-password.model';
 
 @Injectable({

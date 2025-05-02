@@ -55,9 +55,9 @@
                 Sous Catégorie
                 <p-sortIcon field="category" />
             </th>
-            <th pSortableColumn="inventoryStatus" style="min-width: 12rem">
+            <th pSortableColumn="status" style="min-width: 12rem">
                 Statut
-                <p-sortIcon field="inventoryStatus" />
+                <p-sortIcon field="status" />
             </th>
             <th style="min-width: 7rem"></th>
         </tr>
@@ -75,7 +75,7 @@
             <td>{{ product.price | currency: 'USD' }}</td>
             <td>{{ product.category }}</td>
             <td>
-                <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product.inventoryStatus)" />
+                <p-tag [value]="product.status" [severity]="getSeverity(product.status)" />
             </td>
             <td>
                 <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editProduct(product)" />
@@ -87,64 +87,30 @@
 
 <p-dialog [(visible)]="productDialog" [style]="{ width: '600px' }" header="Détail du produit" [modal]="true">
     <ng-template #content>
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-3">
             <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.image" class="block m-auto pb-4" *ngIf="product.image" />
             <div>
-                <label for="name" class="block font-bold mb-3">Nom</label>
+                <label for="name" class="block font-bold mb-2">Nom</label>
                 <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus fluid />
-                <small class="text-red-500" *ngIf="submitted && !product.name">Nom est obligatoire</small>
+                <small class="text-red-500" *ngIf="submitted && !product.name">Name is required.</small>
             </div>
             <div>
-                <label for="description" class="block font-bold mb-3">Description</label>
+                <label for="description" class="block font-bold mb-2">Description</label>
                 <textarea id="description" pTextarea [(ngModel)]="product.description" required rows="3" cols="20" fluid></textarea>
             </div>
 
             <div>
-                <label for="inventoryStatus" class="block font-bold mb-3">Statut</label>
-                <p-select [(ngModel)]="product.inventoryStatus" inputId="inventoryStatus" [options]="statuses" optionLabel="label" optionValue="label" placeholder="Select a Status" fluid />
+                <label for="status" class="block font-bold mb-2">Statut</label>
+                <p-select [(ngModel)]="product.status" inputId="status" [options]="statuses" optionLabel="label" optionValue="label" placeholder="Select a Status" fluid />
             </div>
 
             <div>
                 <span class="block font-bold mb-4">Catégorie</span>
-                <div class="grid grid-cols-12 gap-4">
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category1" name="category" value="Accessories" [(ngModel)]="product.category" />
-                        <label for="category1">Accessories</label>
-                    </div>
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category2" name="category" value="Clothing" [(ngModel)]="product.category" />
-                        <label for="category2">Clothing</label>
-                    </div>
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category3" name="category" value="Electronics" [(ngModel)]="product.category" />
-                        <label for="category3">Electronics</label>
-                    </div>
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category4" name="category" value="Fitness" [(ngModel)]="product.category" />
-                        <label for="category4">Fitness</label>
-                    </div>
-                </div>
-            </div>
-            
-            <div>
-                <span class="block font-bold mb-4">Sous Catégorie</span>
-                <div class="grid grid-cols-12 gap-4">
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category1" name="category" value="Accessories" [(ngModel)]="product.category" />
-                        <label for="category1">Accessories</label>
-                    </div>
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category2" name="category" value="Clothing" [(ngModel)]="product.category" />
-                        <label for="category2">Clothing</label>
-                    </div>
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category3" name="category" value="Electronics" [(ngModel)]="product.category" />
-                        <label for="category3">Electronics</label>
-                    </div>
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category4" name="category" value="Fitness" [(ngModel)]="product.category" />
-                        <label for="category4">Fitness</label>
-                    </div>
+                <div class="grid grid-cols-12 gap-4 mb-2">
+                    @for (category of categories; track category.id) {
+                        <p-radiobutton [inputId]="category.id" name="category" [value]="category" />
+                        <label [for]="category.id" class="ml-2">{{ category.name }}</label>
+                    }
                 </div>
             </div>
 

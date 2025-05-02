@@ -5,7 +5,7 @@ export interface Product {
     description?: string;
     price?: number;
     quantity?: number;
-    inventoryStatus?: string;
+    status?: string;
     category?: string;
     image?: string;
     rating?: number;

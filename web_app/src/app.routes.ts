@@ -10,6 +10,10 @@ import { ForgotPasswordComponent } from './app/pages/auth/forgot-password/forgot
 import { authGuard } from './app/guards/auth.guard';
 import { ProductsComponent } from './app/pages/products/products.component';
 import { UsersComponent } from './app/pages/users/users.component';
+import { CategoriesComponent } from './app/pages/categories/categories.component';
+import { SubCategoriesComponent } from './app/pages/subcategories/sub-categories.component';
+import { ProfilsComponent } from './app/pages/profils/profils.component';
+import { SizesComponent } from './app/pages/sizes/sizes.component';
 
 export const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -27,9 +31,9 @@ export const appRoutes: Routes = [
             { path: 'inventory', component: Crud },
 
             // Categories
-            { path: 'categories', component: Crud },
-            { path: 'subcategories', component: Crud },
-            { path: 'sizes', component: Crud },
+            { path: 'categories', component: CategoriesComponent },
+            { path: 'subcategories', component: SubCategoriesComponent },
+            { path: 'sizes', component: SizesComponent },
 
             // Commandes
             { path: 'orders', component: Crud },
@@ -43,7 +47,7 @@ export const appRoutes: Routes = [
             { path: 'vendors', component: Crud },
 
             // Permissions et rôles
-            { path: 'roles', component: Crud },
+            { path: 'roles', component: ProfilsComponent },
             { path: 'features', component: Crud },
 
             // Promotions

@@ -1,7 +1,7 @@
 package com.ecommerce.product.enums;
 
 public enum ProductStatus {
-    NEW,
-    OLD,
-    REFURBISHED
+    NOUVEAU,
+    OCCASION,
+    REMIS_A_NEUF
 }

@@ -7,7 +7,8 @@ import { OrderListModule } from 'primeng/orderlist';
 import { PickListModule } from 'primeng/picklist';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TagModule } from 'primeng/tag';
-import { Product, ProductService } from '../../services/product.service';
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../models/product.model';
 
 @Component({
     selector: 'app-list-demo',
@@ -194,7 +195,7 @@ export class ListDemo {
     }
 
     getSeverity(product: Product) {
-        switch (product.inventoryStatus) {
+        switch (product.status) {
             case 'INSTOCK':
                 return 'success';
 

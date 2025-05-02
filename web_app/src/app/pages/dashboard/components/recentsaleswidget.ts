@@ -1,3 +1,4 @@
+import { $t } from '@primeng/themes';
 import { Component } from '@angular/core';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
@@ -38,11 +39,9 @@ import { Product } from '../../../models/product.model';
     providers: [ProductService]
 })
 export class RecentSalesWidget {
-    products!: Product[];
+    products: Product[] = [];
 
     constructor(private productService: ProductService) {}
 
-    ngOnInit() {
-        this.productService.getProductsSmall().then((data) => (this.products = data));
-    }
+    ngOnInit() {}
 }

@@ -114,9 +114,9 @@ interface ExportColumn {
                         Reviews
                         <p-sortIcon field="rating" />
                     </th>
-                    <th pSortableColumn="inventoryStatus" style="min-width: 12rem">
+                    <th pSortableColumn="status" style="min-width: 12rem">
                         Status
-                        <p-sortIcon field="inventoryStatus" />
+                        <p-sortIcon field="status" />
                     </th>
                     <th style="min-width: 12rem"></th>
                 </tr>
@@ -137,7 +137,7 @@ interface ExportColumn {
                         <p-rating [(ngModel)]="product.rating" [readonly]="true" />
                     </td>
                     <td>
-                        <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product.inventoryStatus)" />
+                        <p-tag [value]="product.status" [severity]="getSeverity(product.status)" />
                     </td>
                     <td>
                         <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editProduct(product)" />
@@ -162,8 +162,8 @@ interface ExportColumn {
                     </div>
 
                     <div>
-                        <label for="inventoryStatus" class="block font-bold mb-3">Inventory Status</label>
-                        <p-select [(ngModel)]="product.inventoryStatus" inputId="inventoryStatus" [options]="statuses" optionLabel="label" optionValue="label" placeholder="Select a Status" fluid />
+                        <label for="status" class="block font-bold mb-3">Inventory Status</label>
+                        <p-select [(ngModel)]="product.status" inputId="status" [options]="statuses" optionLabel="label" optionValue="label" placeholder="Select a Status" fluid />
                     </div>
 
                     <div>
@@ -245,10 +245,6 @@ export class Crud implements OnInit {
     }
 
     loadDemoData() {
-        this.productService.getProducts().then((data) => {
-            this.products.set(data);
-        });
-
         this.statuses = [
             { label: 'INSTOCK', value: 'instock' },
             { label: 'LOWSTOCK', value: 'lowstock' },

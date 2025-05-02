@@ -1,0 +1,40 @@
+<div class="card p-0">
+    @if(multiple()) {
+        <label for="images" class="block font-bold mb-2">Images</label>
+    } @else {
+        <label for="images" class="block font-bold mb-2">Image</label>
+    }
+    <p-fileupload name="images[]" [multiple]="multiple" accept="image/*" (onSelect)="onSelectedFiles($event)">
+        <ng-template #header let-files let-chooseCallback="chooseCallback" let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">
+            <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
+                <div class="flex gap-2">
+                    <p-button (onClick)="choose($event, chooseCallback)" icon="pi pi-images" [rounded]="true" [outlined]="true" />
+                    <p-button (onClick)="clearCallback()" icon="pi pi-times" [rounded]="true" [outlined]="true" severity="danger" [disabled]="!files || files.length === 0" />
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template #content let-files let-uploadedFiles="uploadedFiles" let-removeFileCallback="removeFileCallback" let-removeUploadedFileCallback="removeUploadedFileCallback">
+            <div class="flex flex-col gap-8 pt-2">
+                <div *ngIf="files?.length > 0">
+                    <div class="flex flex-wrap gap-4">
+                        <div *ngFor="let file of files; let i = index" class="p-3 rounded-border flex flex-col border border-surface items-center gap-4">
+                            <div>
+                                <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                            </div>
+                            <div>{{ formatSize(file.size) }}</div>
+                            <p-button icon="pi pi-times" (click)="onRemoveTemplatingFile($event, file, removeFileCallback, i)" [outlined]="true" [rounded]="true" severity="danger" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #file></ng-template>
+        <ng-template #empty>
+            <div class="flex items-center justify-center flex-col">
+                <i class="pi pi-cloud-upload !border-2 !rounded-full !p-8 !text-4xl !text-muted-color"></i>
+                <p class="mt-6 mb-0">Faites glisser et déposez des fichiers ici pour les télécharger.</p>
+            </div>
+        </ng-template>
+    </p-fileupload>
+</div>

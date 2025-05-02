@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
@@ -39,6 +39,7 @@ interface ExportColumn {
         CommonModule,
         TableModule,
         FormsModule,
+        ReactiveFormsModule,
         ButtonModule,
         RippleModule,
         ToastModule,
@@ -62,6 +63,9 @@ export class ProductsComponent implements OnInit {
     productDialog: boolean = false;
 
     productService = inject(ProductService);
+    messageService = inject(MessageService);
+    confirmationService = inject(ConfirmationService);
+    formBuilder = inject(FormBuilder);
 
     products = signal<Product[]>([]);
 
@@ -72,6 +76,7 @@ export class ProductsComponent implements OnInit {
     submitted: boolean = false;
 
     statuses!: any[];
+    categories!: any[];
 
     @ViewChild('dt') dt!: Table;
 
@@ -79,24 +84,29 @@ export class ProductsComponent implements OnInit {
 
     cols!: Column[];
 
-    constructor(
-        private messageService: MessageService,
-        private confirmationService: ConfirmationService
-    ) {}
+    productFormGroup!: FormGroup;
+
+    ngOnInit() {
+        this.loadDemoData();
+        this.productFormGroup = this.formBuilder.group({
+            name: new FormControl('', [Validators.required]),
+            description: new FormControl('', [Validators.required]),
+            status: new FormControl('', [Validators.required]),
+            subCategory: new FormControl('', [Validators.required])
+        });
+
+        this.categories = [
+            { id: 1, name: 'Catégorie 1' },
+            { id: 2, name: 'Catégorie 2' },
+            { id: 3, name: 'Catégorie 3' }
+        ];
+    }
 
     exportCSV() {
         this.dt.exportCSV();
     }
 
-    ngOnInit() {
-        this.loadDemoData();
-    }
-
     loadDemoData() {
-        this.productService.getProducts().then((data) => {
-            this.products.set(data);
-        });
-
         this.statuses = [
             { label: 'NOUVEAU', value: 'NEW' },
             { label: 'ANCIEN', value: 'OLD' },

@@ -1,0 +1,101 @@
+<p-toolbar styleClass="mb-3">
+    <ng-template #start>
+        <p-button label="Nouveau" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Supprimer" icon="pi pi-trash" outlined (onClick)="deleteSelectedSubCategories()" [disabled]="!selectedCategories || !selectedCategories.length" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="subCategories()"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['name', 'description']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedCategories"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Affichage {first} to {last} of {totalRecords} products"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30, 40, 50]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Gestion des catégories</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <!-- <th>Image</th> -->
+            <th pSortableColumn="name" style="min-width:16rem">
+                Nom
+                <p-sortIcon field="name" />
+            </th>
+            <th pSortableColumn="name" style="min-width:16rem">
+                Description
+                <p-sortIcon field="name" />
+            </th>
+            <th>Catégorie</th>
+            <th style="min-width: 7rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-category>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="category" />
+            </td>
+            <!-- <td>
+                <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + category.image" [alt]="category.name" style="width: 64px" class="rounded" />
+            </td> -->
+            <td style="min-width: 16rem">{{ category.name }}</td>
+            <td style="min-width: 16rem">{{ category.description }}</td>
+            <td style="min-width: 16rem">{{ category.categoryId }}</td>
+            <td>
+                <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editSubCategory(category)" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteSubCategory(category)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="categoryDialog" [style]="{ width: '600px' }" header="Catégorie" [modal]="true">
+        <ng-template #content>
+            <form [formGroup]="subCategoryFormGroup" (ngSubmit)="saveSubCategory()" class="flex flex-col gap-3 mt-4">
+                <label for="name" class="block font-bold mb-2">Category</label>
+                <div>
+                    @for(category of categories(); track category.id) {
+                        <div class="flex items-center mb-3">
+                            <p-radiobutton formControlName="categoryId" [value]="category.id" inputId="ingredient1" />
+                            <label for="ingredient1" class="ml-2">{{ category.name }}</label>
+                        </div>
+                    }
+                </div>
+                <div>
+                    <label for="name" class="block font-bold mb-2">Nom</label>
+                    <input type="text" pInputText id="name" formControlName="name" required autofocus fluid />
+                    <small class="text-red-500" *ngIf="submitted">Name is required.</small>
+                </div>
+                <div>
+                    <label for="description" class="block font-bold mb-2">Description</label>
+                    <textarea id="description" pTextarea formControlName="description" rows="3" cols="20" fluid></textarea>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <p-button type="button" label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+                    <p-button type="submit" label="Save" icon="pi pi-check" />
+                </div>
+            </form>
+        </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />
