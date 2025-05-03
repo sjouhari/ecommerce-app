@@ -85,46 +85,66 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="productDialog" [style]="{ width: '600px' }" header="Détail du produit" [modal]="true">
+<p-dialog [(visible)]="productDialog" [style]="{ width: '80%', padding: '1.5rem' }" header="Détail du produit" [modal]="true">
     <ng-template #content>
-        <div class="flex flex-col gap-3">
-            <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.image" class="block m-auto pb-4" *ngIf="product.image" />
-            <div>
-                <label for="name" class="block font-bold mb-2">Nom</label>
-                <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus fluid />
-                <small class="text-red-500" *ngIf="submitted && !product.name">Name is required.</small>
+        <form [formGroup]="productFormGroup" class="flex flex-col gap-3">
+            <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/'" [alt]="" class="block m-auto pb-4" *ngIf="" />
+            <div class="grid grid-cols-12 gap-4 mt-5">
+                <div class="col-span-6">
+                    <label for="name" class="block font-bold mb-2">Nom</label>
+                    <input type="text" pInputText id="name" formControlName="name" required autofocus fluid />
+                    <small class="text-red-500" *ngIf="submitted">Name is required.</small>
+                </div>
+                <div class="col-span-6">
+                    <label for="status" class="block font-bold mb-2">Statut</label>
+                    <p-select inputId="status" [options]="statuses" formControlName="status" optionLabel="label" optionValue="label" placeholder="Select a Status" fluid />
+                </div>
             </div>
             <div>
                 <label for="description" class="block font-bold mb-2">Description</label>
-                <textarea id="description" pTextarea [(ngModel)]="product.description" required rows="3" cols="20" fluid></textarea>
+                <textarea id="description" pTextarea formControlName="description" required rows="3" cols="20" fluid></textarea>
             </div>
 
             <div>
-                <label for="status" class="block font-bold mb-2">Statut</label>
-                <p-select [(ngModel)]="product.status" inputId="status" [options]="statuses" optionLabel="label" optionValue="label" placeholder="Select a Status" fluid />
+                <span class="block font-bold mb-4">Sous Catégorie</span>
+                <div class="grid grid-cols-12 gap-5">
+                    @for(subCategory of subCategories(); track subCategory.id) {
+                        <div class="flex items-center mb-3">
+                            <p-radiobutton formControlName="subCategoryId" [value]="subCategory.id" [inputId]="subCategory.id + ''" />
+                            <label for="ingredient1" class="ml-2">{{ subCategory.name }}</label>
+                        </div>
+                    }
+                </div>
             </div>
-
+            
             <div>
-                <span class="block font-bold mb-4">Catégorie</span>
-                <div class="grid grid-cols-12 gap-4 mb-2">
-                    @for (category of categories; track category.id) {
-                        <p-radiobutton [inputId]="category.id" name="category" [value]="category" />
-                        <label [for]="category.id" class="ml-2">{{ category.name }}</label>
+                <span class="block font-bold mb-4">Tailles</span>
+                <div class="grid grid-cols-12 gap-5">
+                    @for(subCategory of subCategories(); track subCategory.id) {
+                        <div class="flex items-center mb-3">
+                            <p-radiobutton formControlName="subCategoryId" [value]="subCategory.id" inputId="ingredient1" />
+                            <label for="ingredient1" class="ml-2">{{ subCategory.name }}</label>
+                        </div>
                     }
                 </div>
             </div>
 
+            <span class="block font-bold mb-4">Stock</span>
             <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-6">
-                    <label for="price" class="block font-bold mb-3">Price</label>
-                    <p-inputnumber id="price" [(ngModel)]="product.price" mode="currency" currency="USD" locale="en-US" fluid />
+                <div class="col-span-4">
+                    <label for="price" class="block font-bold mb-3">Color</label>
+                    <p-inputnumber id="price" mode="currency" currency="USD" locale="en-US" fluid />
                 </div>
-                <div class="col-span-6">
+                <div class="col-span-4">
+                    <label for="price" class="block font-bold mb-3">Price</label>
+                    <p-inputnumber id="price" mode="currency" currency="USD" locale="en-US" fluid />
+                </div>
+                <div class="col-span-4">
                     <label for="quantity" class="block font-bold mb-3">Quantity</label>
-                    <p-inputnumber id="quantity" [(ngModel)]="product.quantity" fluid />
+                    <p-inputnumber id="quantity" fluid />
                 </div>
             </div>
-        </div>
+        </form>
     </ng-template>
 
     <ng-template #footer>

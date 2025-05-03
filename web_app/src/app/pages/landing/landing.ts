@@ -4,12 +4,12 @@ import { RippleModule } from 'primeng/ripple';
 import { StyleClassModule } from 'primeng/styleclass';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
-import { TopbarWidget } from './components/topbarwidget.component';
-import { HeroWidget } from './components/herowidget';
+import { TopbarWidget } from '../home/components/topbarwidget.component';
+import { HeroWidget } from '../home/components/herowidget';
 import { FeaturesWidget } from './components/featureswidget';
 import { HighlightsWidget } from './components/highlightswidget';
 import { PricingWidget } from './components/pricingwidget';
-import { FooterWidget } from './components/footerwidget';
+import { FooterWidget } from '../home/components/footerwidget';
 
 @Component({
     selector: 'app-landing',

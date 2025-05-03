@@ -1,4 +1,4 @@
-import { User } from './../models/user.model';
+import { User } from '../models/user/user.model';
 import { ForgotPasswordRequest } from './../models/auth/forgot-password.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';

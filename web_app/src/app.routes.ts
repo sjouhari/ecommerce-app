@@ -14,6 +14,8 @@ import { CategoriesComponent } from './app/pages/categories/categories.component
 import { SubCategoriesComponent } from './app/pages/subcategories/sub-categories.component';
 import { ProfilsComponent } from './app/pages/profils/profils.component';
 import { SizesComponent } from './app/pages/sizes/sizes.component';
+import { FeaturesComponent } from './app/pages/features/features.component';
+import { HomeComponent } from './app/pages/home/home.component';
 
 export const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -48,7 +50,7 @@ export const appRoutes: Routes = [
 
             // Permissions et rôles
             { path: 'roles', component: ProfilsComponent },
-            { path: 'features', component: Crud },
+            { path: 'features', component: FeaturesComponent },
 
             // Promotions
             { path: 'coupons', component: Crud },
@@ -63,7 +65,7 @@ export const appRoutes: Routes = [
             { path: 'settings', component: Crud }
         ]
     },
-    { path: 'landing', component: Landing },
+    { path: 'landing', component: HomeComponent },
     { path: 'notfound', component: Notfound },
     { path: '**', redirectTo: '/notfound' }
 ];

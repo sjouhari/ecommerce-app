@@ -21,17 +21,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Category } from '../../models/category/category.model';
 import { CategoryService } from '../../services/category.service';
 
-interface Column {
-    field: string;
-    header: string;
-    customExportHeader?: string;
-}
-
-interface ExportColumn {
-    title: string;
-    dataKey: string;
-}
-
 @Component({
     selector: 'app-categories',
     standalone: true,
@@ -70,21 +59,18 @@ export class CategoriesComponent implements OnInit {
     formBuilder = inject(FormBuilder);
 
     categories = signal<Category[]>([]);
+    loading = signal(false);
 
     selectedCategories!: Category[] | null;
 
-    submitted: boolean = false;
-
-    statuses!: any[];
-
     @ViewChild('dt') dt!: Table;
-
-    exportColumns!: ExportColumn[];
-
-    cols!: Column[];
 
     ngOnInit() {
         this.init();
+    }
+
+    get formControls() {
+        return this.categoryFormGroup.controls;
     }
 
     init() {
@@ -92,6 +78,9 @@ export class CategoriesComponent implements OnInit {
         this.categoryService.getCategories().subscribe({
             next: (categories) => {
                 this.categories.set(categories);
+            },
+            error: (error) => {
+                console.log(error);
             }
         });
     }
@@ -104,17 +93,12 @@ export class CategoriesComponent implements OnInit {
         });
     }
 
-    exportCSV() {
-        this.dt.exportCSV();
-    }
-
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
 
     openNew() {
         this.initCategoryFormGroup();
-        this.submitted = false;
         this.categoryDialog = true;
     }
 
@@ -125,15 +109,16 @@ export class CategoriesComponent implements OnInit {
 
     deleteSelectedCategories() {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete the selected products?',
-            header: 'Confirm',
+            message: 'Êtes-vous sûr de vouloir supprimer les catégories sélectionnées ? Toutes les sous catégories et leurs tailles seront supprimées. Cette action est irréversible.',
+            header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
+                this.selectedCategories?.forEach((category) => this.onDeleteCategory(category));
                 this.selectedCategories = null;
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Products Deleted',
+                    summary: 'Suppression de catégories',
+                    detail: 'Les catégories sont supprimé avec succès.',
                     life: 3000
                 });
             }
@@ -142,26 +127,31 @@ export class CategoriesComponent implements OnInit {
 
     hideDialog() {
         this.categoryDialog = false;
-        this.submitted = false;
     }
 
     deleteCategory(category: Category) {
         this.confirmationService.confirm({
-            message: 'Êtes-vous sûr de vouloir supprimer la catégorie ' + category.name + ' ?',
+            message: 'Êtes-vous sûr de vouloir supprimer la catégorie ' + category.name + ' ? Toutes les sous catégories et leurs tailles seront supprimées. Cette action est irréversible.',
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.categoryService.deleteCategory(category!.id!).subscribe({
-                    next: () => {
-                        this.categories.update((categories) => categories.filter((val) => val.id !== category!.id));
-                    }
-                });
+            accept: () => this.onDeleteCategory(category)
+        });
+    }
+
+    onDeleteCategory(category: Category) {
+        this.categoryService.deleteCategory(category!.id!).subscribe({
+            next: () => {
+                console.log(category);
+                this.categories.update((categories) => categories.filter((val) => val.id !== category!.id));
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Successful',
                     detail: 'Category Deleted',
                     life: 3000
                 });
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
             }
         });
     }
@@ -171,6 +161,7 @@ export class CategoriesComponent implements OnInit {
             return;
         }
 
+        this.loading.set(true);
         if (this.categoryFormGroup.value.id === null) {
             this.categoryService.createCategory(this.categoryFormGroup.value).subscribe({
                 next: (category) => {
@@ -182,7 +173,11 @@ export class CategoriesComponent implements OnInit {
                         life: 3000
                     });
                     this.categoryDialog = false;
+                    this.loading.set(false);
                     this.categoryFormGroup.reset();
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
                 }
             });
         } else {
@@ -196,7 +191,11 @@ export class CategoriesComponent implements OnInit {
                         life: 3000
                     });
                     this.categoryDialog = false;
+                    this.loading.set(false);
                     this.categoryFormGroup.reset();
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
                 }
             });
         }

@@ -18,7 +18,7 @@ import { TagModule } from 'primeng/tag';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { Profil } from '../../models/role.model';
+import { Profil } from '../../models/user/role.model';
 import { ProfilService } from '../../services/profil.service';
 import { PickListModule } from 'primeng/picklist';
 

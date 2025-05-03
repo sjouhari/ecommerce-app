@@ -14,6 +14,9 @@ public class FeatureDto {
 
     private Long id;
 
+    @NotBlank(message = "Libelle is required")
+    private String libelle;
+
     @NotBlank(message = "Resource name is required")
     private String resourceName;
 

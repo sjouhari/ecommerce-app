@@ -48,9 +48,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public String deleteCategory(Long id) {
+    public void deleteCategory(Long id) {
         getCategoryById(id);
         categoryRepository.deleteById(id);
-        return "Category deleted successfully";
     }
 }

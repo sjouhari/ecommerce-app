@@ -19,7 +19,9 @@ import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProductService } from '../../services/product.service';
-import { Product } from '../../models/product.model';
+import { Product } from '../../models/product/product.model';
+import { SubCategory } from '../../models/category/sub-category.model';
+import { SubCategoryService } from '../../services/sub-category.service';
 
 interface Column {
     field: string;
@@ -63,20 +65,21 @@ export class ProductsComponent implements OnInit {
     productDialog: boolean = false;
 
     productService = inject(ProductService);
+    subCategoryService = inject(SubCategoryService);
     messageService = inject(MessageService);
     confirmationService = inject(ConfirmationService);
+
     formBuilder = inject(FormBuilder);
+    productFormGroup!: FormGroup;
 
     products = signal<Product[]>([]);
-
-    product!: Product;
 
     selectedProducts!: Product[] | null;
 
     submitted: boolean = false;
 
     statuses!: any[];
-    categories!: any[];
+    subCategories = signal<SubCategory[]>([]);
 
     @ViewChild('dt') dt!: Table;
 
@@ -84,22 +87,25 @@ export class ProductsComponent implements OnInit {
 
     cols!: Column[];
 
-    productFormGroup!: FormGroup;
-
     ngOnInit() {
         this.loadDemoData();
-        this.productFormGroup = this.formBuilder.group({
-            name: new FormControl('', [Validators.required]),
-            description: new FormControl('', [Validators.required]),
-            status: new FormControl('', [Validators.required]),
-            subCategory: new FormControl('', [Validators.required])
-        });
+        this.initProductFormGroup();
 
-        this.categories = [
-            { id: 1, name: 'Catégorie 1' },
-            { id: 2, name: 'Catégorie 2' },
-            { id: 3, name: 'Catégorie 3' }
-        ];
+        this.subCategoryService.getSubCategories().subscribe({
+            next: (subCategories) => {
+                this.subCategories.set(subCategories);
+            }
+        });
+    }
+
+    initProductFormGroup(product?: Product) {
+        this.productFormGroup = this.formBuilder.group({
+            // id: new FormControl(product?.id || null),
+            name: new FormControl(product?.name || '', [Validators.required]),
+            description: new FormControl(product?.description || '', [Validators.required]),
+            status: new FormControl(product?.status || '', [Validators.required]),
+            subCategoryId: new FormControl(product?.subCategoryId || '', [Validators.required])
+        });
     }
 
     exportCSV() {
@@ -108,9 +114,9 @@ export class ProductsComponent implements OnInit {
 
     loadDemoData() {
         this.statuses = [
-            { label: 'NOUVEAU', value: 'NEW' },
-            { label: 'ANCIEN', value: 'OLD' },
-            { label: 'REMIS A NEUF', value: 'REFURBISHED' }
+            { label: 'Nouveau', value: 'NOUVEAU' },
+            { label: 'Occasion', value: 'OCCASION' },
+            { label: 'Remis à neuf', value: 'REMIS_A_NEUF' }
         ];
 
         this.cols = [
@@ -129,13 +135,10 @@ export class ProductsComponent implements OnInit {
     }
 
     openNew() {
-        this.product = {};
-        this.submitted = false;
         this.productDialog = true;
     }
 
     editProduct(product: Product) {
-        this.product = { ...product };
         this.productDialog = true;
     }
 
@@ -169,7 +172,6 @@ export class ProductsComponent implements OnInit {
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.products.set(this.products().filter((val) => val.id !== product.id));
-                this.product = {};
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Successful',
@@ -192,22 +194,13 @@ export class ProductsComponent implements OnInit {
         return index;
     }
 
-    createId(): string {
-        let id = '';
-        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (var i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    }
-
     getSeverity(status: string) {
         switch (status) {
             case 'NOUVEAU':
                 return 'success';
-            case 'REMIS A NEUF':
+            case 'REMIS_A_NEUF':
                 return 'warn';
-            case 'ANCIEN':
+            case 'OCCASION':
                 return 'danger';
             default:
                 return 'info';
@@ -217,9 +210,8 @@ export class ProductsComponent implements OnInit {
     saveProduct() {
         this.submitted = true;
         let _products = this.products();
-        if (this.product.name?.trim()) {
-            if (this.product.id) {
-                _products[this.findIndexById(this.product.id)] = this.product;
+        if (true) {
+            if (true) {
                 this.products.set([..._products]);
                 this.messageService.add({
                     severity: 'success',
@@ -228,19 +220,9 @@ export class ProductsComponent implements OnInit {
                     life: 3000
                 });
             } else {
-                this.product.id = this.createId();
-                this.product.image = 'product-placeholder.svg';
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Product Created',
-                    life: 3000
-                });
-                this.products.set([..._products, this.product]);
             }
 
             this.productDialog = false;
-            this.product = {};
         }
     }
 }

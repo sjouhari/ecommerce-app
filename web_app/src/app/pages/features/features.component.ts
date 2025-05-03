@@ -1,4 +1,3 @@
-import { Size } from './../../models/category/size.model';
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
@@ -19,23 +18,11 @@ import { TagModule } from 'primeng/tag';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { SubCategoryService } from '../../services/sub-category.service';
-import { SizeService } from '../../services/size.service';
-import { SubCategory } from '../../models/category/sub-category.model';
-
-interface Column {
-    field: string;
-    header: string;
-    customExportHeader?: string;
-}
-
-interface ExportColumn {
-    title: string;
-    dataKey: string;
-}
+import { Feature } from '../../models/user/feature.model';
+import { FeatureService } from '../../services/feature.service';
 
 @Component({
-    selector: 'app-sizes',
+    selector: 'app-features',
     standalone: true,
     imports: [
         CommonModule,
@@ -58,57 +45,41 @@ interface ExportColumn {
         IconFieldModule,
         ConfirmDialogModule
     ],
-    templateUrl: 'sizes.component.html',
+    templateUrl: 'features.component.html',
     providers: [MessageService, ConfirmationService]
 })
-export class SizesComponent implements OnInit {
-    sizeDialog: boolean = false;
+export class FeaturesComponent implements OnInit {
+    featureDialog: boolean = false;
 
-    sizeFormGroup!: FormGroup;
+    featureFormGroup!: FormGroup;
 
-    sizeService = inject(SizeService);
-    subCategoryService = inject(SubCategoryService);
+    featureService = inject(FeatureService);
     messageService = inject(MessageService);
     confirmationService = inject(ConfirmationService);
     formBuilder = inject(FormBuilder);
 
-    sizes = signal<Size[]>([]);
+    features = signal<Feature[]>([]);
 
-    selectedSizes!: Size[] | null;
+    selectedFeatures!: Feature[] | null;
 
     @ViewChild('dt') dt!: Table;
 
-    exportColumns!: ExportColumn[];
-
-    cols!: Column[];
-
-    subCategories = signal<SubCategory[]>([]);
-
     ngOnInit() {
-        this.initSizeFormGroup();
-        this.sizeService.getSizes().subscribe({
-            next: (sizes) => {
-                this.sizes.set(sizes);
-            }
-        });
-
-        this.subCategoryService.getSubCategories().subscribe({
-            next: (subCategories) => {
-                this.subCategories.set(subCategories);
+        this.initFeatureFormGroup();
+        this.featureService.getFeatures().subscribe({
+            next: (features) => {
+                this.features.set(features);
             }
         });
     }
 
-    initSizeFormGroup(size?: Size) {
-        this.sizeFormGroup = this.formBuilder.group({
-            id: new FormControl(size?.id || null),
-            libelle: new FormControl(size?.libelle || '', [Validators.required]),
-            subCategoryId: new FormControl(size?.subCategoryId || '', [Validators.required])
+    initFeatureFormGroup(feature?: Feature) {
+        this.featureFormGroup = this.formBuilder.group({
+            id: new FormControl(feature?.id || null),
+            libelle: new FormControl(feature?.libelle || '', [Validators.required]),
+            resourceName: new FormControl(feature?.resourceName || '', [Validators.required]),
+            action: new FormControl(feature?.action || '', [Validators.required])
         });
-    }
-
-    exportCSV() {
-        this.dt.exportCSV();
     }
 
     onGlobalFilter(table: Table, event: Event) {
@@ -116,22 +87,22 @@ export class SizesComponent implements OnInit {
     }
 
     openNew() {
-        this.initSizeFormGroup();
-        this.sizeDialog = true;
+        this.initFeatureFormGroup();
+        this.featureDialog = true;
     }
 
-    editSize(size: Size) {
-        this.initSizeFormGroup(size);
-        this.sizeDialog = true;
+    editFeature(feature: Feature) {
+        this.initFeatureFormGroup(feature);
+        this.featureDialog = true;
     }
 
-    deleteSelectedSizes() {
+    deleteSelectedFeatures() {
         this.confirmationService.confirm({
             message: 'Are you sure you want to delete the selected products?',
             header: 'Confirm',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.selectedSizes = null;
+                this.selectedFeatures = null;
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Successful',
@@ -143,11 +114,11 @@ export class SizesComponent implements OnInit {
     }
 
     hideDialog() {
-        this.sizeDialog = false;
+        this.featureDialog = false;
     }
 
-    deleteSize(size: Size) {
-        if (this.sizeFormGroup.invalid) {
+    deleteFeature(size: Feature) {
+        if (this.featureFormGroup.invalid) {
             return;
         }
         this.confirmationService.confirm({
@@ -155,9 +126,9 @@ export class SizesComponent implements OnInit {
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.sizeService.deleteSize(size!.id!).subscribe({
+                this.featureService.deleteFeature(size!.id!).subscribe({
                     next: () => {
-                        this.sizes.update((subCategories) => subCategories.filter((val) => val.id !== size!.id));
+                        this.features.update((subCategories) => subCategories.filter((val) => val.id !== size!.id));
                     }
                 });
                 this.messageService.add({
@@ -170,18 +141,18 @@ export class SizesComponent implements OnInit {
         });
     }
 
-    saveSize() {
-        if (this.sizeFormGroup.invalid) {
+    saveFeature() {
+        if (this.featureFormGroup.invalid) {
             return;
         }
 
-        if (this.sizeFormGroup.value.id) {
-            this.sizeService.updateSize(this.sizeFormGroup.value).subscribe({
+        if (this.featureFormGroup.value.id) {
+            this.featureService.updateFeature(this.featureFormGroup.value).subscribe({
                 next: () => {
-                    this.sizes.update((subCategories) =>
+                    this.features.update((subCategories) =>
                         subCategories.map((subCategory) => {
-                            if (subCategory.id === this.sizeFormGroup.value.id) {
-                                return { ...subCategory, ...this.sizeFormGroup.value };
+                            if (subCategory.id === this.featureFormGroup.value.id) {
+                                return { ...subCategory, ...this.featureFormGroup.value };
                             }
                             return subCategory;
                         })
@@ -189,9 +160,9 @@ export class SizesComponent implements OnInit {
                 }
             });
         } else {
-            this.sizeService.createSize(this.sizeFormGroup.value).subscribe({
+            this.featureService.createFeature(this.featureFormGroup.value).subscribe({
                 next: () => {
-                    this.sizes.update((subCategories) => [...subCategories, this.sizeFormGroup.value]);
+                    this.features.update((subCategories) => [...subCategories, this.featureFormGroup.value]);
                 }
             });
         }
