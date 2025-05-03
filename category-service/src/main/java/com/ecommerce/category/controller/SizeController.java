@@ -40,8 +40,9 @@ public class SizeController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteSize(@PathVariable Long id) {
-        return ResponseEntity.ok(sizeService.deleteSize(id));
+    public ResponseEntity<Void> deleteSize(@PathVariable Long id) {
+        sizeService.deleteSize(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/existsByLibelleAndSubCategoryId/{libelle}/{subCategoryId}")

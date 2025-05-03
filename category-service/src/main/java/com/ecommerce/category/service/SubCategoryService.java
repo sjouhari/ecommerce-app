@@ -14,7 +14,7 @@ public interface SubCategoryService {
 
     SubCategoryDto updateSubCategory(Long id, SubCategoryDto subCategoryDto);
 
-    String deleteSubCategory(Long id);
+    void deleteSubCategory(Long id);
 
     boolean existsById(Long id);
 

@@ -23,17 +23,6 @@ import { SubCategoryService } from '../../services/sub-category.service';
 import { SubCategory } from '../../models/category/sub-category.model';
 import { CategoryService } from '../../services/category.service';
 
-interface Column {
-    field: string;
-    header: string;
-    customExportHeader?: string;
-}
-
-interface ExportColumn {
-    title: string;
-    dataKey: string;
-}
-
 @Component({
     selector: 'app-categories',
     standalone: true,
@@ -62,7 +51,7 @@ interface ExportColumn {
     providers: [MessageService, ConfirmationService]
 })
 export class SubCategoriesComponent implements OnInit {
-    categoryDialog: boolean = false;
+    subCategoryDialog: boolean = false;
 
     subCategoryFormGroup!: FormGroup;
 
@@ -76,41 +65,35 @@ export class SubCategoriesComponent implements OnInit {
 
     selectedCategories!: SubCategory[] | null;
 
-    submitted: boolean = false;
-
     @ViewChild('dt') dt!: Table;
 
-    exportColumns!: ExportColumn[];
-
-    cols!: Column[];
-
     categories = signal<Category[]>([]);
+    loading = signal(false);
 
     ngOnInit() {
+        this.init();
+    }
+
+    init() {
         this.initSubCategoryFormGroup();
         this.subCategoryService.getSubCategories().subscribe({
             next: (subCategories) => {
                 this.subCategories.set(subCategories);
             }
         });
+    }
 
-        this.categoryService.getCategories().subscribe({
-            next: (categories) => {
-                this.categories.set(categories);
-            }
-        });
+    get formControls() {
+        return this.subCategoryFormGroup.controls;
     }
 
     initSubCategoryFormGroup(subCategory?: SubCategory) {
         this.subCategoryFormGroup = this.formBuilder.group({
+            id: new FormControl(subCategory?.id || null),
             name: new FormControl(subCategory?.name || '', [Validators.required]),
             description: new FormControl(subCategory?.description || '', [Validators.required]),
             categoryId: new FormControl(subCategory?.categoryId || '', [Validators.required])
         });
-    }
-
-    exportCSV() {
-        this.dt.exportCSV();
     }
 
     onGlobalFilter(table: Table, event: Event) {
@@ -118,27 +101,44 @@ export class SubCategoriesComponent implements OnInit {
     }
 
     openNew() {
-        this.initSubCategoryFormGroup();
-        this.submitted = false;
-        this.categoryDialog = true;
+        this.categoryService.getCategories().subscribe({
+            next: (allCategories) => {
+                this.categories.set(allCategories);
+                this.initSubCategoryFormGroup();
+                if (allCategories.length > 0) {
+                    this.subCategoryDialog = true;
+                } else {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Vous devez créer au moins une catégorie avant de pouvoir créer une sous catégorie',
+                        life: 3000
+                    });
+                }
+            },
+            error: (error) => {
+                console.log(error); // TODO: handle error
+            }
+        });
     }
 
     editSubCategory(subCategory: SubCategory) {
         this.initSubCategoryFormGroup(subCategory);
-        this.categoryDialog = true;
+        this.subCategoryDialog = true;
     }
 
     deleteSelectedSubCategories() {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete the selected products?',
-            header: 'Confirm',
+            message: 'Êtes-vous sûr de vouloir supprimer les sous catégories sélectionnées ? Toutes les tailles seront supprimées. Cette action est irréversible.',
+            header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
+                this.selectedCategories?.forEach((subCategory) => this.onDeleteSubCategory(subCategory));
                 this.selectedCategories = null;
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Products Deleted',
+                    summary: 'Suppression',
+                    detail: 'Toutes les sous catégories sélectionnées et leurs tailles ont été supprimées avec succès.',
                     life: 3000
                 });
             }
@@ -146,30 +146,33 @@ export class SubCategoriesComponent implements OnInit {
     }
 
     hideDialog() {
-        this.categoryDialog = false;
-        this.submitted = false;
+        this.subCategoryDialog = false;
     }
 
     deleteSubCategory(subCategory: SubCategory) {
-        if (this.subCategoryFormGroup.invalid) {
-            return;
-        }
         this.confirmationService.confirm({
-            message: 'Êtes-vous sûr de vouloir supprimer la sous catégorie ' + subCategory.name + '?',
+            message: 'Êtes-vous sûr de vouloir supprimer la sous catégorie ' + subCategory.name + '? Toutes les tailles seront supprimées. Cette action est irréversible.',
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.subCategoryService.deleteSubCategory(subCategory!.id!).subscribe({
-                    next: () => {
-                        this.subCategories.update((subCategories) => subCategories.filter((val) => val.id !== subCategory!.id));
-                    }
-                });
+                this.onDeleteSubCategory(subCategory);
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Successful',
-                    detail: 'SubCategory Deleted',
+                    summary: 'Suppression',
+                    detail: 'La sous catégorie a été supprimée avec succès.',
                     life: 3000
                 });
+            }
+        });
+    }
+
+    onDeleteSubCategory(subCategory: SubCategory) {
+        this.subCategoryService.deleteSubCategory(subCategory!.id!).subscribe({
+            next: () => {
+                this.subCategories.update((subCategories) => subCategories.filter((val) => val.id !== subCategory!.id));
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
             }
         });
     }
@@ -179,23 +182,41 @@ export class SubCategoriesComponent implements OnInit {
             return;
         }
 
-        if (this.subCategoryFormGroup.value.id) {
-            this.subCategoryService.updateSubCategory(this.subCategoryFormGroup.value).subscribe({
-                next: () => {
-                    this.subCategories.update((subCategories) =>
-                        subCategories.map((subCategory) => {
-                            if (subCategory.id === this.subCategoryFormGroup.value.id) {
-                                return { ...subCategory, ...this.subCategoryFormGroup.value };
-                            }
-                            return subCategory;
-                        })
-                    );
+        this.loading.set(true);
+        if (this.subCategoryFormGroup.value.id === null) {
+            this.subCategoryService.createSubCategory(this.subCategoryFormGroup.value).subscribe({
+                next: (subCategory) => {
+                    this.subCategories.update((subCategories) => [...subCategories, subCategory]);
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Création',
+                        detail: 'La sous catégorie a été créée avec succès.',
+                        life: 3000
+                    });
+                    this.subCategoryDialog = false;
+                    this.loading.set(false);
+                    this.subCategoryFormGroup.reset();
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
                 }
             });
         } else {
-            this.subCategoryService.createSubCategory(this.subCategoryFormGroup.value).subscribe({
-                next: () => {
-                    this.subCategories.update((subCategories) => [...subCategories, this.subCategoryFormGroup.value]);
+            this.subCategoryService.updateSubCategory(this.subCategoryFormGroup.value).subscribe({
+                next: (category) => {
+                    this.init();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Modification',
+                        detail: 'La sous catégorie a été modifiée avec succès.',
+                        life: 3000
+                    });
+                    this.subCategoryDialog = false;
+                    this.loading.set(false);
+                    this.subCategoryFormGroup.reset();
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
                 }
             });
         }

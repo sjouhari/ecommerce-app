@@ -61,10 +61,9 @@ public class SizeServiceImpl implements SizeService {
     }
 
     @Override
-    public String deleteSize(Long id) {
+    public void deleteSize(Long id) {
         getSizeById(id);
         sizeRepository.deleteById(id);
-        return "Size deleted successfully";
     }
 
     @Override

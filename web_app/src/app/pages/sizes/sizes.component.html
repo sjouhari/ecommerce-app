@@ -1,11 +1,9 @@
+<p-toast></p-toast>
+
 <p-toolbar styleClass="mb-3">
     <ng-template #start>
         <p-button label="Nouveau" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
         <p-button severity="secondary" label="Supprimer" icon="pi pi-trash" outlined (onClick)="deleteSelectedSizes()" [disabled]="!selectedSizes || !selectedSizes.length" />
-    </ng-template>
-
-    <ng-template #end>
-        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
     </ng-template>
 </p-toolbar>
 

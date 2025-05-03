@@ -69,7 +69,7 @@
                 <input type="hidden" pInputText id="id" formControlName="id" />
                 <div>
                     <label for="name" class="block font-bold mb-2">Nom</label>
-                    <input type="text" pInputText id="name" formControlName="name" />
+                    <input type="text" pInputText id="name" formControlName="name" fluid />
                     @if(formControls['name'].errors && formControls['name'].touched) {
                         @if(formControls['name'].errors['required']) {
                             <small class="text-red-500">Le nom de la catégorie est obligatoire.</small>
@@ -78,7 +78,7 @@
                 </div>
                 <div>
                     <label for="description" class="block font-bold mb-2">Description</label>
-                    <textarea id="description" pTextarea formControlName="description" rows="3" cols="20"></textarea>
+                    <textarea id="description" pTextarea formControlName="description" rows="3" cols="20" fluid></textarea>
                     @if(formControls['description'].errors && formControls['description'].touched) {
                         @if(formControls['description'].errors['required']) {
                             <small class="text-red-500">La description de la catégorie est obligatoire.</small>

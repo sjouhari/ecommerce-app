@@ -118,7 +118,7 @@ export class CategoriesComponent implements OnInit {
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Suppression de catégories',
-                    detail: 'Les catégories sont supprimé avec succès.',
+                    detail: 'Les catégories sélectionnées et leurs sous catégories ont été supprimées avec succès.',
                     life: 3000
                 });
             }
@@ -134,21 +134,22 @@ export class CategoriesComponent implements OnInit {
             message: 'Êtes-vous sûr de vouloir supprimer la catégorie ' + category.name + ' ? Toutes les sous catégories et leurs tailles seront supprimées. Cette action est irréversible.',
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
-            accept: () => this.onDeleteCategory(category)
-        });
-    }
-
-    onDeleteCategory(category: Category) {
-        this.categoryService.deleteCategory(category!.id!).subscribe({
-            next: () => {
-                console.log(category);
-                this.categories.update((categories) => categories.filter((val) => val.id !== category!.id));
+            accept: () => {
+                this.onDeleteCategory(category);
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Successful',
                     detail: 'Category Deleted',
                     life: 3000
                 });
+            }
+        });
+    }
+
+    onDeleteCategory(category: Category) {
+        this.categoryService.deleteCategory(category!.id!).subscribe({
+            next: () => {
+                this.categories.update((categories) => categories.filter((val) => val.id !== category!.id));
             },
             error: (error) => {
                 console.log(error); //TODO: handle error
@@ -168,8 +169,8 @@ export class CategoriesComponent implements OnInit {
                     this.categories.update((categories) => [...categories, category]);
                     this.messageService.add({
                         severity: 'success',
-                        summary: 'Successful',
-                        detail: 'Product Created',
+                        summary: 'Création',
+                        detail: 'La catégorie a été créée avec succès.',
                         life: 3000
                     });
                     this.categoryDialog = false;
@@ -186,8 +187,8 @@ export class CategoriesComponent implements OnInit {
                     this.init();
                     this.messageService.add({
                         severity: 'success',
-                        summary: 'Successful',
-                        detail: 'Product Created',
+                        summary: 'Modification',
+                        detail: 'La catégorie a été modifiée avec succès.',
                         life: 3000
                     });
                     this.categoryDialog = false;

@@ -39,8 +39,9 @@ public class SubCategoryController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteSubCategoryById(@PathVariable Long id) {
-        return ResponseEntity.ok(subCategoryService.deleteSubCategory(id));
+    public ResponseEntity<Void> deleteSubCategoryById(@PathVariable Long id) {
+        subCategoryService.deleteSubCategory(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/existsById/{id}")

@@ -23,17 +23,6 @@ import { SubCategoryService } from '../../services/sub-category.service';
 import { SizeService } from '../../services/size.service';
 import { SubCategory } from '../../models/category/sub-category.model';
 
-interface Column {
-    field: string;
-    header: string;
-    customExportHeader?: string;
-}
-
-interface ExportColumn {
-    title: string;
-    dataKey: string;
-}
-
 @Component({
     selector: 'app-sizes',
     standalone: true,
@@ -73,28 +62,23 @@ export class SizesComponent implements OnInit {
     formBuilder = inject(FormBuilder);
 
     sizes = signal<Size[]>([]);
+    loading = signal(false);
 
     selectedSizes!: Size[] | null;
 
     @ViewChild('dt') dt!: Table;
 
-    exportColumns!: ExportColumn[];
-
-    cols!: Column[];
-
     subCategories = signal<SubCategory[]>([]);
 
     ngOnInit() {
+        this.init();
+    }
+
+    init() {
         this.initSizeFormGroup();
         this.sizeService.getSizes().subscribe({
             next: (sizes) => {
                 this.sizes.set(sizes);
-            }
-        });
-
-        this.subCategoryService.getSubCategories().subscribe({
-            next: (subCategories) => {
-                this.subCategories.set(subCategories);
             }
         });
     }
@@ -107,17 +91,30 @@ export class SizesComponent implements OnInit {
         });
     }
 
-    exportCSV() {
-        this.dt.exportCSV();
-    }
-
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
 
     openNew() {
-        this.initSizeFormGroup();
-        this.sizeDialog = true;
+        this.subCategoryService.getSubCategories().subscribe({
+            next: (subCategories) => {
+                this.subCategories.set(subCategories);
+                if (subCategories.length > 0) {
+                    this.initSizeFormGroup();
+                    this.sizeDialog = true;
+                } else {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Vous devez créer au moins une sous catégorie avant de pouvoir créer une taille',
+                        life: 3000
+                    });
+                }
+            },
+            error: (error) => {
+                console.log(error); // TODO: handle error
+            }
+        });
     }
 
     editSize(size: Size) {
@@ -127,15 +124,16 @@ export class SizesComponent implements OnInit {
 
     deleteSelectedSizes() {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete the selected products?',
-            header: 'Confirm',
+            message: 'Êtes-vous sûr de vouloir supprimer toutes les tailles sélectionnées ?',
+            header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
+                this.selectedSizes?.forEach((size) => this.onDeleteSize(size));
                 this.selectedSizes = null;
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Products Deleted',
+                    summary: 'Suppression',
+                    detail: 'Toutes les tailles sélectionnées ont été supprimées avec succès.',
                     life: 3000
                 });
             }
@@ -147,25 +145,29 @@ export class SizesComponent implements OnInit {
     }
 
     deleteSize(size: Size) {
-        if (this.sizeFormGroup.invalid) {
-            return;
-        }
         this.confirmationService.confirm({
-            message: 'Êtes-vous sûr de vouloir supprimer la sous catégorie ' + size.libelle + '?',
+            message: 'Êtes-vous sûr de vouloir supprimer la taille ' + size.libelle + '?',
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.sizeService.deleteSize(size!.id!).subscribe({
-                    next: () => {
-                        this.sizes.update((subCategories) => subCategories.filter((val) => val.id !== size!.id));
-                    }
-                });
+                this.onDeleteSize(size);
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Successful',
-                    detail: 'SubCategory Deleted',
+                    summary: 'Suppression',
+                    detail: 'La taille a été supprimée avec succès.',
                     life: 3000
                 });
+            }
+        });
+    }
+
+    onDeleteSize(size: Size) {
+        this.sizeService.deleteSize(size!.id!).subscribe({
+            next: () => {
+                this.sizes.update((subCategories) => subCategories.filter((val) => val.id !== size!.id));
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
             }
         });
     }
@@ -175,23 +177,41 @@ export class SizesComponent implements OnInit {
             return;
         }
 
-        if (this.sizeFormGroup.value.id) {
-            this.sizeService.updateSize(this.sizeFormGroup.value).subscribe({
-                next: () => {
-                    this.sizes.update((subCategories) =>
-                        subCategories.map((subCategory) => {
-                            if (subCategory.id === this.sizeFormGroup.value.id) {
-                                return { ...subCategory, ...this.sizeFormGroup.value };
-                            }
-                            return subCategory;
-                        })
-                    );
+        this.loading.set(true);
+        if (this.sizeFormGroup.value.id === null) {
+            this.sizeService.createSize(this.sizeFormGroup.value).subscribe({
+                next: (size) => {
+                    this.sizes.update((sizes) => [...sizes, size]);
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Création',
+                        detail: 'La taille a été créée avec succès.',
+                        life: 3000
+                    });
+                    this.sizeDialog = false;
+                    this.loading.set(false);
+                    this.sizeFormGroup.reset();
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
                 }
             });
         } else {
-            this.sizeService.createSize(this.sizeFormGroup.value).subscribe({
-                next: () => {
-                    this.sizes.update((subCategories) => [...subCategories, this.sizeFormGroup.value]);
+            this.sizeService.updateSize(this.sizeFormGroup.value).subscribe({
+                next: (size) => {
+                    this.init();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Modification',
+                        detail: 'La taille a été modifiée avec succès.',
+                        life: 3000
+                    });
+                    this.sizeDialog = false;
+                    this.loading.set(false);
+                    this.sizeFormGroup.reset();
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
                 }
             });
         }
