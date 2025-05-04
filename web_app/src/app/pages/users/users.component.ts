@@ -1,209 +1,232 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, input, OnInit, signal, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { SelectModule } from 'primeng/select';
-import { SliderModule } from 'primeng/slider';
 import { Table, TableModule } from 'primeng/table';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-import { ToastModule } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { RatingModule } from 'primeng/rating';
 import { RippleModule } from 'primeng/ripple';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
+import { RatingModule } from 'primeng/rating';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { SelectModule } from 'primeng/select';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { DialogModule } from 'primeng/dialog';
+import { TagModule } from 'primeng/tag';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
-import { TagModule } from 'primeng/tag';
-import { Customer, CustomerService, Representative } from '../service/customer.service';
-import { ProductService } from '../../services/product.service';
-import { Product } from '../../models/product/product.model';
-
-interface expandedRows {
-    [key: string]: boolean;
-}
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user/user.model';
+import { first, last } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { Profil } from '../../models/user/profil.model';
+import { ProfilService } from '../../services/profil.service';
 
 @Component({
-    selector: 'app-table-demo',
+    selector: 'app-users',
     standalone: true,
     imports: [
-        TableModule,
-        MultiSelectModule,
-        SelectModule,
-        InputIconModule,
-        TagModule,
-        InputTextModule,
-        SliderModule,
-        ProgressBarModule,
-        ToggleButtonModule,
-        ToastModule,
         CommonModule,
+        TableModule,
         FormsModule,
+        ReactiveFormsModule,
         ButtonModule,
-        RatingModule,
         RippleModule,
-        IconFieldModule
+        ToastModule,
+        ToolbarModule,
+        RatingModule,
+        InputTextModule,
+        TextareaModule,
+        SelectModule,
+        RadioButtonModule,
+        InputNumberModule,
+        DialogModule,
+        TagModule,
+        InputIconModule,
+        IconFieldModule,
+        ConfirmDialogModule
     ],
     templateUrl: 'users.component.html',
-    styles: `
-        .p-datatable-frozen-tbody {
-            font-weight: bold;
-        }
-
-        .p-datatable-scrollable .p-frozen-column {
-            font-weight: bold;
-        }
-    `,
-    providers: [ConfirmationService, MessageService, CustomerService, ProductService]
+    providers: [MessageService, ConfirmationService]
 })
 export class UsersComponent implements OnInit {
-    customers1: Customer[] = [];
+    role: string | null = null;
+    userDialog: boolean = false;
 
-    customers2: Customer[] = [];
+    userFormGroup!: FormGroup;
 
-    customers3: Customer[] = [];
+    userService = inject(UserService);
+    profilService = inject(ProfilService);
+    messageService = inject(MessageService);
+    confirmationService = inject(ConfirmationService);
+    formBuilder = inject(FormBuilder);
+    route = inject(ActivatedRoute);
 
-    selectedCustomers1: Customer[] = [];
+    users = signal<User[]>([]);
+    profils = signal<Profil[]>([]);
+    loading = signal(false);
 
-    selectedCustomer: Customer = {};
+    selectedUsers!: User[] | null;
 
-    representatives: Representative[] = [];
-
-    statuses: any[] = [];
-
-    products: Product[] = [];
-
-    rowGroupMetadata: any;
-
-    expandedRows: expandedRows = {};
-
-    activityValues: number[] = [0, 100];
-
-    isExpanded: boolean = false;
-
-    balanceFrozen: boolean = false;
-
-    loading: boolean = true;
-
-    @ViewChild('filter') filter!: ElementRef;
-
-    constructor(
-        private customerService: CustomerService,
-        private productService: ProductService
-    ) {}
+    @ViewChild('dt') dt!: Table;
 
     ngOnInit() {
-        this.customerService.getCustomersLarge().then((customers) => {
-            this.customers1 = customers;
-            this.loading = false;
-
-            // @ts-ignore
-            this.customers1.forEach((customer) => (customer.date = new Date(customer.date)));
-        });
-        this.customerService.getCustomersMedium().then((customers) => (this.customers2 = customers));
-        this.customerService.getCustomersLarge().then((customers) => (this.customers3 = customers));
-
-        this.representatives = [
-            { name: 'Amy Elsner', image: 'amyelsner.png' },
-            { name: 'Anna Fali', image: 'annafali.png' },
-            { name: 'Asiya Javayant', image: 'asiyajavayant.png' },
-            { name: 'Bernardo Dominic', image: 'bernardodominic.png' },
-            { name: 'Elwin Sharvill', image: 'elwinsharvill.png' },
-            { name: 'Ioni Bowcher', image: 'ionibowcher.png' },
-            { name: 'Ivan Magalhaes', image: 'ivanmagalhaes.png' },
-            { name: 'Onyama Limba', image: 'onyamalimba.png' },
-            { name: 'Stephen Shaw', image: 'stephenshaw.png' },
-            { name: 'XuXue Feng', image: 'xuxuefeng.png' }
-        ];
-
-        this.statuses = [
-            { label: 'Active', value: 'Active' },
-            { label: 'Inactive', value: 'Inactive' }
-        ];
-    }
-
-    onSort() {
-        this.updateRowGroupMetaData();
-    }
-
-    updateRowGroupMetaData() {
-        this.rowGroupMetadata = {};
-
-        if (this.customers3) {
-            for (let i = 0; i < this.customers3.length; i++) {
-                const rowData = this.customers3[i];
-                const representativeName = rowData?.representative?.name || '';
-
-                if (i === 0) {
-                    this.rowGroupMetadata[representativeName] = { index: 0, size: 1 };
+        this.initUserFormGroup();
+        this.userService.getUsers().subscribe({
+            next: (users) => {
+                this.route.data.subscribe((data) => {
+                    this.role = data['role'];
+                });
+                if (this.role === 'admin') {
+                    const admins = users.filter((user) => user.profils.map((profil) => profil.name).includes('ROLE_ADMIN'));
+                    this.users.set(admins);
+                } else if (this.role === 'vendor') {
+                    const vendors = users.filter((user) => user.profils.map((profil) => profil.name).includes('ROLE_SELLER') && !user.profils.map((profil) => profil.name).includes('ROLE_ADMIN'));
+                    this.users.set(vendors);
+                } else if (this.role === 'user') {
+                    this.users.set(users.filter((user) => !user.profils.map((profil) => profil.name).includes('ROLE_ADMIN') && !user.profils.map((profil) => profil.name).includes('ROLE_SELLER')));
                 } else {
-                    const previousRowData = this.customers3[i - 1];
-                    const previousRowGroup = previousRowData?.representative?.name;
-                    if (representativeName === previousRowGroup) {
-                        this.rowGroupMetadata[representativeName].size++;
-                    } else {
-                        this.rowGroupMetadata[representativeName] = { index: i, size: 1 };
-                    }
+                    this.users.set(users);
                 }
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
             }
-        }
+        });
+
+        this.profilService.getProfils().subscribe({
+            next: (profils) => {
+                this.profils.set(profils);
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
     }
 
-    expandAll() {
-        if (!this.isExpanded) {
-            this.products.forEach((product) => (product && product.name ? (this.expandedRows[product.name] = true) : ''));
-        } else {
-            this.expandedRows = {};
-        }
-        this.isExpanded = !this.isExpanded;
+    initUserFormGroup(user?: User) {
+        this.userFormGroup = this.formBuilder.group({
+            id: new FormControl(user?.id || null),
+            firstName: new FormControl(user?.firstName || '', [Validators.required]),
+            lastName: new FormControl(user?.lastName || '', [Validators.required]),
+            email: new FormControl(user?.email || '', [Validators.required, Validators.email])
+        });
     }
 
-    formatCurrency(value: number) {
-        return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    get formControls() {
+        return this.userFormGroup.controls;
     }
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
 
-    clear(table: Table) {
-        table.clear();
-        this.filter.nativeElement.value = '';
+    openNew() {
+        this.initUserFormGroup();
+        this.userDialog = true;
     }
 
-    getSeverity(status: string) {
-        switch (status) {
-            case 'Active':
-                return 'success';
-
-            case 'Inactive':
-                return 'danger';
-
-            default:
-                return 'info';
-        }
+    editUser(user: User) {
+        this.initUserFormGroup(user);
+        this.userDialog = true;
     }
 
-    calculateCustomerTotal(name: string) {
-        let total = 0;
-
-        if (this.customers2) {
-            for (let customer of this.customers2) {
-                if (customer.representative?.name === name) {
-                    total++;
-                }
+    deleteSelectedUsers() {
+        this.confirmationService.confirm({
+            message: 'Êtes-vous subur de vouloir supprimer les utilisateurs sélectionnées ?',
+            header: 'Confirmation',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.selectedUsers?.forEach((feature) => {
+                    this.onDeleteUser(feature);
+                });
+                this.selectedUsers = null;
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Suppression',
+                    detail: 'Toutes les utilisateurs sélectionnées ont été supprimées avec succès.',
+                    life: 3000
+                });
             }
+        });
+    }
+
+    hideDialog() {
+        this.userDialog = false;
+        this.userFormGroup.reset();
+    }
+
+    deleteUser(user: User) {
+        this.confirmationService.confirm({
+            message: "Êtes-vous sûr de vouloir supprimer l'utilisateur " + user.firstName + ' ' + user.lastName + ' ?',
+            header: 'Confirmation',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                console.log(user);
+                this.onDeleteUser(user);
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Suppression',
+                    detail: 'Fonctionnalité supprimée avec succès.',
+                    life: 3000
+                });
+            }
+        });
+    }
+
+    onDeleteUser(user: User) {
+        this.userService.deleteUser(user!.id!).subscribe({
+            next: () => {
+                this.users.update((users) => users.filter((val) => val.id !== user!.id));
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
+    }
+
+    saveUser() {
+        if (this.userFormGroup.invalid) {
+            return;
         }
 
-        return total;
-    }
-
-    deleteUser(_t75: any) {
-        throw new Error('Method not implemented.');
-    }
-
-    editUser(_t75: any) {
-        throw new Error('Method not implemented.');
+        if (this.userFormGroup.value.id) {
+            this.userService.updateUser(this.userFormGroup.value).subscribe({
+                next: (feature) => {
+                    this.users.update((features) => features.map((f) => (f.id === feature.id ? feature : f)));
+                    this.userDialog = false;
+                    this.userFormGroup.reset();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Modification',
+                        detail: "L'utilisateur a été modifiée avec succès.",
+                        life: 3000
+                    });
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
+                }
+            });
+        } else {
+            this.userService.createUser(this.userFormGroup.value).subscribe({
+                next: (user) => {
+                    this.userDialog = false;
+                    this.userFormGroup.reset();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Création',
+                        detail: "L'utilisateur a été créée avec succès.",
+                        life: 3000
+                    });
+                    this.users.update((users) => [...users, user]);
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
+                }
+            });
+        }
     }
 }

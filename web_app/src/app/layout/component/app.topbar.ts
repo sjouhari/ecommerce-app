@@ -33,7 +33,7 @@ import { LayoutService } from '../service/layout.service';
                         />
                     </g>
                 </svg>
-                <span>Ecommerce App</span>
+                <span>Store</span>
             </a>
         </div>
 

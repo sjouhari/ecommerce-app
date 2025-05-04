@@ -11,7 +11,7 @@ import { PhotoService } from '../../service/photo.service';
     providers: [PhotoService],
     template: `
         <div id="hero" class="flex flex-col overflow-hidden">
-            <p-carousel [value]="images()" [numVisible]="1" [numScroll]="1" [responsiveOptions]="responsiveOptions">
+            <p-carousel [value]="images()" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions">
                 <ng-template let-image #item>
                     <div class="border border-surface-200 dark:border-surface-700 rounded m-2">
                         <div class="">
@@ -22,14 +22,6 @@ import { PhotoService } from '../../service/photo.service';
                     </div>
                 </ng-template>
             </p-carousel>
-            <div class="mx-6 md:mx-20 mt-0 md:mt-6">
-                <h1 class="text-6xl font-bold text-gray-900 leading-tight"><span class="font-light block">Eu sem integer</span>eget magna fermentum</h1>
-                <p class="font-normal text-2xl leading-normal md:mt-4 text-gray-700">Sed blandit libero volutpat sed cras. Fames ac turpis egestas integer. Placerat in egestas erat...</p>
-                <button pButton pRipple [rounded]="true" type="button" label="Get Started" class="!text-xl mt-8 !px-4"></button>
-            </div>
-            <div class="flex justify-center md:justify-end">
-                <img src="https://primefaces.org/cdn/templates/sakai/landing/screen-1.png" alt="Hero Image" class="w-9/12 md:w-auto" />
-            </div>
         </div>
     `
 })

@@ -25,7 +25,7 @@ import { ButtonModule } from 'primeng/button';
                     />
                 </g>
             </svg>
-            <span class="text-surface-900 dark:text-surface-0 font-medium text-2xl leading-normal mr-20">SAKAI</span>
+            <span class="text-surface-900 dark:text-surface-0 font-medium text-2xl leading-normal mr-20">Ecommerce</span>
         </a>
 
         <a pButton [text]="true" severity="secondary" [rounded]="true" pRipple class="lg:!hidden" pStyleClass="@next" enterClass="hidden" leaveToClass="hidden" [hideOnOutsideClick]="true">
@@ -40,24 +40,24 @@ import { ButtonModule } from 'primeng/button';
                     </a>
                 </li>
                 <li>
-                    <a (click)="router.navigate(['/landing'], { fragment: 'features' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
-                        <span>Features</span>
+                    <a (click)="router.navigate(['/landing'], { fragment: 'categories' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
+                        <span>Nos catégories</span>
                     </a>
                 </li>
                 <li>
-                    <a (click)="router.navigate(['/landing'], { fragment: 'highlights' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
-                        <span>Highlights</span>
+                    <a (click)="router.navigate(['/landing'], { fragment: 'new-products' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
+                        <span>Nouveaux arrivages</span>
                     </a>
                 </li>
                 <li>
                     <a (click)="router.navigate(['/landing'], { fragment: 'pricing' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
-                        <span>Pricing</span>
+                        <span>Nos produits</span>
                     </a>
                 </li>
             </ul>
             <div class="flex border-t lg:border-t-0 border-surface py-4 lg:py-0 mt-4 lg:mt-0 gap-2">
-                <button pButton pRipple label="Login" routerLink="/auth/login" [rounded]="true" [text]="true"></button>
-                <button pButton pRipple label="Register" routerLink="/auth/login" [rounded]="true"></button>
+                <button pButton pRipple label="Login" routerLink="/login" [rounded]="true" [text]="true"></button>
+                <button pButton pRipple label="Register" routerLink="/register" [rounded]="true"></button>
             </div>
         </div> `
 })

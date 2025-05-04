@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AppLayout } from './app/layout/component/app.layout';
 import { Dashboard } from './app/pages/dashboard/dashboard';
-import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
 import { Crud } from './app/pages/crud/crud';
 import { LoginComponent } from './app/pages/auth/login/login.component';
@@ -44,9 +43,9 @@ export const appRoutes: Routes = [
             { path: 'orders/returns', component: Crud },
 
             // Utilisateurs
-            { path: 'users', component: UsersComponent },
-            { path: 'admins', component: Crud },
-            { path: 'vendors', component: Crud },
+            { path: 'users', component: UsersComponent, data: { role: 'user' } },
+            { path: 'admins', component: UsersComponent, data: { role: 'admin' } },
+            { path: 'vendors', component: UsersComponent, data: { role: 'vendor' } },
 
             // Permissions et rôles
             { path: 'roles', component: ProfilsComponent },

@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { TopbarWidget } from '../home/components/topbarwidget.component';
 import { HeroWidget } from '../home/components/herowidget';
-import { FeaturesWidget } from './components/featureswidget';
+import { FeaturesWidget } from '../home/components/categorieswidget';
 import { HighlightsWidget } from './components/highlightswidget';
 import { PricingWidget } from './components/pricingwidget';
 import { FooterWidget } from '../home/components/footerwidget';

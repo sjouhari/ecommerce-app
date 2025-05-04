@@ -1,114 +1,116 @@
-<div class="card">
-    <p-table
-        #dt1
-        [value]="customers1"
-        dataKey="id"
-        [rows]="10"
-        [loading]="loading"
-        [rowHover]="true"
-        [paginator]="true"
-        [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
-        responsiveLayout="scroll"
-    >
-        <ng-template #caption>
-            <div class="flex justify-between items-center flex-column sm:flex-row">
-                <h5 class="m-0">Gestion des clients</h5>
-                <p-iconfield iconPosition="left" class="ml-auto">
-                    <p-inputicon>
-                        <i class="pi pi-search"></i>
-                    </p-inputicon>
-                    <input pInputText type="text" (input)="onGlobalFilter(dt1, $event)" placeholder="Search keyword" />
-                </p-iconfield>
-            </div>
+<p-toast></p-toast>
+
+<p-toolbar styleClass="mb-3">
+    <ng-template #start>
+        <p-button label="Nouveau" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Supprimer" icon="pi pi-trash" outlined (onClick)="deleteSelectedUsers()" [disabled]="!selectedUsers || !selectedUsers.length" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="users()"
+    [rows]="10"
+    [paginator]="users().length > 10"
+    [globalFilterFields]="['libelle', 'resourceName', 'action']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedUsers"
+    [rowHover]="true"
+    dataKey="id"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30, 40, 50]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            @if(role === 'admin') {
+                <h5 class="m-0">Gestion des administrateurs</h5>
+            } @else if(role === 'vendor') {
+                <h5 class="m-0">Gestion des vendeurs</h5>
+            } @else {
+                <h5 class="m-0">Gestion des utilisateurs</h5>
+            }
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th pSortableColumn="lastName" style="min-width:16rem">
+                Nom
+                <p-sortIcon field="lastName" />
+            </th>
+            <th pSortableColumn="firstName">
+                Prénom 
+                <p-sortIcon field="firstName" />
+            </th>
+            <th pSortableColumn="email">
+                Addresse Email
+                <p-sortIcon field="email" />
+            </th>
+            <th style="min-width: 7rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-user>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="user" />
+            </td>
+            <td style="min-width: 16rem">{{ user.lastName }}</td>
+            <td style="min-width: 16rem">{{ user.firstName }}</td>
+            <td style="min-width: 16rem">{{ user.email }}</td>
+            <td>
+                <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editUser(user)" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteUser(user)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="userDialog" [style]="{ width: '600px' }" header="Fonctionnalité" [modal]="true">
+        <ng-template #content>
+            <form [formGroup]="userFormGroup" (ngSubmit)="saveUser()" class="flex flex-col gap-3 mt-4">
+                <input type="hidden" formControlName="id" />
+                <div>
+                    <label for="lastName" class="block font-bold mb-2">Nom</label>
+                    <input type="text" pInputText id="lastName" formControlName="lastName" fluid />
+                    @if(formControls['lastName'].errors && formControls['lastName'].touched) {
+                        @if(formControls['lastName'].errors['required']) {
+                            <small class="text-red-500">Le nom est obligatoire.</small>
+                        }
+                    }
+                </div>
+                <div>
+                    <label for="firstName" class="block font-bold mb-2">Prénom</label>
+                    <input type="text" pInputText id="firstName" formControlName="firstName" fluid />
+                    @if(formControls['firstName'].errors && formControls['firstName'].touched) {
+                        @if(formControls['firstName'].errors['required']) {
+                            <small class="text-red-500">Le prénom est obligatoire.</small>
+                        }
+                    }
+                </div>
+                <div>
+                    <label for="email" class="block font-bold mb-2">Adresse email</label>
+                    <input type="text" pInputText id="email" formControlName="email" fluid />
+                    @if(formControls['email'].errors && formControls['email'].touched) {
+                        @if(formControls['email'].errors['required']) {
+                            <small class="text-red-500">L'addresse email est obligatoire.</small>
+                        }
+                        @if(formControls['email'].errors['email']) {
+                            <small class="text-red-500">L'addresse email est invalide.</small>
+                        }
+                    }
+                </div>
+                <div class="flex justify-end gap-3">
+                    <p-button type="button" label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+                    <p-button type="submit" label="Save" icon="pi pi-check" [loading]="loading()" [disabled]="!userFormGroup.valid || loading()" />
+                </div>
+            </form>
         </ng-template>
-        <ng-template #header>
-            <tr>
-                <th style="min-width: 14rem">
-                    <div class="flex justify-between items-center">
-                        Nom complet
-                        <p-columnFilter field="representative" matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
-                            <ng-template #header>
-                                <div class="px-3 pt-3 pb-0">
-                                    <span class="font-bold">Agent Picker</span>
-                                </div>
-                            </ng-template>
-                            <ng-template #filter let-value let-filter="filterCallback">
-                                <p-multiselect [ngModel]="value" [options]="representatives" placeholder="Any" (onChange)="filter($event.value)" optionLabel="name" styleClass="w-full">
-                                    <ng-template let-option #item>
-                                        <div class="flex items-center gap-2 w-44">
-                                            <img [alt]="option.label" src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{ option.image }}" width="32" />
-                                            <span>{{ option.name }}</span>
-                                        </div>
-                                    </ng-template>
-                                </p-multiselect>
-                            </ng-template>
-                        </p-columnFilter>
-                    </div>
-                </th>
-                <th style="min-width: 12rem">
-                    <div class="flex justify-between items-center">
-                        Country
-                        <p-columnFilter type="text" field="country.name" display="menu" placeholder="Search by country"></p-columnFilter>
-                    </div>
-                </th>
-                <th style="min-width: 12rem">
-                    <div class="flex justify-between items-center">
-                        Email
-                        <p-columnFilter type="text" field="country.name" display="menu" placeholder="Search by country"></p-columnFilter>
-                    </div>
-                </th>
-                <th style="min-width: 12rem">
-                    <div class="flex justify-between items-center">
-                        Statut
-                        <p-columnFilter field="status" matchMode="equals" display="menu">
-                            <ng-template #filter let-value let-filter="filterCallback">
-                                <p-select [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any" [style]="{ 'min-width': '12rem' }">
-                                    <ng-template let-option #item>
-                                        <span [class]="'customer-badge status-' + option.value">{{ option.label }}</span>
-                                    </ng-template>
-                                </p-select>
-                            </ng-template>
-                        </p-columnFilter>
-                    </div>
-                </th>
-                <th style="min-width: 7rem"></th>
-            </tr>
-        </ng-template>
-        <ng-template #body let-customer>
-            <tr>
-                <td>
-                    <div class="flex items-center gap-2">
-                        <img [alt]="customer.representative.name" src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{ customer.representative.image }}" width="32" style="vertical-align: middle" />
-                        <span class="image-text">{{ customer.representative.name }}</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="flex items-center gap-2">
-                        <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + customer.country.code" width="30" />
-                        <span>{{ customer.country.name }}</span>
-                    </div>
-                </td>
-                <td>
-                    {{ customer.country.name }}
-                </td>
-                <td>
-                    <p-tag [value]="customer.status.toLowerCase()" [severity]="getSeverity(customer.status.toLowerCase())" styleClass="dark:!bg-surface-900" />
-                </td>
-                <td>
-                    <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editUser(customer)" />
-                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteUser(customer)" />
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template #emptymessage>
-            <tr>
-                <td colspan="8">No customers found.</td>
-            </tr>
-        </ng-template>
-        <ng-template #loadingbody>
-            <tr>
-                <td colspan="8">Loading customers data. Please wait.</td>
-            </tr>
-        </ng-template>
-    </p-table>
-</div>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />
