@@ -11,19 +11,18 @@
     #dt
     [value]="subCategories()"
     [rows]="10"
-    [paginator]="true"
-    [globalFilterFields]="['name', 'description']"
+    [paginator]="subCategories().length > 10"
+    [globalFilterFields]="['name', 'description', 'categoryId']"
     [tableStyle]="{ 'min-width': '75rem' }"
     [(selection)]="selectedCategories"
     [rowHover]="true"
     dataKey="id"
-    currentPageReportTemplate="Affichage {first} to {last} of {totalRecords} products"
     [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 20, 30, 40, 50]"
 >
     <ng-template #caption>
         <div class="flex items-center justify-between">
-            <h5 class="m-0">Gestion des catégories</h5>
+            <h5 class="m-0">Gestion des sous catégories</h5>
             <p-iconfield>
                 <p-inputicon styleClass="pi pi-search" />
                 <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." />
@@ -35,7 +34,6 @@
             <th style="width: 3rem">
                 <p-tableHeaderCheckbox />
             </th>
-            <!-- <th>Image</th> -->
             <th pSortableColumn="name" style="min-width:16rem">
                 Nom
                 <p-sortIcon field="name" />
@@ -56,9 +54,6 @@
             <td style="width: 3rem">
                 <p-tableCheckbox [value]="category" />
             </td>
-            <!-- <td>
-                <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + category.image" [alt]="category.name" style="width: 64px" class="rounded" />
-            </td> -->
             <td style="min-width: 16rem">{{ category.name }}</td>
             <td style="min-width: 16rem">{{ category.description }}</td>
             <td style="min-width: 16rem">{{ category.categoryId }}</td>

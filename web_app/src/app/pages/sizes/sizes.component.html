@@ -11,7 +11,7 @@
     #dt
     [value]="sizes()"
     [rows]="10"
-    [paginator]="true"
+    [paginator]="sizes().length > 10"
     [globalFilterFields]="['name', 'description']"
     [tableStyle]="{ 'min-width': '75rem' }"
     [(selection)]="selectedSizes"
@@ -23,7 +23,7 @@
 >
     <ng-template #caption>
         <div class="flex items-center justify-between">
-            <h5 class="m-0">Gestion des catégories</h5>
+            <h5 class="m-0">Gestion des tailles</h5>
             <p-iconfield>
                 <p-inputicon styleClass="pi pi-search" />
                 <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." />
@@ -35,11 +35,13 @@
             <th style="width: 3rem">
                 <p-tableHeaderCheckbox />
             </th>
-            <th pSortableColumn="name" style="min-width:16rem">
+            <th pSortableColumn="libelle" style="min-width:16rem">
                 Libellé
-                <p-sortIcon field="name" />
+                <p-sortIcon field="libelle" />
             </th>
-            <th>Sous Catégorie</th>
+            <th pSortableColumn="subCategoryId">Sous Catégorie
+                <p-sortIcon field="subCategoryId" />
+            </th>
             <th style="min-width: 7rem"></th>
         </tr>
     </ng-template>
@@ -65,8 +67,8 @@
                 <div>
                     @for(subCategory of subCategories(); track subCategory.id) {
                         <div class="flex items-center mb-3">
-                            <p-radiobutton formControlName="subCategoryId" [value]="subCategory.id" inputId="ingredient1" />
-                            <label for="ingredient1" class="ml-2">{{ subCategory.name }}</label>
+                            <p-radiobutton formControlName="subCategoryId" [value]="subCategory.id" [inputId]="subCategory.name + '-' + subCategory.id" />
+                            <label [for]="subCategory.name + '-' + subCategory.id" class="ml-2">{{ subCategory.name }}</label>
                         </div>
                     }
                 </div>
