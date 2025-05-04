@@ -41,8 +41,9 @@ public class ProfilController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProfil(@PathVariable Long id) {
-        return ResponseEntity.ok(profilService.deleteProfil(id));
+    public ResponseEntity<Void> deleteProfil(@PathVariable Long id) {
+        profilService.deleteProfil(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/add-features")

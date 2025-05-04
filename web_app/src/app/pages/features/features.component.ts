@@ -1,3 +1,4 @@
+import { Feature } from './../../models/user/feature.model';
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
@@ -18,7 +19,6 @@ import { TagModule } from 'primeng/tag';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { Feature } from '../../models/user/feature.model';
 import { FeatureService } from '../../services/feature.service';
 
 @Component({
@@ -59,6 +59,7 @@ export class FeaturesComponent implements OnInit {
     formBuilder = inject(FormBuilder);
 
     features = signal<Feature[]>([]);
+    loading = signal(false);
 
     selectedFeatures!: Feature[] | null;
 
@@ -69,6 +70,9 @@ export class FeaturesComponent implements OnInit {
         this.featureService.getFeatures().subscribe({
             next: (features) => {
                 this.features.set(features);
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
             }
         });
     }
@@ -80,6 +84,10 @@ export class FeaturesComponent implements OnInit {
             resourceName: new FormControl(feature?.resourceName || '', [Validators.required]),
             action: new FormControl(feature?.action || '', [Validators.required])
         });
+    }
+
+    get formControls() {
+        return this.featureFormGroup.controls;
     }
 
     onGlobalFilter(table: Table, event: Event) {
@@ -98,15 +106,18 @@ export class FeaturesComponent implements OnInit {
 
     deleteSelectedFeatures() {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete the selected products?',
-            header: 'Confirm',
+            message: 'Êtes-vous subur de vouloir supprimer les fonctionnalités sélectionnées ?',
+            header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
+                this.selectedFeatures?.forEach((feature) => {
+                    this.onDeleteFeature(feature);
+                });
                 this.selectedFeatures = null;
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Products Deleted',
+                    summary: 'Suppression',
+                    detail: 'Toutes les fonctionnalités sélectionnées ont été supprimées avec succès.',
                     life: 3000
                 });
             }
@@ -115,28 +126,34 @@ export class FeaturesComponent implements OnInit {
 
     hideDialog() {
         this.featureDialog = false;
+        this.featureFormGroup.reset();
     }
 
-    deleteFeature(size: Feature) {
-        if (this.featureFormGroup.invalid) {
-            return;
-        }
+    deleteFeature(feature: Feature) {
         this.confirmationService.confirm({
-            message: 'Êtes-vous sûr de vouloir supprimer la sous catégorie ' + size.libelle + '?',
+            message: 'Êtes-vous sûr de vouloir supprimer la fonctionnalité ' + feature.libelle + ' ?',
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.featureService.deleteFeature(size!.id!).subscribe({
-                    next: () => {
-                        this.features.update((subCategories) => subCategories.filter((val) => val.id !== size!.id));
-                    }
-                });
+                console.log(feature);
+                this.onDeleteFeature(feature);
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Successful',
-                    detail: 'SubCategory Deleted',
+                    summary: 'Suppression',
+                    detail: 'Fonctionnalité supprimée avec succès.',
                     life: 3000
                 });
+            }
+        });
+    }
+
+    onDeleteFeature(feature: Feature) {
+        this.featureService.deleteFeature(feature!.id!).subscribe({
+            next: () => {
+                this.features.update((features) => features.filter((val) => val.id !== feature!.id));
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
             }
         });
     }
@@ -148,21 +165,36 @@ export class FeaturesComponent implements OnInit {
 
         if (this.featureFormGroup.value.id) {
             this.featureService.updateFeature(this.featureFormGroup.value).subscribe({
-                next: () => {
-                    this.features.update((subCategories) =>
-                        subCategories.map((subCategory) => {
-                            if (subCategory.id === this.featureFormGroup.value.id) {
-                                return { ...subCategory, ...this.featureFormGroup.value };
-                            }
-                            return subCategory;
-                        })
-                    );
+                next: (feature) => {
+                    this.features.update((features) => features.map((f) => (f.id === feature.id ? feature : f)));
+                    this.featureDialog = false;
+                    this.featureFormGroup.reset();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Modification',
+                        detail: 'La fonctionnalités a été modifiée avec succès.',
+                        life: 3000
+                    });
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
                 }
             });
         } else {
             this.featureService.createFeature(this.featureFormGroup.value).subscribe({
-                next: () => {
-                    this.features.update((subCategories) => [...subCategories, this.featureFormGroup.value]);
+                next: (feature) => {
+                    this.featureDialog = false;
+                    this.featureFormGroup.reset();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Création',
+                        detail: 'La fonctionnalités a été créée avec succès.',
+                        life: 3000
+                    });
+                    this.features.update((features) => [...features, feature]);
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
                 }
             });
         }

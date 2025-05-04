@@ -59,10 +59,9 @@ public class ProfilServiceImpl implements ProfilService {
     }
 
     @Override
-    public String deleteProfil(Long id) {
+    public void deleteProfil(Long id) {
         getProfilById(id);
         profilRepository.deleteById(id);
-        return "Le profil a été bien supprimé";
     }
 
     @Override

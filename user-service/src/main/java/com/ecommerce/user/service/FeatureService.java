@@ -14,6 +14,6 @@ public interface FeatureService {
 
     FeatureDto updateFeature(Long id, FeatureDto featureDto);
 
-    String deleteFeature(Long id);
+    void deleteFeature(Long id);
 
 }

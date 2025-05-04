@@ -18,9 +18,11 @@ import { TagModule } from 'primeng/tag';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { Profil } from '../../models/user/role.model';
+import { Profil } from '../../models/user/profil.model';
 import { ProfilService } from '../../services/profil.service';
 import { PickListModule } from 'primeng/picklist';
+import { FeatureService } from '../../services/feature.service';
+import { Feature } from '../../models/user/feature.model';
 
 @Component({
     selector: 'app-profils',
@@ -56,46 +58,51 @@ export class ProfilsComponent implements OnInit {
     profilFormGroup!: FormGroup;
 
     profilService = inject(ProfilService);
+    featureService = inject(FeatureService);
     messageService = inject(MessageService);
     confirmationService = inject(ConfirmationService);
     formBuilder = inject(FormBuilder);
 
     profils = signal<Profil[]>([]);
-
-    profil!: Profil;
-
-    selectedProfils!: Profil[] | null;
-
-    submitted: boolean = false;
+    loading = signal(false);
 
     @ViewChild('dt') dt!: Table;
 
-    sourceCities: any[] = [];
-
-    targetCities: any[] = [];
+    sourceFeatures: any[] = [];
 
     ngOnInit() {
         this.initProfilFormGroup();
         this.profilService.getProfils().subscribe({
             next: (profils) => {
                 this.profils.set(profils);
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
+        this.featureService.getFeatures().subscribe({
+            next: (features) => {
+                this.sourceFeatures = features;
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
             }
         });
     }
 
+    get formControls() {
+        return this.profilFormGroup.controls;
+    }
+
     initProfilFormGroup(profil?: Profil) {
         this.profilFormGroup = this.formBuilder.group({
+            id: new FormControl(profil?.id || null),
             name: new FormControl(profil?.name || '', [Validators.required])
         });
     }
 
-    onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-    }
-
     openNew() {
-        this.profil = { id: 0, name: '' };
-        this.submitted = false;
+        this.initProfilFormGroup();
         this.profilDialog = true;
     }
 
@@ -104,58 +111,78 @@ export class ProfilsComponent implements OnInit {
         this.profilDialog = true;
     }
 
-    deleteSelectedProfils() {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete the selected products?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.selectedProfils = null;
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Products Deleted',
-                    life: 3000
-                });
-            }
-        });
-    }
-
     hideDialog() {
         this.profilDialog = false;
-        this.submitted = false;
+        this.profilFormGroup.reset();
     }
 
     deleteProfil(profil: Profil) {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete ' + profil.name + '?',
-            header: 'Confirm',
+            message: 'Êtes-vous sur de vouloir supprimer le profil ' + profil.name + '?',
+            header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.profil = { id: 0, name: '' };
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Product Deleted',
-                    life: 3000
+                this.profilService.deleteProfil(profil.id).subscribe({
+                    next: () => {
+                        this.profils.update((profils) => profils.filter((p) => p.id !== profil.id));
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Suppression',
+                            detail: 'Profile supprimé avec succès.',
+                            life: 3000
+                        });
+                    },
+                    error: (error) => {
+                        console.log(error); //TODO: handle error
+                    }
                 });
             }
         });
     }
 
     saveProfil() {
-        this.profilService.createProfil(this.profilFormGroup.value).subscribe({
-            next: (profil) => {
-                this.profils.update((profils) => [...profils, profil]);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Product Created',
-                    life: 3000
-                });
-                this.profilDialog = false;
-                this.profilFormGroup.reset();
-            }
-        });
+        if (this.profilFormGroup.invalid) {
+            return;
+        }
+        this.loading.set(true);
+        if (this.profilFormGroup.value.id === null) {
+            this.profilService.createProfil(this.profilFormGroup.value).subscribe({
+                next: (profil) => {
+                    this.profils.update((profils) => [...profils, profil]);
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Création',
+                        detail: 'Le profil a été création avec succès.',
+                        life: 3000
+                    });
+                    this.profilDialog = false;
+                    this.loading.set(false);
+                    this.profilFormGroup.reset();
+                },
+                error: (error) => {
+                    this.loading.set(false);
+                    console.log(error); //TODO: handle error
+                }
+            });
+        } else {
+            this.profilService.updateProfil(this.profilFormGroup.value).subscribe({
+                next: (profil) => {
+                    this.profils.update((profils) => profils.map((p) => (p.id === profil.id ? profil : p)));
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Modification',
+                        detail: 'Le profil a été modifié avec succès.',
+                        life: 3000
+                    });
+                    this.profilDialog = false;
+                    this.loading.set(false);
+                    this.profilFormGroup.reset();
+                },
+                error: (error) => {
+                    this.loading.set(false);
+                    console.log(error); //TODO: handle error
+                }
+            });
+        }
     }
 }

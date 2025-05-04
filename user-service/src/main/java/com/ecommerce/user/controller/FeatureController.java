@@ -41,8 +41,9 @@ public class FeatureController {
 
 
     @DeleteMapping("/{id}") // http://localhost:8080/api/features/1
-    public ResponseEntity<String> deleteFeature(@PathVariable Long id) {
-        return new ResponseEntity<>(featureService.deleteFeature(id), HttpStatus.OK);
+    public ResponseEntity<Void> deleteFeature(@PathVariable Long id) {
+        featureService.deleteFeature(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

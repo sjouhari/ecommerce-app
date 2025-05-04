@@ -49,9 +49,8 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
     @Override
-    public String deleteFeature(Long id) {
+    public void deleteFeature(Long id) {
         getFeatureById(id);
         featureRepository.deleteById(id);
-        return "Feature deleted successfully";
     }
 }

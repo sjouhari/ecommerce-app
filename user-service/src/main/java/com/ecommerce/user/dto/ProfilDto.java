@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -20,7 +21,6 @@ public class ProfilDto {
     @NotBlank(message = "Name is required")
     private String name;
 
-    @NotNull(message = "Features is required")
-    Set<FeatureDto> features;
+    Set<FeatureDto> features = new HashSet<>();
 
 }

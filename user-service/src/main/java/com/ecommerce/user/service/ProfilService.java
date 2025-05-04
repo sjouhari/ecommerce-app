@@ -15,7 +15,7 @@ public interface ProfilService {
 
     ProfilDto updateProfil(Long id, ProfilDto profilDto);
 
-    String deleteProfil(Long id);
+    void deleteProfil(Long id);
 
     ProfilDto addFeaturesToProfil(ProfilFeaturesDto profilFeaturesDto);
 

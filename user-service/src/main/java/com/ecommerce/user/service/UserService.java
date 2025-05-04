@@ -16,7 +16,7 @@ public interface UserService {
 
     UserDto updateUser(Long id, UserDto userDto);
 
-    String deleteUser(Long id);
+    void deleteUser(Long id);
 
     boolean existsById(Long id);
 
