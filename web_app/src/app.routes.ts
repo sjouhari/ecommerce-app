@@ -15,6 +15,7 @@ import { ProfilsComponent } from './app/pages/profils/profils.component';
 import { SizesComponent } from './app/pages/sizes/sizes.component';
 import { FeaturesComponent } from './app/pages/features/features.component';
 import { HomeComponent } from './app/pages/home/home.component';
+import { ListProductsComponent } from './app/pages/list-products/list-products.component';
 
 export const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -65,6 +66,7 @@ export const appRoutes: Routes = [
         ]
     },
     { path: 'landing', component: HomeComponent },
+    { path: 'list-products', component: ListProductsComponent },
     { path: 'notfound', component: Notfound },
     { path: '**', redirectTo: '/notfound' }
 ];

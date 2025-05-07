@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,5 +21,7 @@ public class CategoryDto {
 
     @NotBlank(message = "Description is required")
     private String description;
+
+    private List<SubCategoryDto> subCategories;
 
 }

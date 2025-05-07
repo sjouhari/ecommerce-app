@@ -23,17 +23,6 @@ import { Product } from '../../models/product/product.model';
 import { SubCategory } from '../../models/category/sub-category.model';
 import { SubCategoryService } from '../../services/sub-category.service';
 
-interface Column {
-    field: string;
-    header: string;
-    customExportHeader?: string;
-}
-
-interface ExportColumn {
-    title: string;
-    dataKey: string;
-}
-
 @Component({
     selector: 'app-products',
     standalone: true,
@@ -59,7 +48,7 @@ interface ExportColumn {
         ConfirmDialogModule
     ],
     templateUrl: 'products.component.html',
-    providers: [MessageService, ProductService, ConfirmationService]
+    providers: [MessageService, ConfirmationService]
 })
 export class ProductsComponent implements OnInit {
     productDialog: boolean = false;
@@ -83,13 +72,20 @@ export class ProductsComponent implements OnInit {
 
     @ViewChild('dt') dt!: Table;
 
-    exportColumns!: ExportColumn[];
-
-    cols!: Column[];
-
     ngOnInit() {
-        this.loadDemoData();
+        this.statuses = [
+            { label: 'Nouveau', value: 'NOUVEAU' },
+            { label: 'Occasion', value: 'OCCASION' },
+            { label: 'Remis à neuf', value: 'REMIS_A_NEUF' }
+        ];
+
         this.initProductFormGroup();
+
+        this.productService.getProducts().subscribe({
+            next: (products) => {
+                this.products.set(products);
+            }
+        });
 
         this.subCategoryService.getSubCategories().subscribe({
             next: (subCategories) => {
@@ -100,34 +96,12 @@ export class ProductsComponent implements OnInit {
 
     initProductFormGroup(product?: Product) {
         this.productFormGroup = this.formBuilder.group({
-            // id: new FormControl(product?.id || null),
+            id: new FormControl(product?.id || null),
             name: new FormControl(product?.name || '', [Validators.required]),
             description: new FormControl(product?.description || '', [Validators.required]),
             status: new FormControl(product?.status || '', [Validators.required]),
             subCategoryId: new FormControl(product?.subCategoryId || '', [Validators.required])
         });
-    }
-
-    exportCSV() {
-        this.dt.exportCSV();
-    }
-
-    loadDemoData() {
-        this.statuses = [
-            { label: 'Nouveau', value: 'NOUVEAU' },
-            { label: 'Occasion', value: 'OCCASION' },
-            { label: 'Remis à neuf', value: 'REMIS_A_NEUF' }
-        ];
-
-        this.cols = [
-            { field: 'code', header: 'Code', customExportHeader: 'Product Code' },
-            { field: 'name', header: 'Name' },
-            { field: 'image', header: 'Image' },
-            { field: 'price', header: 'Price' },
-            { field: 'category', header: 'Category' }
-        ];
-
-        this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
     }
 
     onGlobalFilter(table: Table, event: Event) {
