@@ -1,8 +1,10 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { SubCategory } from './../../models/category/sub-category.model';
+import { Category } from './../../models/category/category.model';
+import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
@@ -20,8 +22,9 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product/product.model';
-import { SubCategory } from '../../models/category/sub-category.model';
-import { SubCategoryService } from '../../services/sub-category.service';
+import { CategoryService } from '../../services/category.service';
+import { Size } from '../../models/category/size.model';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
     selector: 'app-products',
@@ -40,6 +43,7 @@ import { SubCategoryService } from '../../services/sub-category.service';
         TextareaModule,
         SelectModule,
         RadioButtonModule,
+        CheckboxModule,
         InputNumberModule,
         DialogModule,
         TagModule,
@@ -54,7 +58,7 @@ export class ProductsComponent implements OnInit {
     productDialog: boolean = false;
 
     productService = inject(ProductService);
-    subCategoryService = inject(SubCategoryService);
+    categoryService = inject(CategoryService);
     messageService = inject(MessageService);
     confirmationService = inject(ConfirmationService);
 
@@ -63,12 +67,14 @@ export class ProductsComponent implements OnInit {
 
     products = signal<Product[]>([]);
 
-    selectedProducts!: Product[] | null;
-
-    submitted: boolean = false;
-
     statuses!: any[];
+    categories = signal<Category[]>([]);
     subCategories = signal<SubCategory[]>([]);
+    sizes = signal<Size[]>([]);
+
+    selectedProducts!: Product[] | null;
+    selectedCategory!: Category | null;
+    selectedSubCategory!: SubCategory | null;
 
     @ViewChild('dt') dt!: Table;
 
@@ -87,9 +93,9 @@ export class ProductsComponent implements OnInit {
             }
         });
 
-        this.subCategoryService.getSubCategories().subscribe({
-            next: (subCategories) => {
-                this.subCategories.set(subCategories);
+        this.categoryService.getCategories().subscribe({
+            next: (categories) => {
+                this.categories.set(categories);
             }
         });
     }
@@ -100,8 +106,50 @@ export class ProductsComponent implements OnInit {
             name: new FormControl(product?.name || '', [Validators.required]),
             description: new FormControl(product?.description || '', [Validators.required]),
             status: new FormControl(product?.status || '', [Validators.required]),
-            subCategoryId: new FormControl(product?.subCategoryId || '', [Validators.required])
+            categoryId: new FormControl(this.selectedCategory?.id || '', [Validators.required]),
+            subCategoryId: new FormControl(product?.subCategoryId || '', [Validators.required]),
+            sizes: new FormControl(this.selectedSubCategory?.sizes, [Validators.required]),
+            stock: new FormArray(
+                (product?.stock || []).map((stock) =>
+                    this.formBuilder.group({
+                        id: new FormControl(stock.id || null),
+                        size: new FormControl(stock.size || null),
+                        color: new FormControl(stock.color || '', [Validators.required]),
+                        quantity: new FormControl(stock.quantity || '', [Validators.required]),
+                        price: new FormControl(stock.price || '', [Validators.required])
+                    })
+                )
+            )
         });
+    }
+
+    onSelectCategory(category: Category) {
+        this.selectedCategory = category;
+        this.subCategories.set(category.subCategories);
+    }
+
+    onSelectSubCategory(subCategory: SubCategory) {
+        this.selectedSubCategory = subCategory;
+        this.sizes.set(subCategory.sizes);
+    }
+
+    get stock(): FormArray {
+        return this.productFormGroup.get('stock') as FormArray;
+    }
+
+    addStockEntry() {
+        this.stock.push(
+            this.formBuilder.group({
+                size: new FormControl(null),
+                color: new FormControl('', Validators.required),
+                quantity: new FormControl('', Validators.required),
+                price: new FormControl('', Validators.required)
+            })
+        );
+    }
+
+    removeStockEntry(index: number) {
+        this.stock.removeAt(index);
     }
 
     onGlobalFilter(table: Table, event: Event) {
@@ -114,6 +162,7 @@ export class ProductsComponent implements OnInit {
 
     editProduct(product: Product) {
         this.productDialog = true;
+        this.initProductFormGroup(product);
     }
 
     deleteSelectedProducts() {
@@ -136,7 +185,6 @@ export class ProductsComponent implements OnInit {
 
     hideDialog() {
         this.productDialog = false;
-        this.submitted = false;
     }
 
     deleteProduct(product: Product) {
@@ -182,7 +230,6 @@ export class ProductsComponent implements OnInit {
     }
 
     saveProduct() {
-        this.submitted = true;
         let _products = this.products();
         if (true) {
             if (true) {

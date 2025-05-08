@@ -1,7 +1,6 @@
 package com.ecommerce.category.mapper;
 
 import com.ecommerce.category.dto.SubCategoryDto;
-import com.ecommerce.category.entity.Category;
 import com.ecommerce.category.entity.SubCategory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -10,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 
 @Mapper
-public interface SubCategoryMapper {
+public interface SubCategoryMapper extends SizeMapper {
 
     SubCategoryMapper INSTANCE = Mappers.getMapper(SubCategoryMapper.class);
 

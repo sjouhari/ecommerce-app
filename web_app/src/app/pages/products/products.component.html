@@ -54,7 +54,7 @@
                 Statut
                 <p-sortIcon field="status" />
             </th>
-            <th style="min-width: 7rem"></th>
+            <th style="min-width: 8rem"></th>
         </tr>
     </ng-template>
     <ng-template #body let-product>
@@ -80,7 +80,7 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="productDialog" [style]="{ width: '80%', padding: '1.5rem' }" header="Détail du produit" [modal]="true">
+<p-dialog [(visible)]="productDialog" [style]="{ width: '70%', padding: '1.5rem' }" header="Détail du produit" [modal]="true">
     <ng-template #content>
         <form [formGroup]="productFormGroup" class="flex flex-col gap-3">
             <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/'" [alt]="" class="block m-auto pb-4" *ngIf="" />
@@ -88,11 +88,10 @@
                 <div class="col-span-6">
                     <label for="name" class="block font-bold mb-2">Nom</label>
                     <input type="text" pInputText id="name" formControlName="name" required autofocus fluid />
-                    <small class="text-red-500" *ngIf="submitted">Name is required.</small>
                 </div>
                 <div class="col-span-6">
                     <label for="status" class="block font-bold mb-2">Statut</label>
-                    <p-select inputId="status" [options]="statuses" formControlName="status" optionLabel="label" optionValue="label" placeholder="Select a Status" fluid />
+                    <p-select inputId="status" [options]="statuses" formControlName="status" optionLabel="label" optionValue="value" placeholder="Sélectionner un statut" fluid />
                 </div>
             </div>
             <div>
@@ -100,45 +99,85 @@
                 <textarea id="description" pTextarea formControlName="description" required rows="3" cols="20" fluid></textarea>
             </div>
 
-            <div>
-                <span class="block font-bold mb-4">Sous Catégorie</span>
-                <div class="grid grid-cols-12 gap-5">
-                    @for(subCategory of subCategories(); track subCategory.id) {
-                        <div class="flex items-center mb-3">
-                            <p-radiobutton formControlName="subCategoryId" [value]="subCategory.id" [inputId]="subCategory.id + ''" />
-                            <label for="ingredient1" class="ml-2">{{ subCategory.name }}</label>
-                        </div>
-                    }
+            <div class="grid grid-cols-12 gap-4 mb-2">
+                <div class="col-span-6">
+                    <label for="categoryId" class="block font-bold mb-2">Catégorie</label>
+                    <p-select inputId="categoryId" [options]="categories()" formControlName="categoryId" optionLabel="name" placeholder="Sélectionner une catégorie" (onChange)="onSelectCategory($event.value)" fluid></p-select>
                 </div>
+
+                @if(selectedCategory) {
+                    <div class="col-span-6">
+                        <label for="subCategoryId" class="block font-bold mb-2">Sous Catégorie</label>
+                        <p-select inputId="subCategoryId" [options]="subCategories()" formControlName="subCategoryId" optionLabel="name" placeholder="Sélectionner une sous catégorie" (onChange)="onSelectSubCategory($event.value)" fluid></p-select>
+                    </div>
+                }
             </div>
             
-            <div>
-                <span class="block font-bold mb-4">Tailles</span>
-                <div class="grid grid-cols-12 gap-5">
-                    @for(subCategory of subCategories(); track subCategory.id) {
-                        <div class="flex items-center mb-3">
-                            <p-radiobutton formControlName="subCategoryId" [value]="subCategory.id" inputId="ingredient1" />
-                            <label for="ingredient1" class="ml-2">{{ subCategory.name }}</label>
-                        </div>
-                    }
+            @if(selectedSubCategory) {
+                <div class="grid grid-cols-12 gap-4 mb-2">
+                    <div>
+                        <label class="block font-bold mb-2">Tailles</label>
+                        @for(size of sizes(); track size.id) {
+                            <div class="flex items-center">
+                                <p-checkbox [inputId]="size.libelle" [value]="size" formControlName="sizes"></p-checkbox>
+                                <label [for]="size.libelle" class="ml-2">{{ size.libelle }}</label>
+                            </div>
+                        }
+                    </div>
                 </div>
+            }
+
+            <div>
+                <label for="stock" class="block font-bold mb-2">Stock</label>
+                <p-button
+                    label="Ajouter un stock"
+                    icon="pi pi-plus"
+                    (click)="addStockEntry()"
+                    class="mt-3"
+                />
             </div>
 
-            <span class="block font-bold mb-4">Stock</span>
-            <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-4">
-                    <label for="price" class="block font-bold mb-3">Color</label>
-                    <p-inputnumber id="price" mode="currency" currency="USD" locale="en-US" fluid />
-                </div>
-                <div class="col-span-4">
-                    <label for="price" class="block font-bold mb-3">Price</label>
-                    <p-inputnumber id="price" mode="currency" currency="USD" locale="en-US" fluid />
-                </div>
-                <div class="col-span-4">
-                    <label for="quantity" class="block font-bold mb-3">Quantity</label>
-                    <p-inputnumber id="quantity" fluid />
-                </div>
+            <div formArrayName="stock">
+                @for(stock of stock.controls; let i = $index; track i) {
+                    <div [formGroupName]="i" class="grid grid-cols-12 gap-4 mb-4 border p-3 rounded-md">
+                    
+                        <!-- Taille -->
+                        <div class="col-span-3">
+                            <label class="block font-bold mb-2">Taille</label>
+                            <input type="text" pInputText formControlName="size" fluid />
+                        </div>
+
+                        <!-- Couleur -->
+                        <div class="col-span-3">
+                            <label class="block font-bold mb-2">Couleur</label>
+                            <input type="text" pInputText formControlName="color" fluid />
+                            @if(stock.get('color')?.invalid && stock.get('color')?.touched) {
+                                <small class="text-red-500">Champ requis</small>
+                            }
+                        </div>
+
+                        <!-- Quantité -->
+                        <div class="col-span-3">
+                            <label class="block font-bold mb-2">Quantité</label>
+                            <p-inputnumber formControlName="quantity" fluid />
+                        </div>
+
+                        <!-- Prix -->
+                        <div class="col-span-3">
+                            <label class="block font-bold mb-2">Prix</label>
+                            <p-inputnumber
+                                formControlName="price"
+                                mode="currency"
+                                currency="EUR"
+                                locale="fr-FR"
+                                fluid
+                            />
+                        </div>
+                    </div>
+                }
             </div>
+
+
         </form>
     </ng-template>
 

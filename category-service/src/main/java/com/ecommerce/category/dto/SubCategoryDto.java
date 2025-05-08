@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,5 +25,7 @@ public class SubCategoryDto {
 
     @NotNull(message = "Category id is required")
     private Long categoryId;
+
+    private List<SizeDto> sizes;
 
 }
