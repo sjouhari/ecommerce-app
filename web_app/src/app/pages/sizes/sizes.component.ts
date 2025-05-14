@@ -19,9 +19,9 @@ import { TagModule } from 'primeng/tag';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { SubCategoryService } from '../../services/sub-category.service';
 import { SizeService } from '../../services/size.service';
-import { SubCategory } from '../../models/category/sub-category.model';
+import { Category } from '../../models/category/category.model';
+import { CategoryService } from '../../services/category.service';
 
 @Component({
     selector: 'app-sizes',
@@ -56,7 +56,7 @@ export class SizesComponent implements OnInit {
     sizeFormGroup!: FormGroup;
 
     sizeService = inject(SizeService);
-    subCategoryService = inject(SubCategoryService);
+    categoryService = inject(CategoryService);
     messageService = inject(MessageService);
     confirmationService = inject(ConfirmationService);
     formBuilder = inject(FormBuilder);
@@ -68,7 +68,7 @@ export class SizesComponent implements OnInit {
 
     @ViewChild('dt') dt!: Table;
 
-    subCategories = signal<SubCategory[]>([]);
+    categories = signal<Category[]>([]);
 
     ngOnInit() {
         this.init();
@@ -87,8 +87,12 @@ export class SizesComponent implements OnInit {
         this.sizeFormGroup = this.formBuilder.group({
             id: new FormControl(size?.id || null),
             libelle: new FormControl(size?.libelle || '', [Validators.required]),
-            subCategoryId: new FormControl(size?.subCategoryId || '', [Validators.required])
+            categoryId: new FormControl(size?.categoryId || '', [Validators.required])
         });
+    }
+
+    get formControls() {
+        return this.sizeFormGroup.controls;
     }
 
     onGlobalFilter(table: Table, event: Event) {
@@ -96,17 +100,17 @@ export class SizesComponent implements OnInit {
     }
 
     openNew() {
-        this.subCategoryService.getSubCategories().subscribe({
-            next: (subCategories) => {
-                this.subCategories.set(subCategories);
-                if (subCategories.length > 0) {
+        this.categoryService.getCategories().subscribe({
+            next: (categories) => {
+                if (categories.length > 0) {
+                    this.categories.set(categories);
                     this.initSizeFormGroup();
                     this.sizeDialog = true;
                 } else {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error',
-                        detail: 'Vous devez créer au moins une sous catégorie avant de pouvoir créer une taille',
+                        summary: 'Erreur',
+                        detail: 'Vous devez créer au moins une catégorie avant de pouvoir créer une taille',
                         life: 3000
                     });
                 }
@@ -142,6 +146,7 @@ export class SizesComponent implements OnInit {
 
     hideDialog() {
         this.sizeDialog = false;
+        this.sizeFormGroup.reset();
     }
 
     deleteSize(size: Size) {
@@ -174,6 +179,7 @@ export class SizesComponent implements OnInit {
 
     saveSize() {
         if (this.sizeFormGroup.invalid) {
+            this.sizeFormGroup.markAllAsTouched();
             return;
         }
 

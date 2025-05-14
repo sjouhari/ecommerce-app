@@ -24,4 +24,6 @@ public class CategoryDto {
 
     private List<SubCategoryDto> subCategories;
 
+    private List<SizeDto> sizes;
+
 }

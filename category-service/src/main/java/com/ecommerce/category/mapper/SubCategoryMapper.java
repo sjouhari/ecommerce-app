@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 
 @Mapper
-public interface SubCategoryMapper extends SizeMapper {
+public interface SubCategoryMapper {
 
     SubCategoryMapper INSTANCE = Mappers.getMapper(SubCategoryMapper.class);
 

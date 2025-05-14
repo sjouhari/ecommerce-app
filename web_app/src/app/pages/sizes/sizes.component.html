@@ -39,8 +39,8 @@
                 Libellé
                 <p-sortIcon field="libelle" />
             </th>
-            <th pSortableColumn="subCategoryId">Sous Catégorie
-                <p-sortIcon field="subCategoryId" />
+            <th pSortableColumn="categoryId">Catégorie
+                <p-sortIcon field="categoryId" />
             </th>
             <th style="min-width: 7rem"></th>
         </tr>
@@ -51,7 +51,7 @@
                 <p-tableCheckbox [value]="size" />
             </td>
             <td style="min-width: 16rem">{{ size.libelle }}</td>
-            <td style="min-width: 16rem">{{ size.subCategoryId }}</td>
+            <td style="min-width: 16rem">{{ size.categoryId }}</td>
             <td>
                 <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editSize(size)" />
                 <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteSize(size)" />
@@ -63,23 +63,34 @@
 <p-dialog [(visible)]="sizeDialog" [style]="{ width: '600px' }" header="Taille" [modal]="true">
         <ng-template #content>
             <form [formGroup]="sizeFormGroup" (ngSubmit)="saveSize()" class="flex flex-col gap-3 mt-4">
+                <input type="hidden" formControlName="id" />
                 <label for="name" class="block font-bold mb-2">Sous Catégorie</label>
                 <div>
-                    @for(subCategory of subCategories(); track subCategory.id) {
+                    @for(category of categories(); track category.id) {
                         <div class="flex items-center mb-3">
-                            <p-radiobutton formControlName="subCategoryId" [value]="subCategory.id" [inputId]="subCategory.name + '-' + subCategory.id" />
-                            <label [for]="subCategory.name + '-' + subCategory.id" class="ml-2">{{ subCategory.name }}</label>
+                            <p-radiobutton formControlName="categoryId" [value]="category.id" [inputId]="category.name + '-' + category.id" />
+                            <label [for]="category.name + '-' + category.id" class="ml-2">{{ category.name }}</label>
+                            @if(formControls['categoryId'].errors && formControls['categoryId'].touched) {
+                                @if(formControls['categoryId'].errors['required']) {
+                                    <small class="text-red-500">Le nom du produit est obligatoire.</small>
+                                }
+                            }
                         </div>
                     }
                 </div>
                 <div>
-                    <label for="name" class="block font-bold mb-2">Libellé</label>
-                    <input type="text" pInputText id="name" formControlName="libelle" required autofocus fluid />
-                    <small class="text-red-500">Libellé is required.</small>
+                    <label for="libelle" class="block font-bold mb-2">Libellé</label>
+                    <input type="text" pInputText id="libelle" formControlName="libelle" fluid />
+                    @if(formControls['libelle'].errors && formControls['libelle'].touched) {
+                        @if(formControls['libelle'].errors['required']) {
+                            <small class="text-red-500">Le libelle de la taille est obligatoire.</small>
+                        }
+                    }
+                    
                 </div>
                 <div class="flex justify-end gap-3">
                     <p-button type="button" label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
-                    <p-button type="submit" label="Save" icon="pi pi-check" />
+                    <p-button type="submit" label="Save" icon="pi pi-check" [loading]="loading()" [disabled]="!sizeFormGroup.valid || loading()" />
                 </div>
             </form>
         </ng-template>

@@ -18,7 +18,7 @@ public class SizeDto {
     @NotBlank(message = "Libelle is required")
     private String libelle;
 
-    @NotNull(message = "Sub category id is required")
-    private Long subCategoryId;
+    @NotNull(message = "Category id is required")
+    private Long categoryId;
 
 }

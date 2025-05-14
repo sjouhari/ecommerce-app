@@ -26,6 +26,4 @@ public class SubCategoryDto {
     @NotNull(message = "Category id is required")
     private Long categoryId;
 
-    private List<SizeDto> sizes;
-
 }

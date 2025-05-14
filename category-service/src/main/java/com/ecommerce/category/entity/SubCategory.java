@@ -28,7 +28,4 @@ public class SubCategory extends BaseEntity {
 
     @ManyToOne
     private Category category;
-
-    @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL)
-    private List<Size> sizes;
 }

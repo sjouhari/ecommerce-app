@@ -15,7 +15,7 @@ public interface SizeMapper {
 
     Size sizeDtoToSize(SizeDto sizeDto);
 
-    @Mapping(target = "subCategoryId", source = "subCategory.id")
+    @Mapping(target = "categoryId", source = "category.id")
     SizeDto sizeToSizeDto(Size size);
 
     List<SizeDto> sizesToSizeDtos(List<Size> sizes);

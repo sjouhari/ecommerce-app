@@ -1,11 +1,12 @@
 package com.ecommerce.category.service.impl;
 
 import com.ecommerce.category.dto.SizeDto;
+import com.ecommerce.category.entity.Category;
 import com.ecommerce.category.entity.Size;
 import com.ecommerce.category.entity.SubCategory;
 import com.ecommerce.category.mapper.SizeMapper;
+import com.ecommerce.category.repository.CategoryRepository;
 import com.ecommerce.category.repository.SizeRepository;
-import com.ecommerce.category.repository.SubCategoryRepository;
 import com.ecommerce.category.service.SizeService;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class SizeServiceImpl implements SizeService {
     private SizeRepository sizeRepository;
 
     @Autowired
-    private SubCategoryRepository subCategoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Override
     public List<SizeDto> getAllSizes() {
@@ -39,10 +40,10 @@ public class SizeServiceImpl implements SizeService {
     @Override
     public SizeDto createSize(SizeDto sizeDto) {
         Size size = SizeMapper.INSTANCE.sizeDtoToSize(sizeDto);
-        SubCategory subCategory = subCategoryRepository.findById(sizeDto.getSubCategoryId()).orElseThrow(
-                () -> new ResourceNotFoundException("SubCategory", "id", sizeDto.getSubCategoryId().toString())
+        Category category = categoryRepository.findById(sizeDto.getCategoryId()).orElseThrow(
+                () -> new ResourceNotFoundException("Category", "id", sizeDto.getCategoryId().toString())
         );
-        size.setSubCategory(subCategory);
+        size.setCategory(category);
         Size savedSize = sizeRepository.save(size);
         return SizeMapper.INSTANCE.sizeToSizeDto(savedSize);
     }
@@ -51,10 +52,10 @@ public class SizeServiceImpl implements SizeService {
     public SizeDto updateSize(Long id, SizeDto sizeDto) {
         getSizeById(id);
         Size size = SizeMapper.INSTANCE.sizeDtoToSize(sizeDto);
-        SubCategory subCategory = subCategoryRepository.findById(sizeDto.getSubCategoryId()).orElseThrow(
-                () -> new ResourceNotFoundException("SubCategory", "id", sizeDto.getSubCategoryId().toString())
+        Category category = categoryRepository.findById(sizeDto.getCategoryId()).orElseThrow(
+                () -> new ResourceNotFoundException("SubCategory", "id", sizeDto.getCategoryId().toString())
         );
-        size.setSubCategory(subCategory);
+        size.setCategory(category);
         size.setId(id);
         Size updatedSize = sizeRepository.save(size);
         return SizeMapper.INSTANCE.sizeToSizeDto(updatedSize);

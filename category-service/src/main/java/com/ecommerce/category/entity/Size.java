@@ -21,6 +21,6 @@ public class Size extends BaseEntity {
     private String libelle;
 
     @ManyToOne
-    private SubCategory subCategory;
+    private Category category;
 
 }

@@ -1,5 +1,5 @@
 export interface Size {
     id: number;
-    subCategoryId: number;
+    categoryId: number;
     libelle: string;
 }
