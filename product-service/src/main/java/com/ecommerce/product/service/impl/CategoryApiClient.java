@@ -21,7 +21,7 @@ public interface CategoryApiClient {
     @GetMapping("/api/categories/{id}")
     CategoryDto getCategoryById(@PathVariable Long id, @RequestHeader("Authorization") String token);
 
-    @GetMapping("/api/sizes/existsByLibelleAndSubCategoryId/{name}/{subCategoryId}")
-    boolean sizeExistsByLibelleAndCategoryId(@PathVariable String name, @PathVariable Long subCategoryId, @RequestHeader("Authorization") String token);
+    @GetMapping("/api/sizes/existsByLibelleAndCategoryId/{name}/{categoryId}")
+    boolean sizeExistsByLibelleAndCategoryId(@PathVariable String name, @PathVariable Long categoryId, @RequestHeader("Authorization") String token);
 
 }

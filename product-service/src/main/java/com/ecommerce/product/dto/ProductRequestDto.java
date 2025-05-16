@@ -32,6 +32,9 @@ public class ProductRequestDto {
     @NotNull(message = "Status is required")
     private ProductStatus status;
 
+    @NotNull(message = "Category id is required")
+    private Long categoryId;
+
     @NotNull(message = "Sub category id is required")
     private Long subCategoryId;
 

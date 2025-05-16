@@ -89,11 +89,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto createProduct(String productJson, List<MultipartFile> images, String token) {
-
+        System.out.println(productJson);
         try {
             // Convert json to ProductRequestDto
             ObjectMapper mapper = new ObjectMapper();
             ProductRequestDto productDto = mapper.readValue(productJson, ProductRequestDto.class);
+            System.out.println(productDto);
 
             // Check if the product already exists by name
             if(productRepository.existsByName(productDto.getName())) {
@@ -101,14 +102,14 @@ public class ProductServiceImpl implements ProductService {
             }
 
             // Check if subcategory exists
-            if(!categoryApiClient.categoryExistsById(productDto.getSubCategoryId(), token)) {
+            if(!categoryApiClient.subCategoryExistsById(productDto.getSubCategoryId(), token)) {
                 throw new ResourceNotFoundException("SubCategory", "id", productDto.getSubCategoryId().toString());
             }
 
             // Check if sizes exist and belongs to subCategory
             productDto.getStock()
                     .forEach(stock -> {
-                        if(!categoryApiClient.sizeExistsByLibelleAndSubCategoryId(stock.getSize(), productDto.getSubCategoryId(), token)) {
+                        if(!categoryApiClient.sizeExistsByLibelleAndCategoryId(stock.getSize(), productDto.getSubCategoryId(), token)) {
                             throw new ResourceNotFoundException("Size", "name", stock.getSize());
                         }
                     });

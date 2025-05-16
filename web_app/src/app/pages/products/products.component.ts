@@ -1,4 +1,4 @@
-import { $t } from '@primeng/themes';
+import { FileUpload } from 'primeng/fileupload';
 import { SubCategory } from './../../models/category/sub-category.model';
 import { Category } from './../../models/category/category.model';
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
@@ -26,10 +26,10 @@ import { Product } from '../../models/product/product.model';
 import { CategoryService } from '../../services/category.service';
 import { Size } from '../../models/category/size.model';
 import { CheckboxModule } from 'primeng/checkbox';
-import { ImageUploadComponent } from '../../components/image-upload/image-upload.component';
 import { ProductColor } from '../../models/product/product-color';
 import { AuthService } from '../../services/auth.service';
 import { TVA } from '../../models/product/tva.model';
+import { PrimeNG } from 'primeng/config';
 
 @Component({
     selector: 'app-products',
@@ -55,7 +55,7 @@ import { TVA } from '../../models/product/tva.model';
         InputIconModule,
         IconFieldModule,
         ConfirmDialogModule,
-        ImageUploadComponent
+        FileUpload
     ],
     templateUrl: 'products.component.html',
     providers: [MessageService, ConfirmationService]
@@ -88,7 +88,7 @@ export class ProductsComponent implements OnInit {
     selectedProducts!: Product[] | null;
     selectedCategory!: Category | null;
     selectedSubCategory!: SubCategory | null;
-    selectedImages = signal<File[]>([]);
+    uploadedFiles: any[] = [];
 
     @ViewChild('dt') dt!: Table;
 
@@ -181,14 +181,36 @@ export class ProductsComponent implements OnInit {
         this.initProductFormGroup();
     }
 
-    onImageUpload(event: any) {
-        console.log(event.files);
-        this.selectedImages.set(event.files);
-    }
-
-    editProduct(product: Product) {
+    async editProduct(product: Product) {
         this.productDialog = true;
         this.initProductFormGroup(product);
+
+        const baseUrl = 'http://localhost:8080/api/products/images/';
+
+        const files = await Promise.all(
+            product.medias.map(async (media) => {
+                const url = `${baseUrl}${media.url}`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch ${url}`);
+                }
+
+                const blob = await response.blob();
+                const contentType = response.headers.get('Content-Type') || blob.type;
+                const file = new File([blob], media.url, { type: contentType });
+
+                // Optional: define objectURL for previews if needed
+                Object.defineProperty(file, 'objectURL', {
+                    writable: true,
+                    value: URL.createObjectURL(file)
+                });
+
+                return file;
+            })
+        );
+
+        this.uploadedFiles = files;
     }
 
     deleteSelectedProducts() {
@@ -259,8 +281,6 @@ export class ProductsComponent implements OnInit {
 
     saveProduct() {
         delete this.productFormGroup.value.categoryId;
-        console.log(this.productFormGroup.value);
-        console.log(this.selectedImages());
         if (this.productFormGroup.invalid) {
             this.productFormGroup.markAllAsTouched();
             return;
@@ -268,7 +288,7 @@ export class ProductsComponent implements OnInit {
 
         const formData = new FormData();
         formData.append('product', JSON.stringify(this.productFormGroup.value));
-        this.selectedImages().forEach((image) => formData.append('images', image));
+        this.uploadedFiles.forEach((image: File) => formData.append('images', image));
 
         if (this.productFormGroup.value.id) {
             console.log('MODIFICATION');
@@ -286,6 +306,13 @@ export class ProductsComponent implements OnInit {
                     });
                 }
             });
+        }
+    }
+
+    onUpload(event: any) {
+        console.log(this.uploadedFiles);
+        for (const file of event.currentFiles) {
+            this.uploadedFiles.push(file);
         }
     }
 }
