@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @Headers("Authorization: {token}")
 public interface CategoryApiClient {
 
-    @GetMapping("/api/subcategories/{id}")
-    boolean categoryExistsById(@PathVariable Long id, @RequestHeader("Authorization") String token);
+    @GetMapping("/api/subcategories/existsById/{id}")
+    boolean subCategoryExistsById(@PathVariable Long id, @RequestHeader("Authorization") String token);
 
     @GetMapping("/api/subcategories/{id}")
     SubCategoryDto getSubCategoryById(@PathVariable Long id, @RequestHeader("Authorization") String token);
@@ -22,6 +22,6 @@ public interface CategoryApiClient {
     CategoryDto getCategoryById(@PathVariable Long id, @RequestHeader("Authorization") String token);
 
     @GetMapping("/api/sizes/existsByLibelleAndSubCategoryId/{name}/{subCategoryId}")
-    boolean sizeExistsByLibelleAndSubCategoryId(@PathVariable String name, @PathVariable Long subCategoryId, @RequestHeader("Authorization") String token);
+    boolean sizeExistsByLibelleAndCategoryId(@PathVariable String name, @PathVariable Long subCategoryId, @RequestHeader("Authorization") String token);
 
 }
