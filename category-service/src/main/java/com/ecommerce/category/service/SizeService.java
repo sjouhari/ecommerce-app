@@ -16,5 +16,5 @@ public interface SizeService {
 
     void deleteSize(Long id);
 
-    boolean existsByLibelleAndSubCategoryId(String libelle, Long subCategoryId);
+    boolean existsByLibelleAndCategoryId(String libelle, Long categoryId);
 }

@@ -45,9 +45,10 @@ public class SizeController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/existsByLibelleAndSubCategoryId/{libelle}/{subCategoryId}")
-    public boolean existsByIdAndSubCategoryId(@PathVariable String libelle, @PathVariable Long subCategoryId) {
-        return sizeService.existsByLibelleAndSubCategoryId(libelle, subCategoryId);
+
+    @GetMapping("existsByLibelleAndCategoryId/{libelle}/{categoryId}")
+    public boolean existsByIdAndCategoryId(@PathVariable String libelle, @PathVariable Long categoryId) {
+        return sizeService.existsByLibelleAndCategoryId(libelle, categoryId);
     }
 
 }

@@ -68,7 +68,7 @@ public class SizeServiceImpl implements SizeService {
     }
 
     @Override
-    public boolean existsByLibelleAndSubCategoryId(String libelle, Long subCategoryId) {
-        return sizeRepository.existsByLibelleAndSubCategoryId(libelle, subCategoryId);
+    public boolean existsByLibelleAndCategoryId(String libelle, Long categoryId) {
+        return sizeRepository.existsByLibelleAndCategoryId(libelle, categoryId);
     }
 }
