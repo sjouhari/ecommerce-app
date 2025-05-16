@@ -1,15 +1,15 @@
 package com.ecommerce.shared.enums;
 
 public enum ProductColor {
-    RED,
-    GREEN,
-    BLUE,
-    YELLOW,
-    BLACK,
-    WHITE,
-    GRAY,
-    PINK,
+    ROUGE,
+    VERT,
+    BLEU,
+    JAUNE,
+    NOIR,
+    BLANC,
+    GRIS,
+    ROSE,
     ORANGE,
-    BROWN,
-    PURPLE
+    MARRON,
+    VIOLET
 }

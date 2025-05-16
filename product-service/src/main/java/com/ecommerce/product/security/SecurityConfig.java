@@ -12,10 +12,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -36,7 +32,7 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/images/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/products/images/**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**", "/api/tvas", "/api/tvas/**").hasAuthority("PRODUCT_READ")
 						.requestMatchers(HttpMethod.POST, "/api/products", "/api/tvas").hasAuthority("PRODUCT_CREATE")
 						.requestMatchers(HttpMethod.PUT, "/api/products/**", "/api/tvas/**").hasAuthority("PRODUCT_UPDATE")

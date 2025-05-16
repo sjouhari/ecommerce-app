@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductResponseDto {
-
     private Long id;
     private String name;
     private String description;
@@ -21,6 +20,8 @@ public class ProductResponseDto {
     private double reductionPercentage;
     private ProductStatus status;
     private Long subCategoryId;
+    private String categoryName;
+    private String subCategoryName;
     private Long sellerId;
     private TvaDto tva;
     private List<MediaDto> medias;

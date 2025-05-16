@@ -5,6 +5,8 @@ import com.ecommerce.product.dto.ProductResponseDto;
 import com.ecommerce.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -23,8 +29,13 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity<List<ProductResponseDto>> getAllProducts(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(productService.getAllProducts(token));
+    }
+
+    @GetMapping("/new")
+    public ResponseEntity<List<ProductResponseDto>> getAllNewProducts(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(productService.getNewProducts(token));
     }
 
     @GetMapping("/{id}")
@@ -46,13 +57,34 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.deleteProduct(id));
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/existsById/{id}")
     public ResponseEntity<Boolean> productExistsById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.productExistsById(id));
+    }
+
+    @GetMapping("/images/{imageName:.+}")
+    public ResponseEntity<Resource> getImage(@PathVariable String imageName) {
+        try {
+            Path imagePath = Paths.get("images/products/").resolve(imageName).normalize();
+            Resource resource = new UrlResource(imagePath.toUri());
+
+            if (resource.exists()) {
+                String contentType = Files.probeContentType(imagePath);
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(contentType))
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+
+        } catch (IOException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }

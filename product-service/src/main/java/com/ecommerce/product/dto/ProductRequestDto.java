@@ -22,12 +22,12 @@ public class ProductRequestDto {
 
     private String description;
 
-    private String type;
+    private String type = "product";
 
     @NotNull(message = "Reduction percentage is required")
     @Min(value = 0, message = "Reduction percentage must be between 0 and 100")
     @Max(value = 100, message = "Reduction percentage must be between 0 and 100")
-    private double reductionPercentage;
+    private double reductionPercentage = 0;
 
     @NotNull(message = "Status is required")
     private ProductStatus status;

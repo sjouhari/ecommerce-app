@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 export interface Product {
-    id?: string;
+    id?: number;
     code?: string;
     name?: string;
     description?: string;
@@ -1292,7 +1292,7 @@ export class ProductService {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
 
-        return text;
+        return +text;
     }
 
     generateName() {

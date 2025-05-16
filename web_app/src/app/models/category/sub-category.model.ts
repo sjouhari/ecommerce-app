@@ -5,5 +5,4 @@ export interface SubCategory {
     categoryId: number;
     name: string;
     description: string;
-    sizes: Size[];
 }

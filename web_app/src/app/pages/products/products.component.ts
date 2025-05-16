@@ -1,6 +1,7 @@
+import { $t } from '@primeng/themes';
 import { SubCategory } from './../../models/category/sub-category.model';
 import { Category } from './../../models/category/category.model';
-import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
@@ -25,6 +26,10 @@ import { Product } from '../../models/product/product.model';
 import { CategoryService } from '../../services/category.service';
 import { Size } from '../../models/category/size.model';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ImageUploadComponent } from '../../components/image-upload/image-upload.component';
+import { ProductColor } from '../../models/product/product-color';
+import { AuthService } from '../../services/auth.service';
+import { TVA } from '../../models/product/tva.model';
 
 @Component({
     selector: 'app-products',
@@ -49,16 +54,23 @@ import { CheckboxModule } from 'primeng/checkbox';
         TagModule,
         InputIconModule,
         IconFieldModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        ImageUploadComponent
     ],
     templateUrl: 'products.component.html',
     providers: [MessageService, ConfirmationService]
 })
 export class ProductsComponent implements OnInit {
     productDialog: boolean = false;
+    tva: TVA = {
+        id: 1,
+        name: 'TVA 3',
+        value: 0.05
+    };
 
     productService = inject(ProductService);
     categoryService = inject(CategoryService);
+    authService = inject(AuthService);
     messageService = inject(MessageService);
     confirmationService = inject(ConfirmationService);
 
@@ -71,10 +83,12 @@ export class ProductsComponent implements OnInit {
     categories = signal<Category[]>([]);
     subCategories = signal<SubCategory[]>([]);
     sizes = signal<Size[]>([]);
+    colors = Object.entries(ProductColor).map(([key, value]) => ({ key, value }));
 
     selectedProducts!: Product[] | null;
     selectedCategory!: Category | null;
     selectedSubCategory!: SubCategory | null;
+    selectedImages = signal<File[]>([]);
 
     @ViewChild('dt') dt!: Table;
 
@@ -103,17 +117,18 @@ export class ProductsComponent implements OnInit {
     initProductFormGroup(product?: Product) {
         this.productFormGroup = this.formBuilder.group({
             id: new FormControl(product?.id || null),
+            sellerId: new FormControl(product?.sellerId || this.authService.getCurrentUser()?.id),
+            tva: new FormControl(this.tva),
             name: new FormControl(product?.name || '', [Validators.required]),
             description: new FormControl(product?.description || '', [Validators.required]),
             status: new FormControl(product?.status || '', [Validators.required]),
             categoryId: new FormControl(this.selectedCategory?.id || '', [Validators.required]),
             subCategoryId: new FormControl(product?.subCategoryId || '', [Validators.required]),
-            sizes: new FormControl(this.selectedSubCategory?.sizes, [Validators.required]),
             stock: new FormArray(
                 (product?.stock || []).map((stock) =>
                     this.formBuilder.group({
                         id: new FormControl(stock.id || null),
-                        size: new FormControl(stock.size || null),
+                        size: new FormControl(stock.size || null, [Validators.required]),
                         color: new FormControl(stock.color || '', [Validators.required]),
                         quantity: new FormControl(stock.quantity || '', [Validators.required]),
                         price: new FormControl(stock.price || '', [Validators.required])
@@ -123,24 +138,29 @@ export class ProductsComponent implements OnInit {
         });
     }
 
+    get formControls() {
+        return this.productFormGroup.controls;
+    }
+
     onSelectCategory(category: Category) {
         this.selectedCategory = category;
         this.subCategories.set(category.subCategories);
+        this.sizes.set(category.sizes);
+        this.addStockEntry();
     }
 
-    onSelectSubCategory(subCategory: SubCategory) {
-        this.selectedSubCategory = subCategory;
-        this.sizes.set(subCategory.sizes);
+    get sizesFormArray(): FormArray {
+        return this.productFormGroup.get('sizes') as FormArray;
     }
 
-    get stock(): FormArray {
+    get stockFormArray(): FormArray {
         return this.productFormGroup.get('stock') as FormArray;
     }
 
-    addStockEntry() {
-        this.stock.push(
+    addStockEntry(size?: Size) {
+        this.stockFormArray.push(
             this.formBuilder.group({
-                size: new FormControl(null),
+                size: new FormControl(size?.libelle || null),
                 color: new FormControl('', Validators.required),
                 quantity: new FormControl('', Validators.required),
                 price: new FormControl('', Validators.required)
@@ -149,7 +169,7 @@ export class ProductsComponent implements OnInit {
     }
 
     removeStockEntry(index: number) {
-        this.stock.removeAt(index);
+        this.stockFormArray.removeAt(index);
     }
 
     onGlobalFilter(table: Table, event: Event) {
@@ -158,6 +178,12 @@ export class ProductsComponent implements OnInit {
 
     openNew() {
         this.productDialog = true;
+        this.initProductFormGroup();
+    }
+
+    onImageUpload(event: any) {
+        console.log(event.files);
+        this.selectedImages.set(event.files);
     }
 
     editProduct(product: Product) {
@@ -167,16 +193,18 @@ export class ProductsComponent implements OnInit {
 
     deleteSelectedProducts() {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete the selected products?',
-            header: 'Confirm',
+            message: 'Êtes-vous sûr de vouloir supprimer les produits sélectionnés ?',
+            header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.products.set(this.products().filter((val) => !this.selectedProducts?.includes(val)));
+                this.selectedProducts?.forEach((product) => {
+                    this.onDeleteProduct(product);
+                });
                 this.selectedProducts = null;
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Products Deleted',
+                    summary: 'Suppression',
+                    detail: 'Les produits selectionnés ont été supprimés avec succès.',
                     life: 3000
                 });
             }
@@ -185,35 +213,35 @@ export class ProductsComponent implements OnInit {
 
     hideDialog() {
         this.productDialog = false;
+        this.productFormGroup.reset();
     }
 
     deleteProduct(product: Product) {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete ' + product.name + '?',
-            header: 'Confirm',
+            message: 'Êtes-vous sûr de vouloir supprimer le produit ' + product.name + ' ?',
+            header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.products.set(this.products().filter((val) => val.id !== product.id));
+                this.onDeleteProduct(product);
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Product Deleted',
+                    summary: 'Suppression',
+                    detail: 'Le produit a été supprimé avec succès.',
                     life: 3000
                 });
             }
         });
     }
 
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.products().length; i++) {
-            if (this.products()[i].id === id) {
-                index = i;
-                break;
+    onDeleteProduct(product: Product) {
+        this.productService.deleteProduct(product.id!).subscribe({
+            next: () => {
+                this.products.set(this.products().filter((val) => val.id !== product.id));
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
             }
-        }
-
-        return index;
+        });
     }
 
     getSeverity(status: string) {
@@ -230,20 +258,34 @@ export class ProductsComponent implements OnInit {
     }
 
     saveProduct() {
-        let _products = this.products();
-        if (true) {
-            if (true) {
-                this.products.set([..._products]);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Product Updated',
-                    life: 3000
-                });
-            } else {
-            }
+        delete this.productFormGroup.value.categoryId;
+        console.log(this.productFormGroup.value);
+        console.log(this.selectedImages());
+        if (this.productFormGroup.invalid) {
+            this.productFormGroup.markAllAsTouched();
+            return;
+        }
 
-            this.productDialog = false;
+        const formData = new FormData();
+        formData.append('product', JSON.stringify(this.productFormGroup.value));
+        this.selectedImages().forEach((image) => formData.append('images', image));
+
+        if (this.productFormGroup.value.id) {
+            console.log('MODIFICATION');
+        } else {
+            this.productService.createProduct(formData).subscribe({
+                next: (product) => {
+                    this.products.set([...this.products(), product]);
+                    this.productDialog = false;
+                    this.productFormGroup.reset();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Création',
+                        detail: 'Le produit a été créé avec succès.',
+                        life: 3000
+                    });
+                }
+            });
         }
     }
 }

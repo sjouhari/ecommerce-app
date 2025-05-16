@@ -1,9 +1,6 @@
 package com.ecommerce.product.service.impl;
 
-import com.ecommerce.product.dto.InventoryDto;
-import com.ecommerce.product.dto.ProductRequestDto;
-import com.ecommerce.product.dto.ProductResponseDto;
-import com.ecommerce.product.dto.StockDto;
+import com.ecommerce.product.dto.*;
 import com.ecommerce.product.entity.Media;
 import com.ecommerce.product.entity.Product;
 import com.ecommerce.product.entity.Tva;
@@ -40,9 +37,38 @@ public class ProductServiceImpl implements ProductService {
     private FileStorageService fileStorageService;
 
     @Override
-    public List<ProductResponseDto> getAllProducts() {
+    public List<ProductResponseDto> getAllProducts(String token) {
         List<Product> products = productRepository.findAll();
-        return ProductMapper.INSTANCE.productsToProductResponseDtos(products);
+        List<ProductResponseDto> productResponseDtos = ProductMapper.INSTANCE.productsToProductResponseDtos(products);
+        return productResponseDtos.stream().map(
+                productResponseDto -> {
+                    List<InventoryDto> inventories = inventoryApiClient.getInventoriesByProductId(productResponseDto.getId(), token);
+                    List<StockDto> stock = ProductMapper.INSTANCE.inventoryDtosToStockDtos(inventories);
+                    productResponseDto.setStock(stock);
+                    CategoryDto categoryDto = categoryApiClient.getCategoryById(productResponseDto.getSubCategoryId(), token);
+                    productResponseDto.setCategoryName(categoryDto.getName());
+                    SubCategoryDto subCategoryDto = categoryApiClient.getSubCategoryById(productResponseDto.getSubCategoryId(), token);
+                    productResponseDto.setSubCategoryName(subCategoryDto.getName());
+                    return productResponseDto;
+                }
+        ).toList();
+    }
+
+    @Override
+    public List<ProductResponseDto> getNewProducts(String token) {
+        List<ProductResponseDto> productResponseDtos = ProductMapper.INSTANCE.productsToProductResponseDtos(productRepository.findAllNewProducts());
+        return productResponseDtos.stream().map(
+                productResponseDto -> {
+                    List<InventoryDto> inventories = inventoryApiClient.getInventoriesByProductId(productResponseDto.getId(), token);
+                    List<StockDto> stock = ProductMapper.INSTANCE.inventoryDtosToStockDtos(inventories);
+                    productResponseDto.setStock(stock);
+                    CategoryDto categoryDto = categoryApiClient.getCategoryById(productResponseDto.getSubCategoryId(), token);
+                    productResponseDto.setCategoryName(categoryDto.getName());
+                    SubCategoryDto subCategoryDto = categoryApiClient.getSubCategoryById(productResponseDto.getSubCategoryId(), token);
+                    productResponseDto.setSubCategoryName(subCategoryDto.getName());
+                    return productResponseDto;
+                }
+        ).toList();
     }
 
     @Override
@@ -51,9 +77,13 @@ public class ProductServiceImpl implements ProductService {
                 () -> new ResourceNotFoundException("Product", "id", id.toString())
         );
         List<InventoryDto> inventories = inventoryApiClient.getInventoriesByProductId(id, token);
-        List<StockDto> stocks = ProductMapper.INSTANCE.inventoryDtosToStockDtos(inventories);
+        List<StockDto> stock = ProductMapper.INSTANCE.inventoryDtosToStockDtos(inventories);
+        SubCategoryDto subCategoryDto = categoryApiClient.getSubCategoryById(product.getSubCategoryId(), token);
+        CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategoryId(), token);
         ProductResponseDto productResponseDto = ProductMapper.INSTANCE.productToProductResponseDto(product);
-        productResponseDto.setStock(stocks);
+        productResponseDto.setStock(stock);
+        productResponseDto.setSubCategoryName(subCategoryDto.getName());
+        productResponseDto.setCategoryName(categoryDto.getName());
         return productResponseDto;
     }
 
@@ -140,16 +170,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String deleteProduct(Long id) {
+    public void deleteProduct(Long id) {
         productRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Product", "id", id.toString())
         );
         productRepository.deleteById(id);
-        return "Product deleted successfully";
     }
 
     @Override
     public boolean productExistsById(Long id) {
         return productRepository.existsById(id);
     }
+
 }

@@ -1,0 +1,22 @@
+<a [routerLink]="'/home/list-products/' + product().id" class="border block border-surface rounded-border m-2 p-2  w-16rem">
+    <div class="mb-4">
+        <div class="relative mx-auto">
+            <img src="http://localhost:8080/api/products/images/{{ product().medias[0].url }}" [alt]="product().name" class="rounded-border" />
+            <div class="absolute bg-black/70 rounded-border" [ngStyle]="{ 'left.px': 2, 'top.px': 2 }">
+                <p-tag [value]="product().status" [severity]="getSeverity(product().status)" />
+            </div>
+        </div>
+    </div>
+    <div class="mb-2 font-medium">{{ product().name }}</div>
+    <div class="mb-2 text-sm">{{ product().description }}</div>
+    <div class="flex justify-between items-center">
+        <div class="mb-2 text-sm font-medium">{{ product().categoryName }}</div>
+        <div class="mb-2 text-sm font-medium">{{ getQuantity() }}</div>
+    </div>
+    <div class="flex justify-between items-center">
+        <div class="mt-0 font-semibold text-xl">{{ getPrice() }}</div>
+        <span>
+            <p-button icon="pi pi-shopping-cart" styleClass="ml-2" />
+        </span>
+    </div>
+</a>

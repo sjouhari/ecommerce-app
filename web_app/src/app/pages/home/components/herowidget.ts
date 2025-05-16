@@ -4,10 +4,12 @@ import { ButtonModule } from 'primeng/button';
 import { GalleriaModule } from 'primeng/galleria';
 import { RippleModule } from 'primeng/ripple';
 import { PhotoService } from '../../service/photo.service';
+import { CategoriesWidget } from './categorieswidget';
+import { NewProductsWidget } from './newproductswidget';
 
 @Component({
     selector: 'hero-widget',
-    imports: [ButtonModule, RippleModule, GalleriaModule, Carousel],
+    imports: [ButtonModule, RippleModule, GalleriaModule, Carousel, CategoriesWidget, NewProductsWidget],
     providers: [PhotoService],
     template: `
         <div id="hero" class="flex flex-col overflow-hidden">
@@ -23,6 +25,10 @@ import { PhotoService } from '../../service/photo.service';
                 </ng-template>
             </p-carousel>
         </div>
+        <categories-widget />
+        <new-products-widget />
+        <new-products-widget />
+        <new-products-widget />
     `
 })
 export class HeroWidget {

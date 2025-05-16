@@ -68,15 +68,15 @@ export class AppMenu {
                             { label: 'Réductions', icon: 'pi pi-fw pi-percentage', routerLink: ['/discounts'] }
                         ]
                     },
-                    {
-                        label: 'Rapports',
-                        icon: 'pi pi-fw pi-chart-bar',
-                        items: [
-                            { label: 'Ventes', icon: 'pi pi-fw pi-dollar', routerLink: ['/reports/sales'] },
-                            { label: 'Produits', icon: 'pi pi-fw pi-tags', routerLink: ['/reports/products'] },
-                            { label: 'Clients', icon: 'pi pi-fw pi-users', routerLink: ['/reports/customers'] }
-                        ]
-                    },
+                    // {
+                    //     label: 'Rapports',
+                    //     icon: 'pi pi-fw pi-chart-bar',
+                    //     items: [
+                    //         { label: 'Ventes', icon: 'pi pi-fw pi-dollar', routerLink: ['/reports/sales'] },
+                    //         { label: 'Produits', icon: 'pi pi-fw pi-tags', routerLink: ['/reports/products'] },
+                    //         { label: 'Clients', icon: 'pi pi-fw pi-users', routerLink: ['/reports/customers'] }
+                    //     ]
+                    // },
                     {
                         label: 'Gestion des permissions',
                         icon: 'pi pi-fw pi-lock',

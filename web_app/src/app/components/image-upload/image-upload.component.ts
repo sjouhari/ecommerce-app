@@ -30,7 +30,7 @@ export class ImageUploadComponent {
         clear();
     }
 
-    onSelectedFiles(event: any) {
+    onSelectedFiles(event: { files: File[] }) {
         this.files.emit(event.files);
     }
 

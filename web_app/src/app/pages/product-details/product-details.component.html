@@ -1,0 +1,93 @@
+@if(product()) {
+    <div>
+        <h1 class="text-2xl font-bold">Détails du produit</h1>
+    </div>
+    <div class="grid grid-cols-12 p-4 m-0 bg-transparent">
+        <div class="col-offset-1 col-span-5">
+            <p-galleria [value]="images" [responsiveOptions]="responsiveOptions"  [thumbnailsPosition]="'left'" [containerStyle]="{ 'height': '500px' }" [numVisible]="5" [(activeIndex)]="activeIndex">
+                <ng-template #item let-item>
+                    <img src="http://localhost:8080/api/products/images/{{ item.url}}" style="height: 500px;" />
+                </ng-template>
+                <ng-template #thumbnail let-item class="h-full">
+                    <img src="http://localhost:8080/api/products/images/{{ item.url }}" style="width: 6rem;" />
+                </ng-template>
+            </p-galleria>
+        </div>
+        <div class="col-offset-1 col-span-5">
+            <!-- Détails produit + Formulaire -->
+            <div class="space-y-1">
+                <h5 class="text-xl font-semibold mb-1">{{ product()!.name }}</h5>
+                <p class="text-gray-700">{{ product()!.description }}</p>
+                <p class="text-gray-700 mb-3">
+                    {{ product()!.categoryName }} - {{ product()!.subCategoryName }}
+                </p>
+                <p class="text-2xl mb-4 font-medium text-green-500">{{price() + " MAD"}}</p>
+
+                <!-- Taille -->
+                <div class="mb-4">
+                    <label class="block font-bold mb-2">Taille</label>
+                    <div class="flex flex-wrap gap-4">
+                        @for(size of sizes; track size) {
+                            <div class="flex items-center">
+                                <p-radiobutton [value]="size" [inputId]="size" [(ngModel)]="selectedSize" (onClick)="calculateTotalePrice()" />
+                                <label [for]="size" class="ml-2">{{ size }}</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Couleur -->
+                <div class="mb-4">
+                    <label class="block font-bold mb-2">Couleur</label>
+                    <div class="flex flex-wrap gap-4">
+                        @for(color of colors; track color) {
+                            <div class="flex items-center">
+                                <p-radiobutton [(ngModel)]="selectedColor" [value]="color" [inputId]="color" [disabled]="disableColor(color)" (onClick)="calculateTotalePrice()" />
+                                <label [for]="color" class="ml-2">{{ color }}</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Quantité + Bouton -->
+                <div class="mb-4">
+                    <label class="block font-bold mb-2">Quantité</label>
+                    <div class="mb-3 flex gap-4">
+                        <p-inputnumber
+                            inputId="quantity"
+                            [(ngModel)]="selectedQuantity"
+                            [showButtons]="true"
+                            (onInput)="calculateTotalePrice()"
+                            buttonLayout="horizontal"
+                            [min]="1"
+                            [inputStyle]="{ width: '3rem', 'text-align': 'center' }"
+                            [disabled]="!selectedColor"
+                            >
+                            <ng-template #incrementbuttonicon>
+                                <span class="pi pi-plus"></span>
+                            </ng-template>
+                            <ng-template #decrementbuttonicon>
+                                <span class="pi pi-minus"></span>
+                            </ng-template>
+                        </p-inputnumber>
+                        <button
+                            pButton
+                            label="Ajouter au panier"
+                            icon="pi pi-shopping-cart"
+                            size="large"
+                            severity="success"
+                            ></button>
+                    </div>
+                </div>
+
+                <button
+                    (click)="goBack()"
+                    class="flex items-center text-blue-500 hover:underline mt-4"
+                >
+                    <i class="pi pi-arrow-left mr-2"></i>
+                    Retourner aux produits
+                </button>
+            </div>
+        </div>
+    </div>
+}

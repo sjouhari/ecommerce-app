@@ -1,1 +1,61 @@
-<p>list-products works!</p>
+<div>
+    <h1 class="text-2xl font-bold">Liste des produits</h1>
+</div>
+<div class="grid grid-cols-12 gap-4 m-0">
+    <div class="col-span-2 p-4 border-1 border-surface rounded-border">
+        <h1 class="text-2xl font-bold">Filtrer</h1>
+        <h2 class="text-xl font-bold">Catégories</h2>
+        <div>
+            @for(category of categories(); track category.id) {
+                <div class="flex items-center mb-2">
+                    <p-checkbox [inputId]="category.name" name="categories" [value]="category" [(ngModel)]="selectedCategories" (onChange)="appliquerFilters()" />
+                    <label [for]="category.name" class="ml-2"> {{ category.name }} </label>
+                </div>
+            }
+        </div>
+        
+        @if(subCategories().length > 0) {
+            <h2 class="text-xl font-bold">Sous Catégories</h2>
+            <div>
+                @for(subCategory of subCategories(); track subCategory.id) {
+                    <div class="flex items-center mb-2">
+                        <p-checkbox [inputId]="subCategory.name" name="subcategories" [value]="subCategory" [(ngModel)]="selectedSubCategories" (onChange)="appliquerFilters()" />
+                        <label [for]="subCategory.name" class="ml-2"> {{ subCategory.name }} </label>
+                    </div>
+                }
+            </div>
+        }
+
+        @if(sizes().length > 0) {
+            <h2 class="text-xl font-bold">Tailles</h2>
+            <div class="">
+                @for(size of sizes(); track size.id) {
+                    <div class="flex items-center mb-2">
+                        <p-checkbox [inputId]="size.libelle" name="sizes" [value]="size" [(ngModel)]="selectedSizes" (onChange)="appliquerFilters()" />
+                        <label [for]="size.libelle" class="ml-2"> {{ size.libelle }} </label>
+                    </div>
+                }
+            </div>
+        }
+        <h2 class="text-xl font-bold">Couleurs</h2>
+        <div>
+            @for(color of colors; track color.key) {
+                <div class="flex items-center mb-2">
+                    <p-checkbox [inputId]="color.key" name="colors" [value]="color.key" [(ngModel)]="selectedColors" (onChange)="appliquerFilters()" />
+                    <label [for]="color.key" class="ml-2"> {{ color.value }} </label>
+                </div>
+            }
+        </div>
+        <h2 class="text-xl font-bold">Prix</h2>
+        <div>
+            <p>{{ selectedPrice() }}</p>
+            <p-slider [(ngModel)]="selectedPrice" class="w-full bg-blue-500" [range]="true" [min]="0" [max]="10000" (onChange)="appliquerFilters()" />
+        </div>
+
+    </div>
+    <div class="col-span-10">
+        @for(product of filteredProducts(); track product.id) {
+            <app-product-card [product]="product" />
+        }
+    </div>
+</div>

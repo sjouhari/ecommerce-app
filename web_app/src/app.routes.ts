@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { AppLayout } from './app/layout/component/app.layout';
 import { Dashboard } from './app/pages/dashboard/dashboard';
 import { Notfound } from './app/pages/notfound/notfound';
-import { Crud } from './app/pages/crud/crud';
 import { LoginComponent } from './app/pages/auth/login/login.component';
 import { RegisterComponent } from './app/pages/auth/register/register.component';
 import { ForgotPasswordComponent } from './app/pages/auth/forgot-password/forgot-password.component';
@@ -16,6 +15,8 @@ import { SizesComponent } from './app/pages/sizes/sizes.component';
 import { FeaturesComponent } from './app/pages/features/features.component';
 import { HomeComponent } from './app/pages/home/home.component';
 import { ListProductsComponent } from './app/pages/list-products/list-products.component';
+import { ProductDetailsComponent } from './app/pages/product-details/product-details.component';
+import { HeroWidget } from './app/pages/home/components/herowidget';
 
 export const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -30,7 +31,7 @@ export const appRoutes: Routes = [
 
             // Produits
             { path: 'products', component: ProductsComponent },
-            { path: 'inventory', component: Crud },
+            { path: 'inventory', component: ProductsComponent },
 
             // Categories
             { path: 'categories', component: CategoriesComponent },
@@ -38,10 +39,10 @@ export const appRoutes: Routes = [
             { path: 'sizes', component: SizesComponent },
 
             // Commandes
-            { path: 'orders', component: Crud },
-            { path: 'orders/pending', component: Crud },
-            { path: 'orders/shipped', component: Crud },
-            { path: 'orders/returns', component: Crud },
+            { path: 'orders', component: ProductsComponent },
+            { path: 'orders/pending', component: ProductsComponent },
+            { path: 'orders/shipped', component: ProductsComponent },
+            { path: 'orders/returns', component: ProductsComponent },
 
             // Utilisateurs
             { path: 'users', component: UsersComponent, data: { role: 'user' } },
@@ -53,20 +54,28 @@ export const appRoutes: Routes = [
             { path: 'features', component: FeaturesComponent },
 
             // Promotions
-            { path: 'coupons', component: Crud },
-            { path: 'discounts', component: Crud },
+            { path: 'coupons', component: ProductsComponent },
+            { path: 'discounts', component: ProductsComponent },
 
             // Rapports
-            { path: 'reports/sales', component: Crud },
-            { path: 'reports/products', component: Crud },
-            { path: 'reports/customers', component: Crud },
+            { path: 'reports/sales', component: ProductsComponent },
+            { path: 'reports/products', component: ProductsComponent },
+            { path: 'reports/customers', component: ProductsComponent },
 
             // Paramètres
-            { path: 'settings', component: Crud }
+            { path: 'settings', component: ProductsComponent }
         ]
     },
-    { path: 'landing', component: HomeComponent },
-    { path: 'list-products', component: ListProductsComponent },
+    {
+        path: 'home',
+        component: HomeComponent,
+        children: [
+            { path: '', component: HeroWidget },
+            { path: 'list-products', component: ListProductsComponent },
+            { path: 'list-products/:id', component: ProductDetailsComponent }
+        ]
+    },
+
     { path: 'notfound', component: Notfound },
     { path: '**', redirectTo: '/notfound' }
 ];

@@ -1,6 +1,6 @@
 package com.ecommerce.product.dto;
 
-import com.ecommerce.product.enums.ProductColor;
+import com.ecommerce.shared.enums.ProductColor;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

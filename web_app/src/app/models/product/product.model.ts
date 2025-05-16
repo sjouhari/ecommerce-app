@@ -1,13 +1,16 @@
+import { Media } from './media.model';
 import { Stock } from './stock.model';
 
 export interface Product {
-    id?: string;
-    name?: string;
-    description?: string;
-    price?: number;
-    status?: string;
-    subCategoryId?: number;
-    medias?: string[];
-    rating?: number;
-    stock?: Stock[];
+    id: number;
+    name: string;
+    description: string;
+    status: string;
+    subCategoryId: number;
+    subCategoryName: string;
+    categoryName: string;
+    sellerId: number;
+    medias: Media[];
+    rating: number;
+    stock: Stock[];
 }

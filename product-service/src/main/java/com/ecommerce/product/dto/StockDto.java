@@ -1,6 +1,6 @@
 package com.ecommerce.product.dto;
 
-import com.ecommerce.product.enums.ProductColor;
+import com.ecommerce.shared.enums.ProductColor;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
