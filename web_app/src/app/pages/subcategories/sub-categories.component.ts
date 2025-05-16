@@ -179,6 +179,7 @@ export class SubCategoriesComponent implements OnInit {
 
     saveSubCategory() {
         if (this.subCategoryFormGroup.invalid) {
+            this.subCategoryFormGroup.markAllAsTouched();
             return;
         }
 

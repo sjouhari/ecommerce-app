@@ -9,8 +9,7 @@ import { AuthService } from '../../../services/auth.service';
 @Component({
     selector: 'app-login',
     imports: [ReactiveFormsModule, FormsModule, FloatLabelModule, InputTextModule, ButtonModule, RouterLink],
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.css'
+    templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
     loginFormGroup!: FormGroup;
@@ -35,6 +34,7 @@ export class LoginComponent implements OnInit {
     login() {
         this.errorMessage.set('');
         if (this.loginFormGroup.invalid) {
+            this.loginFormGroup.markAllAsTouched();
             return;
         }
         this.loading.set(true);

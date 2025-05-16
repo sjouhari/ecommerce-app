@@ -142,6 +142,7 @@ export class ProfilsComponent implements OnInit {
 
     saveProfil() {
         if (this.profilFormGroup.invalid) {
+            this.profilFormGroup.markAllAsTouched();
             return;
         }
         this.loading.set(true);

@@ -190,6 +190,7 @@ export class UsersComponent implements OnInit {
 
     saveUser() {
         if (this.userFormGroup.invalid) {
+            this.userFormGroup.markAllAsTouched();
             return;
         }
 

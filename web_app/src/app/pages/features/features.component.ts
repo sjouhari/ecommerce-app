@@ -160,6 +160,7 @@ export class FeaturesComponent implements OnInit {
 
     saveFeature() {
         if (this.featureFormGroup.invalid) {
+            this.featureFormGroup.markAllAsTouched();
             return;
         }
 

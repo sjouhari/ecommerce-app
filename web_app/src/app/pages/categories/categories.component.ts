@@ -159,6 +159,7 @@ export class CategoriesComponent implements OnInit {
 
     saveCategory() {
         if (this.categoryFormGroup.invalid) {
+            this.categoryFormGroup.markAllAsTouched();
             return;
         }
 
