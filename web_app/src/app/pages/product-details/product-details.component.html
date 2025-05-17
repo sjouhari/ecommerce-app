@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 @if(product()) {
     <div>
         <h1 class="text-2xl font-bold">Détails du produit</h1>
@@ -76,6 +77,7 @@
                             icon="pi pi-shopping-cart"
                             size="large"
                             severity="success"
+                            (click)="addToCart()"
                             ></button>
                     </div>
                 </div>

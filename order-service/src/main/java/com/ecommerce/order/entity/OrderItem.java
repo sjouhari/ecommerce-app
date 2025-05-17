@@ -22,6 +22,9 @@ public class OrderItem {
     @ManyToOne
     private Order order;
 
+    @ManyToOne
+    private ShoppingCart shoppingCart;
+
     private Long productId;
 
     private String size;

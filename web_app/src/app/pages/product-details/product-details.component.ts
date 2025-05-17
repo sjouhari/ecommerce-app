@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../models/product/product.model';
@@ -10,15 +11,22 @@ import { ProductColor } from '../../models/product/product-color';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumber } from 'primeng/inputnumber';
 import { Location } from '@angular/common';
+import { ShoppingCartService } from '../../services/shopping-cart.service';
+import { AuthService } from '../../services/auth.service';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
     selector: 'app-product-details',
-    imports: [GalleriaModule, ButtonModule, RadioButtonModule, InputNumber, FormsModule],
-    templateUrl: './product-details.component.html'
+    imports: [GalleriaModule, ButtonModule, RadioButtonModule, InputNumber, FormsModule, ToastModule],
+    templateUrl: './product-details.component.html',
+    providers: [MessageService]
 })
 export class ProductDetailsComponent implements OnInit {
     route = inject(ActivatedRoute);
     productService = inject(ProductService);
+    shoppingCartService = inject(ShoppingCartService);
+    authService = inject(AuthService);
+    MessageService = inject(MessageService);
     location = inject(Location);
 
     images: Media[] = [];
@@ -88,7 +96,30 @@ export class ProductDetailsComponent implements OnInit {
         this.activeIndex--;
     }
 
-    addToCart() {}
+    addToCart() {
+        if (this.product() && this.selectedSize && this.selectedColor) {
+            this.shoppingCartService
+                .addItemToShoppingCart(this.authService.getCurrentUser()?.id!, {
+                    productId: this.product()!.id,
+                    size: this.selectedSize,
+                    color: this.selectedColor,
+                    quantity: this.selectedQuantity,
+                    price: this.product()!.stock!.find((stock) => stock.color === this.selectedColor && stock.size === this.selectedSize)!.price
+                })
+                .subscribe({
+                    next: (cart) => {
+                        this.MessageService.add({
+                            severity: 'success',
+                            summary: 'Ajout au panier',
+                            detail: 'Produit ajouté au panier'
+                        });
+                    },
+                    error: (error) => {
+                        console.log(error); //TODO: handle error
+                    }
+                });
+        }
+    }
 
     calculateTotalePrice() {
         if (this.selectedSize && !this.selectedColor) {
