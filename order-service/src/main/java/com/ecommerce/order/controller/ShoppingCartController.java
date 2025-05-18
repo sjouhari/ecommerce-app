@@ -2,6 +2,7 @@ package com.ecommerce.order.controller;
 
 import com.ecommerce.order.dto.OrderItemDto;
 import com.ecommerce.order.dto.ShoppingCartDto;
+import com.ecommerce.order.dto.UpdateOrderItemQauntityDto;
 import com.ecommerce.order.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,8 @@ public class ShoppingCartController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderItemDto> updateItemInShoppingCart(@PathVariable Long id, @RequestBody OrderItemDto orderItemDto) {
-        return ResponseEntity.ok(shoppingCartService.updateItemInShoppingCart(id, orderItemDto));
+    public ResponseEntity<OrderItemDto> updateItemInShoppingCart(@PathVariable Long id, @RequestBody UpdateOrderItemQauntityDto updateOrderItemQauntityDto) {
+        return ResponseEntity.ok(shoppingCartService.updateItemQuantity(id, updateOrderItemQauntityDto));
     }
 
     @DeleteMapping("/{id}")

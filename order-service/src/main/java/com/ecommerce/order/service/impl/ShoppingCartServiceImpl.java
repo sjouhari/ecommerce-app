@@ -2,6 +2,7 @@ package com.ecommerce.order.service.impl;
 
 import com.ecommerce.order.dto.OrderItemDto;
 import com.ecommerce.order.dto.ShoppingCartDto;
+import com.ecommerce.order.dto.UpdateOrderItemQauntityDto;
 import com.ecommerce.order.entity.OrderItem;
 import com.ecommerce.order.entity.ShoppingCart;
 import com.ecommerce.order.mapper.OrderItemMapper;
@@ -9,6 +10,7 @@ import com.ecommerce.order.mapper.ShoppingCartMapper;
 import com.ecommerce.order.repository.OrderItemRepository;
 import com.ecommerce.order.repository.ShoppingCartRepository;
 import com.ecommerce.order.service.ShoppingCartService;
+import com.ecommerce.shared.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,9 +50,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public OrderItemDto updateItemInShoppingCart(Long id, OrderItemDto orderItemDto) {
-        OrderItem orderItem = OrderItemMapper.INSTANCE.orderItemDtoToOrderItem(orderItemDto);
-        orderItem.setId(id);
+    public OrderItemDto updateItemQuantity(Long id, UpdateOrderItemQauntityDto updateOrderItemQauntityDto) {
+        OrderItem orderItem = orderItemRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Order Item", "id", id.toString())
+        );
+        orderItem.setQuantity(updateOrderItemQauntityDto.getQuantity());
         OrderItem savedOrderItem = orderItemRepository.save(orderItem);
         return OrderItemMapper.INSTANCE.orderItemToOrderItemDto(savedOrderItem);
     }
