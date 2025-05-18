@@ -93,7 +93,7 @@ import { AuthService } from '../../../services/auth.service';
                                 </ng-template>
                                 <ng-template #body let-item>
                                     <tr [pSelectableRow]="item">
-                                        <td><img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/'" class="w-16 shadow-sm" /></td>
+                                        <td><img [src]="'http://localhost:8080/api/products/images/' + item.productImage" class="w-16 shadow-sm" /></td>
                                         <td>{{ item.productName }}</td>
                                         <td>{{ item.size }}</td>
                                         <td>{{ item.color }}</td>
