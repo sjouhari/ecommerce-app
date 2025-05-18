@@ -27,6 +27,10 @@ public class OrderItem {
 
     private Long productId;
 
+    private String productName;
+
+    private String productImage;
+
     private String size;
 
     @Enumerated(EnumType.STRING)

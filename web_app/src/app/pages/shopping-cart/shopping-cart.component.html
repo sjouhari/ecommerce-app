@@ -1,0 +1,54 @@
+<div class="w-6" style="margin: auto;">
+    <h1 class="text-2xl font-bold">Panier</h1>
+    @for(item of shoppingCart()?.orderItems; track item.id) {
+        <div class="flex flex-wrap p-3 gap-4 w-full border-1 border-surface rounded">
+            <img
+                class="w-6rem shrink-0 rounded"
+                [src]="'http://localhost:8080/api/products/images/' + item.productImage"
+                [alt]="item.productName"
+            />
+            <div class="flex-1 flex flex-col">
+                <span class="font-medium text-xl">{{ item.productName }}</span>
+                <span class="text-xl font-medium">{{ item.size }} - {{ item.color }}</span>
+            </div>
+            <div class="flex flex-col items-end justify-between">
+                <span class="font-bold sm:ml-8">{{ item.price + ' MAD'}}</span>
+                <p-inputnumber
+                    inputId="quantity"
+                    [(ngModel)]="selectedQuantity"
+                    [showButtons]="true"
+                    size="small"
+                    (onInput)="updateItemQuantity()"
+                    buttonLayout="horizontal"
+                    [min]="1"
+                    [inputStyle]="{ width: '3rem', 'text-align': 'center' }"
+                >
+                    <ng-template #incrementbuttonicon>
+                        <span class="pi pi-plus"></span>
+                    </ng-template>
+                    <ng-template #decrementbuttonicon>
+                        <span class="pi pi-minus"></span>
+                    </ng-template>
+                </p-inputnumber>
+                <button
+                    pButton
+                    icon="pi pi-trash"
+                    size="small"
+                    severity="danger"
+                    (click)="removeItem(item.id!)"
+                ></button>
+            </div>
+        </div>
+    }
+    <div class="flex justify-between mt-3">
+        <span class="font-bold">Total</span>
+        <span class="font-bold ml-2">{{ calculateTotalPrice() + ' MAD'}}</span>
+    </div>
+    <div class="flex justify-between mt-3">
+        <span class="font-bold">Livraison</span>
+        <span class="font-bold ml-2">Gratuit</span>
+    </div>
+    <div>
+        <button pButton label="Checkout" class="w-full mt-3" severity="success" (click)="checkout()"></button>
+    </div>
+</div>

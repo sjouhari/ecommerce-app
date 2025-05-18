@@ -14,6 +14,9 @@ import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/category/category.model';
 import { SubCategory } from '../../../models/category/sub-category.model';
 import { SubCategoryService } from '../../../services/sub-category.service';
+import { ShoppingCartService } from '../../../services/shopping-cart.service';
+import { ShoppingCart } from '../../../models/order/shopping-cart.model';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
     selector: 'topbar-widget',
@@ -72,28 +75,34 @@ import { SubCategoryService } from '../../../services/sub-category.service';
                 <!-- <button pButton pRipple label="Login" routerLink="/login" [rounded]="true" [text]="true"></button>
                 <button pButton pRipple label="Register" routerLink="/register" [rounded]="true"></button> -->
                 <div class="flex flex-wrap gap-2 align-items-center">
-                    <p-overlaybadge class="mr-3 cursor-pointer" [value]="products.length" (click)="toggleDataTable(op2, $event)">
+                    <p-overlaybadge class="mr-3 cursor-pointer" [value]="shoppingCart() ? shoppingCart()!.orderItems.length : 0" (click)="toggleDataTable(op2, $event)">
                         <i class="pi pi-shopping-cart text-4xl"></i>
                     </p-overlaybadge>
-                    <p-popover #op2 id="overlay_panel" [style]="{ width: '450px' }">
-                        @if (products.length > 0) {
-                            <p-table [value]="products" selectionMode="single" dataKey="id" [rows]="5" [paginator]="true">
+                    <p-popover #op2 id="overlay_panel" [style]="{ width: '600px' }">
+                        @if (shoppingCart() && shoppingCart()!.orderItems.length > 0) {
+                            <p-table [value]="shoppingCart()!.orderItems" selectionMode="single" dataKey="id" [rows]="5" [paginator]="true">
                                 <ng-template #header>
                                     <tr>
-                                        <th>Name</th>
                                         <th>Image</th>
-                                        <th>Price</th>
+                                        <th>Nom</th>
+                                        <th>Taille</th>
+                                        <th>Couleur</th>
+                                        <th>Quantité</th>
+                                        <th>Prix</th>
                                     </tr>
                                 </ng-template>
-                                <ng-template #body let-product>
-                                    <tr [pSelectableRow]="product">
-                                        <td>{{ product.name }}</td>
-                                        <td><img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.name" class="w-16 shadow-sm" /></td>
-                                        <td>{{ product.price }}</td>
+                                <ng-template #body let-item>
+                                    <tr [pSelectableRow]="item">
+                                        <td><img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/'" class="w-16 shadow-sm" /></td>
+                                        <td>{{ item.productName }}</td>
+                                        <td>{{ item.size }}</td>
+                                        <td>{{ item.color }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>{{ item.price * item.quantity }}</td>
                                     </tr>
                                 </ng-template>
                             </p-table>
-                            <p-button label="Checkout" styleClass="w-full py-2" severity="contrast"></p-button>
+                            <a pButton routerLink="shopping-cart" label="Accéder au panier" class="w-full py-2" severity="contrast"></a>
                         } @else {
                             <p>Aucun produit dans le panier</p>
                         }
@@ -108,15 +117,25 @@ import { SubCategoryService } from '../../../services/sub-category.service';
 export class TopbarWidget implements OnInit {
     router = inject(Router);
     categoryService = inject(CategoryService);
+    shoppingCartService = inject(ShoppingCartService);
+    authService = inject(AuthService);
 
     categories = signal<Category[]>([]);
-
-    products: Product[] = [];
+    shoppingCart = signal<ShoppingCart | null>(null);
 
     ngOnInit() {
         this.categoryService.getCategories().subscribe({
             next: (categories) => {
                 this.categories.set(categories);
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
+
+        this.shoppingCartService.getShoppingCart(this.authService.getCurrentUser()?.id!).subscribe({
+            next: (cart) => {
+                this.shoppingCart.set(cart);
             },
             error: (error) => {
                 console.log(error); //TODO: handle error

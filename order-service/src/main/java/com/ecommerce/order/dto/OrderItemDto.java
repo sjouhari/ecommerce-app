@@ -19,6 +19,10 @@ public class OrderItemDto {
     @NotNull(message = "Product id is required")
     private Long productId;
 
+    private String productName;
+
+    private String productImage;
+
     @NotBlank(message = "Size is required")
     private String size;
 

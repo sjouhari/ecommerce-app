@@ -17,6 +17,7 @@ import { HomeComponent } from './app/pages/home/home.component';
 import { ListProductsComponent } from './app/pages/list-products/list-products.component';
 import { ProductDetailsComponent } from './app/pages/product-details/product-details.component';
 import { HeroWidget } from './app/pages/home/components/herowidget';
+import { ShoppingCartComponent } from './app/pages/shopping-cart/shopping-cart.component';
 
 export const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -72,7 +73,8 @@ export const appRoutes: Routes = [
         children: [
             { path: '', component: HeroWidget },
             { path: 'list-products', component: ListProductsComponent },
-            { path: 'list-products/:id', component: ProductDetailsComponent }
+            { path: 'list-products/:id', component: ProductDetailsComponent },
+            { path: 'shopping-cart', component: ShoppingCartComponent }
         ]
     },
 
