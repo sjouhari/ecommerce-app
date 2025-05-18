@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -8,7 +8,7 @@ import { AuthService } from '../../../services/auth.service';
 
 @Component({
     selector: 'app-register',
-    imports: [ReactiveFormsModule, FormsModule, FloatLabelModule, InputTextModule, ButtonModule, RouterLink],
+    imports: [ReactiveFormsModule, FloatLabelModule, InputTextModule, ButtonModule, RouterLink],
     templateUrl: './register.component.html'
 })
 export class RegisterComponent {
