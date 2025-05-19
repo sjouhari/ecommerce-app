@@ -52,7 +52,7 @@
 
                 <!-- Quantité + Bouton -->
                 <div class="mb-4">
-                    <label class="block font-bold mb-2">Quantité</label>
+                    <label class="block font-bold mb-2">Quantité ({{quantityInStock()}} available)</label>
                     <div class="mb-3 flex gap-4">
                         <p-inputnumber
                             inputId="quantity"
@@ -61,7 +61,8 @@
                             (onInput)="calculateTotalePrice()"
                             buttonLayout="horizontal"
                             [min]="1"
-                            [inputStyle]="{ width: '3rem', 'text-align': 'center' }"
+                            [max]="quantityInStock()"
+                            [inputStyle]="{ width: '4rem', 'text-align': 'center' }"
                             [disabled]="!selectedColor"
                             >
                             <ng-template #incrementbuttonicon>

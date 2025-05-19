@@ -37,6 +37,7 @@ export class ProductDetailsComponent implements OnInit {
     selectedSize: string | null = null;
     selectedQuantity: number = 1;
     totalPrice = signal<number>(0);
+    quantityInStock = signal<number>(0);
 
     price = computed(() => {
         return this.totalPrice() * this.selectedQuantity;
@@ -65,6 +66,9 @@ export class ProductDetailsComponent implements OnInit {
                     this.colors = product.stock?.map((stock) => stock.color) || [];
                     this.sizes = [...new Set(product.stock?.map((stock) => stock.size))];
                     this.totalPrice.set(product.stock[0].price);
+                    this.selectedColor = product.stock[0].color;
+                    this.selectedSize = product.stock[0].size;
+                    this.quantityInStock.set(product.stock[0].quantity);
                 },
                 error: (error) => {
                     console.log(error); //TODO: handle error
@@ -124,12 +128,15 @@ export class ProductDetailsComponent implements OnInit {
     }
 
     calculateTotalePrice() {
+        let stock = this.product()?.stock;
         if (this.selectedSize && !this.selectedColor) {
-            this.totalPrice.set(this.product()!.stock!.find((stock) => stock.size === this.selectedSize)!.price * this.selectedQuantity);
+            stock = stock!.filter((stock) => stock.size === this.selectedSize);
         }
         if (this.selectedColor && this.selectedSize) {
-            this.totalPrice.set(this.product()!.stock!.find((stock) => stock.color === this.selectedColor && stock.size === this.selectedSize)!.price * this.selectedQuantity);
+            stock = stock!.filter((stock) => stock.color === this.selectedColor && stock.size === this.selectedSize);
         }
+        this.quantityInStock.set(stock![0].quantity);
+        this.totalPrice.set(stock![0].price * this.selectedQuantity);
     }
 
     disableColor(color: string) {
