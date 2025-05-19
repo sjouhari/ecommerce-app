@@ -20,8 +20,12 @@ export class ShoppingCartService {
         return this.http.post<ShoppingCart>(`${this.baseUrl}/${userId}`, OrderItem);
     }
 
-    updateItemInShoppingCart(orderItemId: number, OrderItem: OrderItem): Observable<OrderItem> {
-        return this.http.put<OrderItem>(`${this.baseUrl}/${orderItemId}`, OrderItem);
+    updateItemQuantity(orderItemId: number, quantity: number): Observable<OrderItem> {
+        return this.http.put<OrderItem>(`${this.baseUrl}/quantity/${orderItemId}`, { quantity });
+    }
+
+    selectItem(orderItemId: number, selected: boolean): Observable<OrderItem> {
+        return this.http.put<OrderItem>(`${this.baseUrl}/select/${orderItemId}`, { selected });
     }
 
     deleteItemFromShoppingCart(orderItemId: number): Observable<any> {

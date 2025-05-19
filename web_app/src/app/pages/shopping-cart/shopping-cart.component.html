@@ -1,7 +1,11 @@
-<div class="w-6" style="margin: auto;">
-    <h1 class="text-2xl font-bold">Panier</h1>
+<p-toast></p-toast>
+<div [class]="'grid grid-cols-12 gap-2 w-6 mx-auto'">
+    <h1 class="col-span-12 text-xl font-bold m-0">Panier</h1>
     @for(item of shoppingCart()?.orderItems; track item.id) {
-        <div class="flex flex-wrap p-3 gap-4 w-full border-1 border-surface rounded">
+        <div class="col-span-12 flex flex-wrap p-3 gap-4 w-full border-1 border-surface rounded">
+            <div class="card flex justify-center">
+                <p-checkbox [inputId]="item.id!+''" [(ngModel)]="item.selected" [binary]="true" (onChange)="selectItem(item.id!, !!item.selected)" />
+            </div>
             <img
                 class="w-6rem shrink-0 rounded"
                 [src]="'http://localhost:8080/api/products/images/' + item.productImage"
@@ -15,10 +19,10 @@
                 <span class="font-bold sm:ml-8">{{ item.price + ' MAD'}}</span>
                 <p-inputnumber
                     inputId="quantity"
-                    [(ngModel)]="selectedQuantity"
+                    [(ngModel)]="item.quantity"
                     [showButtons]="true"
                     size="small"
-                    (onInput)="updateItemQuantity()"
+                    (onInput)="updateItemQuantity(item.id!, item.quantity)"
                     buttonLayout="horizontal"
                     [min]="1"
                     [inputStyle]="{ width: '3rem', 'text-align': 'center' }"
@@ -40,15 +44,131 @@
             </div>
         </div>
     }
-    <div class="flex justify-between mt-3">
-        <span class="font-bold">Total</span>
-        <span class="font-bold ml-2">{{ calculateTotalPrice() + ' MAD'}}</span>
+    <div class="col-span-12 p-3 border-1 border-surface rounded">
+        <h3 class="text-xl font-bold m-0 mb-4">Payement :</h3>
+        <div class="flex justify-between mb-3">
+            <span class="font-bold">Total</span>
+            <span class="font-bold ml-2">{{ totalPrice() + ' MAD'}}</span>
+        </div>
+        <div class="flex justify-between mb-3">
+            <span class="font-bold">Frais de livraison</span>
+            <span class="font-bold ml-2">0 MAD</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="font-bold">Mode de payement</span>
+            <span class="font-bold ml-2">{{ selectedModePayment() }}</span>
+        </div>
     </div>
-    <div class="flex justify-between mt-3">
-        <span class="font-bold">Livraison</span>
-        <span class="font-bold ml-2">Gratuit</span>
+    <div class="col-span-12 p-3 border-1 border-surface rounded">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold m-0">Adresse de livraison</h3>
+            <p-button icon="pi pi-plus" class="mr-3" [rounded]="true" [outlined]="true" (click)="showAddressDialog()" />
+        </div>
+        @for(address of addresses(); track address.id) {
+            <div class="flex justify-between gap-1 mb-3 border-1 border-surface rounded p-2">
+                <div class="flex flex-col gap-2">
+                    <span class="font-medium">{{address.lastName}} {{address.firstName}}, {{address.phone}}</span>
+                    <span class="font-medium">{{address.deliveryAddress}}</span>
+                    <span class="font-medium">{{address.postalCode}}, {{address.city}}, {{address.country}}</span>
+                </div>
+                <div class="flex flex-col justify-between items-center">
+                    <p-radiobutton name="address" size="large" [value]="address" [(ngModel)]="selectedAddress" [inputId]="address.id + ''" />
+                    <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="showAddressDialog(address)" />
+                </div>
+            </div>
+        }
     </div>
-    <div>
-        <button pButton label="Checkout" class="w-full mt-3" severity="success" (click)="checkout()"></button>
+    <div class="col-span-12">
+        <button pButton label="Commander" class="w-full mt-3" severity="success" (click)="checkout()"></button>
     </div>
 </div>
+
+<p-dialog [(visible)]="addressDialog" [style]="{ width: '70%', padding: '1.5rem' }" header="Détail du produit" [modal]="true">
+    <ng-template #content>
+        <form [formGroup]="addressFormGroup" class="grid grid-cols-12 gap-3 border p-3 rounded">
+            <div class="col-span-12">
+                <h3 class="text-lg font-bold m-0">Informations de contact</h3>
+            </div>
+            <div class="col-span-6">
+                <p-floatlabel variant="in">
+                    <input pInputText id="lastName" type="text" formControlName="lastName" class="w-full" />
+                    <label for="lastName">Nom</label>
+                </p-floatlabel>
+                @if(formControls['lastName'].errors && formControls['lastName'].touched && formControls['lastName'].errors['required']) {
+                    <small class="text-red-500">Nom obligatoire.</small>
+                }
+            </div>
+
+            <div class="col-span-6">
+                <p-floatlabel variant="in">
+                    <input pInputText id="firstName" type="text" formControlName="firstName" class="w-full" />
+                    <label for="firstName">Prénom</label>
+                </p-floatlabel>
+                @if(formControls['firstName'].errors && formControls['firstName'].touched && formControls['firstName'].errors['required']) {
+                    <small class="text-red-500">Prénom obligatoire.</small>
+                }
+            </div>
+            
+            <div class="col-span-12">
+                <p-floatlabel variant="in">
+                    <input pInputText id="phone" type="text" formControlName="phone" class="w-full" />
+                    <label for="phone">N° Téléphone</label>
+                </p-floatlabel>
+                @if(formControls['phone'].errors && formControls['phone'].touched && formControls['phone'].errors['required']) {
+                    <small class="text-red-500">N° Téléphone obligatoire.</small>
+                }
+            </div>
+
+            <div class="col-span-12">
+                <h3 class="text-lg font-bold m-0">Adresse de livraison</h3>
+            </div>
+            
+            <div class="col-span-12">
+                <p-floatlabel variant="in">
+                    <input pInputText id="deliveryAddress" type="text" formControlName="deliveryAddress" class="w-full" />
+                    <label for="deliveryAddress">Adresse</label>
+                </p-floatlabel>
+                @if(formControls['deliveryAddress'].errors && formControls['deliveryAddress'].touched && formControls['deliveryAddress'].errors['required']) {
+                    <small class="text-red-500">Adresse obligatoire.</small>
+                }
+            </div>
+            
+            <div class="col-span-4">
+                <p-floatlabel variant="in">
+                    <input pInputText id="country" type="text" formControlName="country" class="w-full" />
+                    <label for="country">Pays</label>
+                </p-floatlabel>
+                @if(formControls['country'].errors && formControls['country'].touched && formControls['country'].errors['required']) {
+                    <small class="text-red-500">Pays est obligatoire.</small>
+                }
+            </div>
+            
+            <div class="col-span-4">
+                <p-floatlabel variant="in">
+                    <input pInputText id="city" type="text" formControlName="city" class="w-full" />
+                    <label for="city">Ville</label>
+                </p-floatlabel>
+                @if(formControls['city'].errors && formControls['city'].touched && formControls['city'].errors['required']) {
+                    <small class="text-red-500">Ville est obligatoire.</small>
+                }
+            </div>
+            
+            <div class="col-span-4">
+                <p-floatlabel variant="in">
+                    <input pInputText id="postalCode" type="text" formControlName="postalCode" class="w-full" />
+                    <label for="postalCode">Code Postale</label>
+                </p-floatlabel>
+                @if(formControls['postalCode'].errors && formControls['postalCode'].touched && formControls['postalCode'].errors['required']) {
+                    <small class="text-red-500">Code Postale est obligatoire.</small>
+                }
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveAddress()" [loading]="loading()" [disabled]="addressFormGroup.invalid || loading()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '600px' }" />

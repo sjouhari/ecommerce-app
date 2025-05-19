@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "address")
+@Table(name = "addresses")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,12 +18,16 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    private Order order;
+    private Long userId;
+
+    private String firstName;
+    private String lastName;
+    private String phone;
+
+    private String deliveryAddress;
 
     private String country;
     private String city;
-    private String street;
     private String postalCode;
 
 }
