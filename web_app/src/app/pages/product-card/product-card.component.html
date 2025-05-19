@@ -1,7 +1,7 @@
-<a [routerLink]="'/home/list-products/' + product().id" class="border block border-surface rounded-border m-2 p-2  w-16rem">
+<a [routerLink]="'/home/list-products/' + product().id" class="border block border-surface rounded-border mx-3 p-2 w-16rem">
     <div class="mb-4">
         <div class="relative mx-auto">
-            <img src="http://localhost:8080/api/products/images/{{ product().medias[0].url }}" [alt]="product().name" class="rounded-border" />
+            <img src="http://localhost:8080/api/products/images/{{ product().medias[0].url }}" [alt]="product().name" class="rounded-border h-15rem w-full" />
             <div class="absolute bg-black/70 rounded-border" [ngStyle]="{ 'left.px': 2, 'top.px': 2 }">
                 <p-tag [value]="product().status" [severity]="getSeverity(product().status)" />
             </div>
