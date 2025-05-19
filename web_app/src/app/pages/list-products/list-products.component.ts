@@ -14,10 +14,13 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { Slider } from 'primeng/slider';
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
     selector: 'app-list-products',
-    imports: [Checkbox, FormsModule, CommonModule, ButtonModule, ProductCardComponent, Slider],
+    imports: [Checkbox, FormsModule, CommonModule, ButtonModule, ProductCardComponent, Slider, InputIconModule, IconFieldModule, InputTextModule],
     templateUrl: './list-products.component.html'
 })
 export class ListProductsComponent implements OnInit {
@@ -31,13 +34,14 @@ export class ListProductsComponent implements OnInit {
     subCategories = signal<SubCategory[]>([]);
     sizes = signal<Size[]>([]);
     colors = Object.entries(ProductColor).map(([key, value]) => ({ key, value }));
+    searchTerm = '';
 
     filteredProducts = signal<Product[]>([]);
     selectedCategories = signal<Category[]>([]);
     selectedSubCategories = signal<SubCategory[]>([]);
     selectedSizes = signal<Size[]>([]);
     selectedColors = signal<ProductColor[]>([]);
-    selectedPrice = signal<number[]>([0, 1000]);
+    selectedPrice = signal<number[]>([0, 100000]);
 
     ngOnInit(): void {
         this.productService.getProducts().subscribe({
@@ -61,11 +65,18 @@ export class ListProductsComponent implements OnInit {
 
     appliquerFilters() {
         this.filteredProducts.set(this.products());
+
+        if (this.searchTerm) {
+            const term = this.searchTerm.toLowerCase();
+            this.filteredProducts.update((products) => products.filter((product) => product.name.toLowerCase().includes(term) || product.description.toLowerCase().includes(term)));
+        }
+        console.log(this.filteredProducts());
+
         if (this.selectedCategories().length > 0) {
             this.subCategories.set(this.selectedCategories().flatMap((category) => category.subCategories));
             this.sizes.set(this.selectedCategories().flatMap((category) => category.sizes));
-            this.filteredProducts.set(
-                this.products().filter((product) => {
+            this.filteredProducts.update((products) =>
+                products.filter((product) => {
                     return this.selectedCategories().some((category) => product.categoryName === category.name);
                 })
             );
