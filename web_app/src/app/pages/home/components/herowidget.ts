@@ -3,14 +3,12 @@ import { Component, model } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { GalleriaModule } from 'primeng/galleria';
 import { RippleModule } from 'primeng/ripple';
-import { PhotoService } from '../../service/photo.service';
 import { CategoriesWidget } from './categorieswidget';
-import { NewProductsWidget } from './newproductswidget';
+import { NewProductsComponent } from './new-products/new-products.component';
 
 @Component({
     selector: 'hero-widget',
-    imports: [ButtonModule, RippleModule, GalleriaModule, Carousel, CategoriesWidget, NewProductsWidget],
-    providers: [PhotoService],
+    imports: [ButtonModule, RippleModule, GalleriaModule, Carousel, CategoriesWidget, NewProductsComponent],
     template: `
         <div id="hero" class="flex flex-col overflow-hidden">
             <p-carousel [value]="images()" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions">
@@ -26,9 +24,7 @@ import { NewProductsWidget } from './newproductswidget';
             </p-carousel>
         </div>
         <categories-widget />
-        <new-products-widget />
-        <new-products-widget />
-        <new-products-widget />
+        <app-new-products />
     `
 })
 export class HeroWidget {
@@ -44,8 +40,6 @@ export class HeroWidget {
             numVisible: 1
         }
     ];
-
-    constructor(private photoService: PhotoService) {}
 
     ngOnInit() {
         this.images.set(['slide1.jpg', 'slide2.jpg', 'slide3.jpg'] as never[]);
