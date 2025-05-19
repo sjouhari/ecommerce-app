@@ -37,6 +37,7 @@ export class ShoppingCartComponent implements OnInit {
     messageService = inject(MessageService);
     addressService = inject(AddressService);
     orderService = inject(OrderService);
+    confirmationService = inject(ConfirmationService);
 
     selectedQuantity: number = 1;
     timeoutMap: { [key: number]: any } = {};
@@ -152,19 +153,23 @@ export class ShoppingCartComponent implements OnInit {
             clearTimeout(this.timeoutMap[id]);
         }
 
-        this.timeoutMap[id] = setTimeout(() => {
-            this.shoppingCartService.updateItemQuantity(id, quantity).subscribe({
-                next: () => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Succès',
-                        detail: 'La quantité du produit a bien été modifiée.'
-                    });
-                    this.calculateTotalPrice();
-                },
-                error: (error) => console.error(error)
-            });
-        }, 1000);
+        if (quantity == 0) {
+            this.removeItem(id);
+        } else {
+            this.timeoutMap[id] = setTimeout(() => {
+                this.shoppingCartService.updateItemQuantity(id, quantity).subscribe({
+                    next: () => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Succès',
+                            detail: 'La quantité du produit a bien été modifiée.'
+                        });
+                        this.calculateTotalPrice();
+                    },
+                    error: (error) => console.error(error)
+                });
+            }, 1000);
+        }
     }
 
     selectItem(id: number, selected: boolean) {
@@ -177,13 +182,26 @@ export class ShoppingCartComponent implements OnInit {
     }
 
     removeItem(id: number) {
-        this.shoppingCartService.deleteItemFromShoppingCart(id).subscribe({
-            next: () => {
-                this.getShoppingCart();
-                this.calculateTotalPrice();
-            },
-            error: (error) => {
-                console.log(error); //TODO: handle error
+        this.confirmationService.confirm({
+            message: 'Êtes-vous sûr de vouloir supprimer ce produit du panier ?',
+            header: 'Confirmation',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.shoppingCartService.deleteItemFromShoppingCart(id).subscribe({
+                    next: () => {
+                        this.getShoppingCart();
+                        this.calculateTotalPrice();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Suppression',
+                            detail: 'Le produit sélectionné a été supprimé du panier.',
+                            life: 3000
+                        });
+                    },
+                    error: (error) => {
+                        console.error("Une erreur s'est produite lors de la suppression du produit:", error);
+                    }
+                });
             }
         });
     }
