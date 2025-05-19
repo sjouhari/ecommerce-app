@@ -26,7 +26,7 @@ export class ProductDetailsComponent implements OnInit {
     productService = inject(ProductService);
     shoppingCartService = inject(ShoppingCartService);
     authService = inject(AuthService);
-    MessageService = inject(MessageService);
+    messageService = inject(MessageService);
     location = inject(Location);
 
     images: Media[] = [];
@@ -101,6 +101,8 @@ export class ProductDetailsComponent implements OnInit {
             this.shoppingCartService
                 .addItemToShoppingCart(this.authService.getCurrentUser()?.id!, {
                     productId: this.product()!.id,
+                    productName: this.product()!.name,
+                    productImage: this.product()!.medias[0].url,
                     size: this.selectedSize,
                     color: this.selectedColor,
                     quantity: this.selectedQuantity,
@@ -108,7 +110,7 @@ export class ProductDetailsComponent implements OnInit {
                 })
                 .subscribe({
                     next: (cart) => {
-                        this.MessageService.add({
+                        this.messageService.add({
                             severity: 'success',
                             summary: 'Ajout au panier',
                             detail: 'Produit ajouté au panier'

@@ -1,6 +1,7 @@
 package com.ecommerce.order.service.impl;
 
 import com.ecommerce.order.dto.OrderItemDto;
+import com.ecommerce.order.dto.SelectOrderItemDto;
 import com.ecommerce.order.dto.ShoppingCartDto;
 import com.ecommerce.order.dto.UpdateOrderItemQauntityDto;
 import com.ecommerce.order.entity.OrderItem;
@@ -55,6 +56,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 () -> new ResourceNotFoundException("Order Item", "id", id.toString())
         );
         orderItem.setQuantity(updateOrderItemQauntityDto.getQuantity());
+        OrderItem savedOrderItem = orderItemRepository.save(orderItem);
+        return OrderItemMapper.INSTANCE.orderItemToOrderItemDto(savedOrderItem);
+    }
+
+    @Override
+    public OrderItemDto selectOrderItem(Long id, SelectOrderItemDto selectOrderItemDto) {
+        OrderItem orderItem = orderItemRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Order Item", "id", id.toString())
+        );
+        orderItem.setSelected(selectOrderItemDto.isSelected());
         OrderItem savedOrderItem = orderItemRepository.save(orderItem);
         return OrderItemMapper.INSTANCE.orderItemToOrderItemDto(savedOrderItem);
     }

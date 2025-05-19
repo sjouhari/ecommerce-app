@@ -40,4 +40,6 @@ public class OrderItem {
 
     private double price;
 
+    private boolean selected;
+
 }

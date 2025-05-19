@@ -30,14 +30,14 @@ public class Order extends BaseEntity {
 
     private Long userId;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems;
 
     private LocalDateTime deliveryDate;
 
     private LocalDateTime expectedDeliveryDate;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @ManyToOne
     private Address deliveryAddress;
 
 }

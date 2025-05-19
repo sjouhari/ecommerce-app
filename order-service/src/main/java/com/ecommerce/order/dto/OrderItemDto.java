@@ -36,4 +36,6 @@ public class OrderItemDto {
     @NotNull(message = "Price is required")
     private double price;
 
+    private boolean selected = true;
+
 }

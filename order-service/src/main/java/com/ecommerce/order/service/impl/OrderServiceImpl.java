@@ -13,6 +13,7 @@ import com.ecommerce.order.enums.OrderStatus;
 import com.ecommerce.order.kafka.OrderPlacedProducer;
 import com.ecommerce.order.mapper.OrderMapper;
 import com.ecommerce.order.repository.ModePaymentRepository;
+import com.ecommerce.order.repository.OrderItemRepository;
 import com.ecommerce.order.repository.OrderRepository;
 import com.ecommerce.order.service.OrderService;
 import com.ecommerce.shared.dto.InventoryDto;
@@ -31,6 +32,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     @Autowired
     private ModePaymentRepository modePaymentRepository;
@@ -85,20 +89,21 @@ public class OrderServiceImpl implements OrderService {
         });
         Order order = OrderMapper.INSTANCE.orderRequestDtoToOrder(orderRequestDto);
         order.setStatus(OrderStatus.PENDING);
-        order.getDeliveryAddress().setOrder(order);
-        order.getOrderItems().forEach(orderItem -> orderItem.setOrder(order));
-
-        ModePayment modePayment = modePaymentRepository.findByName(orderRequestDto.getModePayment()).orElseThrow(
-                () -> new ResourceNotFoundException("ModePayment", "name", orderRequestDto.getModePayment())
-        );
 
         Facture facture = new Facture();
-        facture.setModePayment(modePayment);
+        facture.setModePayment(modePaymentRepository.findByName(orderRequestDto.getModePayment()).orElseThrow(
+                () -> new ResourceNotFoundException("ModePayment", "name", orderRequestDto.getModePayment())
+        ));
         facture.setTotalPrice(calculateTotalPrice(order.getOrderItems()));
         facture.setStatus(FactureStatus.UNPAID);
         facture.setOrder(order);
         order.setFacture(facture);
         Order savedOrder = orderRepository.save(order);
+        order.getOrderItems().forEach(orderItem -> {
+            orderItem.setOrder(savedOrder);
+            orderItem.setShoppingCart(null);
+            orderItemRepository.save(orderItem);
+        });
 
         // Send order placed event
         OrderEvent orderEvent = new OrderEvent();
