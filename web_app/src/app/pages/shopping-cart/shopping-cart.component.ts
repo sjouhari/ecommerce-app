@@ -30,6 +30,7 @@ export class ShoppingCartComponent implements OnInit {
     addressFormGroup!: FormGroup;
     formBuilder = inject(FormBuilder);
     loading = signal(false);
+    checkout = signal(false);
 
     shoppingCartService = inject(ShoppingCartService);
     authService = inject(AuthService);
@@ -214,7 +215,11 @@ export class ShoppingCartComponent implements OnInit {
         );
     }
 
-    checkout() {
+    toggleCheckout() {
+        this.checkout.update((checkout) => !checkout);
+    }
+
+    placeOrder() {
         const orderItems = this.shoppingCart()?.orderItems.filter((item) => item.selected) || [];
         if (orderItems.length === 0) {
             this.messageService.add({
