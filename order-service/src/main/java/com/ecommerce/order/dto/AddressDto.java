@@ -38,6 +38,4 @@ public class AddressDto {
     @NotBlank(message = "Postal code is required")
     private String postalCode;
 
-    private boolean selected = false;
-
 }
