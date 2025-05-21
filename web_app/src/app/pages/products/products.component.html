@@ -65,7 +65,7 @@
                 <p-tableCheckbox [value]="product" />
             </td>
             <td>
-                <img [src]="'http://localhost:8080/api/products/images/' + product.medias[0].url" [alt]="product.name" style="width: 64px" class="rounded" />
+                <img [src]="'http://localhost:8080/api/products/images/' + product?.medias[0]?.url" [alt]="product.name" style="width: 64px" class="rounded" />
             </td>
             <td style="min-width: 16rem">{{ product.name }}</td>
             <td style="min-width: 16rem">{{ product.description }}</td>

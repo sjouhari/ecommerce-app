@@ -5,6 +5,7 @@ import com.ecommerce.product.entity.Media;
 import com.ecommerce.product.entity.Product;
 import com.ecommerce.product.entity.Tva;
 import com.ecommerce.product.mapper.ProductMapper;
+import com.ecommerce.product.repository.MediaRepository;
 import com.ecommerce.product.repository.ProductRepository;
 import com.ecommerce.product.repository.TvaRepository;
 import com.ecommerce.product.service.ProductService;
@@ -36,6 +37,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private MediaRepository mediaRepository;
 
     @Override
     public List<ProductResponseDto> getAllProducts(String token) {
@@ -201,6 +205,7 @@ public class ProductServiceImpl implements ProductService {
                 List<String> deletedImageList = List.of(deletedImages.split(","));
                 for (String fileName : deletedImageList) {
                     fileStorageService.deleteImage(fileName);
+                    mediaRepository.deleteByUrl(fileName);
                     product.getMedias().removeIf(media -> media.getUrl().equals(fileName));
                 }
             }
