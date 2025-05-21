@@ -7,15 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
-@Table(name = "factures")
+@Table(name = "invoices")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Facture extends BaseEntity {
+public class Invoice extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +28,6 @@ public class Facture extends BaseEntity {
     private FactureStatus status;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private ModePayment modePayment;
+    private PaymentMethod paymentMethod;
 
 }
