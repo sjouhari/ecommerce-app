@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Order } from '../models/order/order.model';
+import { OrderRequest } from '../models/order/order-request.model';
 
 @Injectable({
     providedIn: 'root'
@@ -19,12 +20,8 @@ export class OrderService {
         return this.http.get<Order>(`${this.baseUrl}/${id}`);
     }
 
-    placeOrder(order: Order): Observable<Order> {
+    placeOrder(order: OrderRequest): Observable<Order> {
         return this.http.post<Order>(this.baseUrl, order);
-    }
-
-    updateOrder(product: Order): Observable<Order> {
-        return this.http.put<Order>(`${this.baseUrl}/${product.id}`, product);
     }
 
     deleteOrder(id: number): Observable<void> {

@@ -1,3 +1,4 @@
+import { PaymentMethod } from '../../models/order/payment-methods';
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { ShoppingCartService } from '../../services/shopping-cart.service';
 import { ShoppingCart } from '../../models/order/shopping-cart.model';
@@ -48,7 +49,11 @@ export class ShoppingCartComponent implements OnInit {
 
     addresses = signal<Address[]>([]);
     selectedAddress = signal<Address | null>(null);
-    selectedModePayment = signal<string>('COD');
+    selectedPaymentMethod: PaymentMethod | null = null;
+
+    paymentMethods = Object.entries(PaymentMethod).map(([key, value]) => ({ key, value }));
+    chequeNumber = '';
+    bankName = '';
 
     ngOnInit() {
         this.getShoppingCart();
@@ -208,11 +213,16 @@ export class ShoppingCartComponent implements OnInit {
     }
 
     calculateTotalPrice() {
-        this.totalPrice.set(
-            this.shoppingCart()!
-                .orderItems.filter((item) => item.selected)
-                .reduce((acc, item) => acc + item.price * item.quantity, 0)
-        );
+        if (!this.shoppingCart()) return;
+        if (this.shoppingCart()?.orderItems.length == 0) {
+            this.totalPrice.set(0);
+        } else {
+            this.totalPrice.set(
+                this.shoppingCart()!
+                    .orderItems.filter((item) => item.selected)
+                    .reduce((acc, item) => acc + item.price * item.quantity, 0)
+            );
+        }
     }
 
     toggleCheckout() {
@@ -237,7 +247,7 @@ export class ShoppingCartComponent implements OnInit {
             });
             return;
         }
-        if (!this.selectedModePayment) {
+        if (!this.selectedPaymentMethod) {
             this.messageService.add({
                 severity: 'error',
                 summary: 'Erreur',
@@ -246,19 +256,50 @@ export class ShoppingCartComponent implements OnInit {
             return;
         }
 
+        if (this.selectedPaymentMethod.toString() === 'CHEQUE' && !this.chequeNumber) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Erreur',
+                detail: 'Veuillez choisir un numero de cheque'
+            });
+            return;
+        }
+
+        if (this.selectedPaymentMethod.toString() === 'CHEQUE' && !this.bankName) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Erreur',
+                detail: 'Veuillez choisir un nom de banque'
+            });
+            return;
+        }
+
+        this.loading.set(true);
+
         const orderRequest = {
             userId: this.authService.getCurrentUser()!.id,
-            orderItems,
-            modePayment: this.selectedModePayment(),
-            deliveryAddress: this.selectedAddress()!
+            orderItemsIds: orderItems.map((item) => item.id),
+            paymentMethod: this.selectedPaymentMethod,
+            deliveryAddressId: this.selectedAddress()!.id,
+            chequeNumber: this.chequeNumber,
+            bankName: this.bankName
         };
 
         this.orderService.placeOrder(orderRequest).subscribe({
             next: (order) => {
                 this.getShoppingCart();
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Succès',
+                    detail: 'Votre commande a bien été créée.',
+                    life: 3000
+                });
+                this.loading.set(false);
+                this.router.navigate(['/home/order-summary', order.id]);
             },
             error: (error) => {
                 console.log(error);
+                this.loading.set(false);
             }
         });
     }

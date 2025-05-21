@@ -18,6 +18,7 @@ import { ListProductsComponent } from './app/pages/list-products/list-products.c
 import { ProductDetailsComponent } from './app/pages/product-details/product-details.component';
 import { HeroWidget } from './app/pages/home/components/herowidget';
 import { ShoppingCartComponent } from './app/pages/shopping-cart/shopping-cart.component';
+import { OrderSummaryComponent } from './app/pages/order-summary/order-summary.component';
 
 export const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -74,7 +75,8 @@ export const appRoutes: Routes = [
             { path: '', component: HeroWidget },
             { path: 'list-products', component: ListProductsComponent },
             { path: 'list-products/:id', component: ProductDetailsComponent },
-            { path: 'shopping-cart', component: ShoppingCartComponent }
+            { path: 'shopping-cart', component: ShoppingCartComponent },
+            { path: 'order-summary/:id', component: OrderSummaryComponent }
         ]
     },
 

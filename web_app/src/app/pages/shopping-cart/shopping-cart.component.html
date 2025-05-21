@@ -48,11 +48,12 @@
                             ></button>
                         </div>
                     </div>
-                }
+                } @empty {
+                    <p class="text-center">Votre panier est vide.</p>}
             </div>
         }
     </div>
-    
+
     <div class="col-span-4 p-3 border-1 border-surface rounded">
         <div class="flex justify-between items-center mb-3">
             <span class="font-bold">Prix totale du panier</span>
@@ -86,15 +87,36 @@
                         </div>
                     </div>
                 }
-                
-                <div class="flex justify-between">
+
+                <div class="flex flex-col gap-3">
                     <span class="font-bold">Mode de payement</span>
-                    <span class="font-bold ml-2">{{ selectedModePayment() }}</span>
+                    <div class="flex flex-col gap-2">
+                        @for (item of paymentMethods; track item.key) {
+                            <div class="flex items-center">
+                                <p-radiobutton name="payement" [value]="item.key" [(ngModel)]="selectedPaymentMethod" [inputId]="item.key" />
+                                <label [for]="item.key" class="ml-2">{{item.value}}</label>
+                            </div>
+                        }
+                    </div>
+
+                    @if(selectedPaymentMethod?.toString() === 'CHEQUE') {
+                        <span class="font-bold mb-2">Informations du chèque :</span>
+                        <div class="grid grid-cols-12 gap-3">
+                            <p-floatlabel class="col-span-6" variant="on">
+                                <input pInputText id="numeroCheque" type="text" [value]="chequeNumber" [(ngModel)]="chequeNumber" class="w-full" />
+                                <label for="numeroCheque">Numéro du chèque</label>
+                            </p-floatlabel>
+                            <p-floatlabel class="col-span-6" variant="on">
+                                <input pInputText id="bankName" type="text" [value]="bankName" [(ngModel)]="bankName" class="w-full" />
+                                <label for="bankName">Nom de la banque</label>
+                            </p-floatlabel>
+                        </div>
+                    }
                 </div>
             </div>
         }
 
-        <button pButton [label]="checkout() ? 'Commander' : 'Valider ma commande'" class="w-full mt-3" severity="contrast" [disabled]="shoppingCart()?.orderItems?.length == 0 && !checkout()" (click)="checkout() ? placeOrder() : toggleCheckout()"></button>
+        <button pButton [label]="checkout() ? 'Commander' : 'Valider ma commande'" class="w-full mt-3" severity="contrast" icon="pi pi-check" [loading]="loading()" [disabled]="loading() || !shoppingCart() || (shoppingCart()?.orderItems?.length == 0 && !checkout())" (click)="checkout() ? placeOrder() : toggleCheckout()"></button>
     </div>
 </div>
 
@@ -123,7 +145,7 @@
                     <small class="text-red-500">Prénom obligatoire.</small>
                 }
             </div>
-            
+
             <div class="col-span-12">
                 <p-floatlabel variant="in">
                     <input pInputText id="phone" type="text" formControlName="phone" class="w-full" />
@@ -137,7 +159,7 @@
             <div class="col-span-12">
                 <h3 class="text-lg font-bold m-0">Adresse de livraison</h3>
             </div>
-            
+
             <div class="col-span-12">
                 <p-floatlabel variant="in">
                     <input pInputText id="deliveryAddress" type="text" formControlName="deliveryAddress" class="w-full" />
@@ -147,7 +169,7 @@
                     <small class="text-red-500">Adresse obligatoire.</small>
                 }
             </div>
-            
+
             <div class="col-span-4">
                 <p-floatlabel variant="in">
                     <input pInputText id="country" type="text" formControlName="country" class="w-full" />
@@ -157,7 +179,7 @@
                     <small class="text-red-500">Pays est obligatoire.</small>
                 }
             </div>
-            
+
             <div class="col-span-4">
                 <p-floatlabel variant="in">
                     <input pInputText id="city" type="text" formControlName="city" class="w-full" />
@@ -167,7 +189,7 @@
                     <small class="text-red-500">Ville est obligatoire.</small>
                 }
             </div>
-            
+
             <div class="col-span-4">
                 <p-floatlabel variant="in">
                     <input pInputText id="postalCode" type="text" formControlName="postalCode" class="w-full" />
