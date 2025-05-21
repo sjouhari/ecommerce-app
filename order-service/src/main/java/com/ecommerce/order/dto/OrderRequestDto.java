@@ -1,6 +1,6 @@
 package com.ecommerce.order.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.ecommerce.order.enums.PaymentMethods;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,13 +19,15 @@ public class OrderRequestDto {
     private Long userId;
 
     @NotNull(message = "Delivery address is required")
-    private AddressDto deliveryAddress;
+    private Long deliveryAddressId;
 
-    @NotBlank(message = "Mode payment is required")
-    private String modePayment;
+    @NotNull(message = "Order items are required")
+    private List<Long> orderItemsIds;
 
-    @NotNull(message = "Order items is required")
-    private List<OrderItemDto> orderItems;
+    @NotNull(message = "Payment Method is required")
+    private PaymentMethods paymentMethod;
 
+    private String chequeNumber;
+    private String bankName;
 
 }

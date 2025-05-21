@@ -22,13 +22,16 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long userId;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    private Facture facture;
+    private Invoice invoice;
 
-    private Long userId;
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private PaymentMethod paymentMethod;
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems;

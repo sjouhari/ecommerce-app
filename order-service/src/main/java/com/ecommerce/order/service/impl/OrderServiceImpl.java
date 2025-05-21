@@ -4,17 +4,17 @@ import com.ecommerce.order.dto.OrderRequestDto;
 import com.ecommerce.order.dto.OrderResponseDto;
 import com.ecommerce.order.dto.UpdateOrderStatusRequestDto;
 import com.ecommerce.order.dto.UserDto;
-import com.ecommerce.order.entity.Facture;
-import com.ecommerce.order.entity.ModePayment;
-import com.ecommerce.order.entity.Order;
-import com.ecommerce.order.entity.OrderItem;
-import com.ecommerce.order.enums.FactureStatus;
+import com.ecommerce.order.entity.*;
 import com.ecommerce.order.enums.OrderStatus;
+import com.ecommerce.order.enums.PaymentMethods;
+import com.ecommerce.order.enums.PaymentMethodStatus;
 import com.ecommerce.order.kafka.OrderPlacedProducer;
+import com.ecommerce.order.mapper.OrderItemMapper;
 import com.ecommerce.order.mapper.OrderMapper;
-import com.ecommerce.order.repository.ModePaymentRepository;
+import com.ecommerce.order.repository.AddressRepository;
 import com.ecommerce.order.repository.OrderItemRepository;
 import com.ecommerce.order.repository.OrderRepository;
+import com.ecommerce.order.repository.PaymentMethodRepository;
 import com.ecommerce.order.service.OrderService;
 import com.ecommerce.shared.dto.InventoryDto;
 import com.ecommerce.shared.dto.OrderEvent;
@@ -37,7 +37,10 @@ public class OrderServiceImpl implements OrderService {
     private OrderItemRepository orderItemRepository;
 
     @Autowired
-    private ModePaymentRepository modePaymentRepository;
+    private PaymentMethodRepository paymentMethodRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Autowired
     private UserApiClient userApiClient;
@@ -76,28 +79,49 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponseDto placeOrder(OrderRequestDto orderRequestDto, String token) {
+
+        // Verify user id
         UserDto userDto = userApiClient.getUserById(orderRequestDto.getUserId(), token);
-        orderRequestDto.getOrderItems().forEach(orderItem -> {
-            InventoryDto inventoryDto = new InventoryDto();
-            inventoryDto.setProductId(orderItem.getProductId());
-            inventoryDto.setSize(orderItem.getSize());
-            inventoryDto.setColor(orderItem.getColor());
-            inventoryDto.setQuantity(orderItem.getQuantity());
+
+        // Get order items
+        List<OrderItem> orderItems = orderItemRepository.findAllByIdIn(orderRequestDto.getOrderItemsIds());
+
+        // Check stock availability for each order item
+        orderItems.forEach(orderItem -> {
+            InventoryDto inventoryDto = OrderItemMapper.INSTANCE.orderItemToInventoryDto(orderItem);
             if(!inventoryApiClient.checkAvailability(inventoryDto, token)) {
                 throw new StockInsufficientException(orderItem.getProductId(), orderItem.getSize(), orderItem.getColor().toString());
             }
         });
-        Order order = OrderMapper.INSTANCE.orderRequestDtoToOrder(orderRequestDto);
-        order.setStatus(OrderStatus.PENDING);
 
-        Facture facture = new Facture();
-        facture.setModePayment(modePaymentRepository.findByName(orderRequestDto.getModePayment()).orElseThrow(
-                () -> new ResourceNotFoundException("ModePayment", "name", orderRequestDto.getModePayment())
-        ));
-        facture.setTotalPrice(calculateTotalPrice(order.getOrderItems()));
-        facture.setStatus(FactureStatus.UNPAID);
-        facture.setOrder(order);
-        order.setFacture(facture);
+        // Prepare Payment Method
+
+        // Create new Order
+        Order order = new Order();
+        order.setUserId(orderRequestDto.getUserId());
+        order.setStatus(OrderStatus.PENDING);
+        order.setOrderItems(orderItems);
+
+        // Create New Payment Method
+        PaymentMethod paymentMethod = getPaymentMethod(orderRequestDto);
+        paymentMethod.setStatus(PaymentMethodStatus.PENDING);
+        paymentMethod.setOrder(order);
+        order.setPaymentMethod(paymentMethod);
+
+        // Create new Facture
+        Invoice invoice = new Invoice();
+        invoice.setPaymentMethod(paymentMethod);
+        invoice.setTotalPrice(calculateTotalPrice(order.getOrderItems()));
+        invoice.setOrder(order);
+        order.setInvoice(invoice);
+
+        // Set delivery address
+        Address address = addressRepository.findById(orderRequestDto.getDeliveryAddressId()).orElseThrow(
+                () -> new ResourceNotFoundException("Address", "id", orderRequestDto.getDeliveryAddressId().toString())
+        );
+        order.setDeliveryAddress(address);
+
+        // Save Order
         Order savedOrder = orderRepository.save(order);
         order.getOrderItems().forEach(orderItem -> {
             orderItem.setOrder(savedOrder);
@@ -141,10 +165,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private double calculateTotalPrice(List<OrderItem> orderItems) {
-        double totalPrice = 0.0;
-        totalPrice = orderItems.stream()
+        return orderItems.stream()
                 .mapToDouble(orderItem -> orderItem.getPrice() * orderItem.getQuantity())
                 .sum();
-        return totalPrice;
+    }
+
+    private PaymentMethod getPaymentMethod(OrderRequestDto orderRequestDto) {
+        if(orderRequestDto.getPaymentMethod() == PaymentMethods.CASH) {
+            return new Cash();
+        } else if(orderRequestDto.getPaymentMethod() == PaymentMethods.CHEQUE) {
+            return new Cheque(orderRequestDto.getChequeNumber(), orderRequestDto.getBankName());
+        }
+        throw new RuntimeException("Invalid payment method");
     }
 }
