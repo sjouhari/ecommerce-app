@@ -27,8 +27,8 @@ export class ProductService {
         return this.http.post<Product>(this.baseUrl, formData);
     }
 
-    updateProduct(product: Product): Observable<Product> {
-        return this.http.put<Product>(`${this.baseUrl}/${product.id}`, product);
+    updateProduct(id: number, formData: FormData): Observable<Product> {
+        return this.http.put<Product>(`${this.baseUrl}/${id}`, formData);
     }
 
     deleteProduct(id: number): Observable<void> {

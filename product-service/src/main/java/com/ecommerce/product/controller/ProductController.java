@@ -51,9 +51,14 @@ public class ProductController {
         return new ResponseEntity<>(productService.createProduct(productJson, images, token), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRequestDto productDto) {
-        return ResponseEntity.ok(productService.updateProduct(id, productDto));
+    @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponseDto> updateProduct(
+            @PathVariable Long id,
+            @RequestPart("product") String productJson,
+            @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
+            @RequestPart(value = "deletedImages", required = false) String deletedImages,
+            @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(productService.updateProduct(id, productJson, newImages, deletedImages, token));
     }
 
     @DeleteMapping("/{id}")

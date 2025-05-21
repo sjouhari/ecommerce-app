@@ -32,11 +32,16 @@ public class InventoryController {
     @PutMapping("/updateQuantity")
     public ResponseEntity<InventoryDto> updateQuantity(@RequestBody @Valid InventoryDto inventoryDto) {
         return ResponseEntity.ok(inventoryService.updateQuantity(inventoryDto));
-    }
+    } // fix request body and add id
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<InventoryDto> createInventory(@RequestBody @Valid InventoryDto inventoryDto) {
         return new ResponseEntity<>(inventoryService.createInventory(inventoryDto), HttpStatus.CREATED);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<InventoryDto> updateInventory(@PathVariable Long id, @RequestBody @Valid InventoryDto inventoryDto) {
+        return ResponseEntity.ok(inventoryService.updateInventory(id, inventoryDto));
     }
 
     @DeleteMapping("/delete/{productId}")

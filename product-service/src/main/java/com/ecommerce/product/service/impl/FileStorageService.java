@@ -18,7 +18,7 @@ public class FileStorageService {
     @Value("${app.images.path}")
     private String imagesPath;
 
-    public String saveProductImages(MultipartFile file) {
+    public String saveImage(MultipartFile file) {
         try {
             String fileExtension = Objects.requireNonNull(file.getOriginalFilename())
                     .substring(file.getOriginalFilename().lastIndexOf("."));
@@ -32,6 +32,16 @@ public class FileStorageService {
             return fileName;
         } catch (IOException e) {
             throw new RuntimeException("Failed to save product image", e);
+        }
+    }
+
+    public void deleteImage(String fileName) {
+        try {
+            Path path = Paths.get(imagesPath);
+            Path imagePath = path.resolve(fileName);
+            Files.delete(imagePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete product image", e);
         }
     }
 }

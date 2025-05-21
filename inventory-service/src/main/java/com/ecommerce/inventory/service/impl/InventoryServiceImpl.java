@@ -51,6 +51,17 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    public InventoryDto updateInventory(Long id, InventoryDto inventoryDto) {
+        if(!inventoryRepository.existsById(id)) {
+            return createInventory(inventoryDto);
+        }
+        Inventory inventory = InventoryMapper.INSTANCE.inventoryDtoToInventory(inventoryDto);
+        inventory.setId(id);
+        Inventory savedInventory = inventoryRepository.save(inventory);
+        return InventoryMapper.INSTANCE.inventoryToInventoryDto(savedInventory);
+    }
+
+    @Override
     public String deleteInventory(Long productId) {
         inventoryRepository.deleteByProductId(productId);
         return "Inventory deleted successfully";

@@ -1,6 +1,7 @@
 package com.ecommerce.product.dto;
 
 import com.ecommerce.product.enums.ProductStatus;
+import com.ecommerce.shared.dto.InventoryDto;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,5 +45,5 @@ public class ProductRequestDto {
     @NotNull(message = "Tva id is required")
     private TvaDto tva;
 
-    private List<StockDto> stock;
+    private List<InventoryDto> stock;
 }

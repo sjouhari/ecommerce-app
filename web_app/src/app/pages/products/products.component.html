@@ -85,15 +85,28 @@
 <p-dialog [(visible)]="productDialog" [style]="{ width: '70%', padding: '1.5rem' }" header="Détail du produit" [modal]="true">
     <ng-template #content>
         <form [formGroup]="productFormGroup" class="flex flex-col gap-3">
-            <div class="card">
+            <div class="card m-0 p-0">
                 <div class="font-semibold text-xl mb-4">Images</div>
                 <p-fileupload name="images[]" (onSelect)="onUpload($event)" [multiple]="true" accept="image/*" maxFileSize="1000000" mode="advanced">
                     <ng-template #empty>
                         <div>Drag and drop files to here to upload.</div>
                     </ng-template>
                 </p-fileupload>
+                @if(productImages().length > 0) {
+                    <label for="name" class="block font-bold my-2">Images actuelles du produit</label>
+                    <div class="flex flex-wrap gap-4 my-3">
+                        @for(image of productImages(); track image) {
+                            <div class="card m-0 px-12 flex flex-col border border-surface items-center gap-4">
+                                <div>
+                                    <img role="presentation" [alt]="image.altText" [src]="'http://localhost:8080/api/products/images/' + image.url" width="100" height="50" />
+                                </div>
+                                <p-button icon="pi pi-times" (onClick)="removeProductImage(image.url)" [outlined]="true" [rounded]="true" severity="danger" />
+                            </div>
+                        }
+                    </div>
+                }
             </div>
-            <div class="grid grid-cols-12 gap-4 my-3">
+            <div class="grid grid-cols-12 gap-4">
                 <input type="hidden" formControlName="id" />
                 <input type="hidden" formControlName="sellerId" />
                 <div class="col-span-6">
@@ -128,7 +141,7 @@
             <div class="grid grid-cols-12 gap-4 mb-3">
                 <div class="col-span-6">
                     <label class="block font-bold mb-2">Catégorie</label>
-                    <p-select inputId="categoryId" [options]="categories()" formControlName="categoryId" optionLabel="name" placeholder="Sélectionner une catégorie" (onChange)="onSelectCategory($event.value)" fluid></p-select>
+                    <p-select inputId="categoryId" [options]="categories()" formControlName="categoryId" optionLabel="name" optionValue="id" placeholder="Sélectionner une catégorie" (onChange)="onSelectCategory($event.value)" fluid></p-select>
                     @if(formControls['categoryId'].errors && formControls['categoryId'].touched) {
                         @if(formControls['categoryId'].errors['required']) {
                             <small class="text-red-500">La catégorie du produit est obligatoire.</small>
@@ -170,6 +183,9 @@
                                     <label class="block font-bold mb-2">Couleur</label>
                                     <p-select inputId="color" [options]="colors" formControlName="color" placeholder="Sélectionner une taille" optionLabel="value" optionValue="key" fluid></p-select>
                                     @if(stockFormArray.at(i).get('color')?.hasError('required') && stockFormArray.at(i).get('color')?.touched) {
+                                        <small class="text-red-500">La taille est obligatoire.</small>
+                                    }
+                                    @if(stockFormArray.at(i).get('color')?.hasError('notUnique') && stockFormArray.at(i).get('color')?.touched) {
                                         <small class="text-red-500">La taille est obligatoire.</small>
                                     }
                                 </div>

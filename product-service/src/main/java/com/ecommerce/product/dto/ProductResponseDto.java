@@ -1,6 +1,7 @@
 package com.ecommerce.product.dto;
 
 import com.ecommerce.product.enums.ProductStatus;
+import com.ecommerce.shared.dto.InventoryDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,5 +26,5 @@ public class ProductResponseDto {
     private Long sellerId;
     private TvaDto tva;
     private List<MediaDto> medias;
-    private List<StockDto> stock;
+    private List<InventoryDto> stock;
 }

@@ -23,7 +23,7 @@ public interface ProductService {
 
     ProductResponseDto createProduct(String productJson, List<MultipartFile> images, String token);
 
-    ProductResponseDto updateProduct(Long id, ProductRequestDto productDto);
+    ProductResponseDto updateProduct(Long id, String productJson, List<MultipartFile> newImages, String deletedImages, String token);
 
     void deleteProduct(Long id);
 

@@ -5,7 +5,7 @@ import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
@@ -29,7 +29,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ProductColor } from '../../models/product/product-color';
 import { AuthService } from '../../services/auth.service';
 import { TVA } from '../../models/product/tva.model';
-import { PrimeNG } from 'primeng/config';
+import { Media } from '../../models/product/media.model';
 
 @Component({
     selector: 'app-products',
@@ -89,6 +89,8 @@ export class ProductsComponent implements OnInit {
     selectedCategory!: Category | null;
     selectedSubCategory!: SubCategory | null;
     uploadedFiles: any[] = [];
+    productImages = signal<Media[]>([]);
+    deletedProductImages = signal<string[]>([]);
 
     @ViewChild('dt') dt!: Table;
 
@@ -104,17 +106,35 @@ export class ProductsComponent implements OnInit {
         this.productService.getProducts().subscribe({
             next: (products) => {
                 this.products.set(products);
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
             }
         });
 
         this.categoryService.getCategories().subscribe({
             next: (categories) => {
                 this.categories.set(categories);
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
             }
         });
     }
 
     initProductFormGroup(product?: Product) {
+        if (product && product.categoryName) {
+            this.selectedCategory = this.categories().find((category) => category.name === product?.categoryName)!;
+            this.subCategories.set(this.selectedCategory.subCategories);
+            this.sizes.set(this.selectedCategory.sizes);
+            this.productImages.set(product.medias);
+        } else {
+            this.selectedCategory = null;
+            this.subCategories.set([]);
+            this.sizes.set([]);
+            this.productImages.set([]);
+        }
+
         this.productFormGroup = this.formBuilder.group({
             id: new FormControl(product?.id || null),
             sellerId: new FormControl(product?.sellerId || this.authService.getCurrentUser()?.id),
@@ -128,6 +148,7 @@ export class ProductsComponent implements OnInit {
                 (product?.stock || []).map((stock) =>
                     this.formBuilder.group({
                         id: new FormControl(stock.id || null),
+                        productId: new FormControl(stock.productId || null),
                         size: new FormControl(stock.size || null, [Validators.required]),
                         color: new FormControl(stock.color || '', [Validators.required]),
                         quantity: new FormControl(stock.quantity || '', [Validators.required]),
@@ -142,10 +163,10 @@ export class ProductsComponent implements OnInit {
         return this.productFormGroup.controls;
     }
 
-    onSelectCategory(category: Category) {
-        this.selectedCategory = category;
-        this.subCategories.set(category.subCategories);
-        this.sizes.set(category.sizes);
+    onSelectCategory(categoryId: number) {
+        this.selectedCategory = this.categories().find((category) => category.id === categoryId)!;
+        this.subCategories.set(this.selectedCategory.subCategories);
+        this.sizes.set(this.selectedCategory.sizes);
         this.addStockEntry();
     }
 
@@ -182,35 +203,8 @@ export class ProductsComponent implements OnInit {
     }
 
     async editProduct(product: Product) {
-        this.productDialog = true;
         this.initProductFormGroup(product);
-
-        const baseUrl = 'http://localhost:8080/api/products/images/';
-
-        const files = await Promise.all(
-            product.medias.map(async (media) => {
-                const url = `${baseUrl}${media.url}`;
-                const response = await fetch(url);
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch ${url}`);
-                }
-
-                const blob = await response.blob();
-                const contentType = response.headers.get('Content-Type') || blob.type;
-                const file = new File([blob], media.url, { type: contentType });
-
-                // Optional: define objectURL for previews if needed
-                Object.defineProperty(file, 'objectURL', {
-                    writable: true,
-                    value: URL.createObjectURL(file)
-                });
-
-                return file;
-            })
-        );
-
-        this.uploadedFiles = files;
+        this.productDialog = true;
     }
 
     deleteSelectedProducts() {
@@ -280,7 +274,6 @@ export class ProductsComponent implements OnInit {
     }
 
     saveProduct() {
-        delete this.productFormGroup.value.categoryId;
         if (this.productFormGroup.invalid) {
             this.productFormGroup.markAllAsTouched();
             return;
@@ -288,11 +281,30 @@ export class ProductsComponent implements OnInit {
 
         const formData = new FormData();
         formData.append('product', JSON.stringify(this.productFormGroup.value));
-        this.uploadedFiles.forEach((image: File) => formData.append('images', image));
 
         if (this.productFormGroup.value.id) {
-            console.log('MODIFICATION');
+            this.uploadedFiles.forEach((image: File) => formData.append('newImages', image));
+            formData.append('deletedImages', this.deletedProductImages().toString());
+            this.productService.updateProduct(this.productFormGroup.value.id, formData).subscribe({
+                next: (product) => {
+                    this.products.set(this.products().map((p) => (p.id === product.id ? product : p)));
+                    this.productDialog = false;
+                    this.productFormGroup.reset();
+                    this.deletedProductImages.set([]);
+                    this.productImages.set([]);
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Modification',
+                        detail: 'Le produit a été modifié avec succès.',
+                        life: 3000
+                    });
+                },
+                error: (error) => {
+                    console.log(error);
+                }
+            });
         } else {
+            this.uploadedFiles.forEach((image: File) => formData.append('images', image));
             this.productService.createProduct(formData).subscribe({
                 next: (product) => {
                     this.products.set([...this.products(), product]);
@@ -307,6 +319,11 @@ export class ProductsComponent implements OnInit {
                 }
             });
         }
+    }
+
+    removeProductImage(imageUrl: string) {
+        this.productImages.update((images) => images.filter((image) => image.url !== imageUrl));
+        this.deletedProductImages.update((images) => [...images, imageUrl]);
     }
 
     onUpload(event: any) {
