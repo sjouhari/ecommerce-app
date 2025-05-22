@@ -19,6 +19,7 @@ import { ProductDetailsComponent } from './app/pages/product-details/product-det
 import { HeroWidget } from './app/pages/home/components/herowidget';
 import { ShoppingCartComponent } from './app/pages/shopping-cart/shopping-cart.component';
 import { OrderSummaryComponent } from './app/pages/order-summary/order-summary.component';
+import { OrdersComponent } from './app/pages/orders/orders.component';
 
 export const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -41,10 +42,10 @@ export const appRoutes: Routes = [
             { path: 'sizes', component: SizesComponent },
 
             // Commandes
-            { path: 'orders', component: ProductsComponent },
-            { path: 'orders/pending', component: ProductsComponent },
-            { path: 'orders/shipped', component: ProductsComponent },
-            { path: 'orders/returns', component: ProductsComponent },
+            { path: 'orders', component: OrdersComponent },
+            { path: 'orders/pending', component: OrdersComponent },
+            { path: 'orders/shipped', component: OrdersComponent },
+            { path: 'orders/returns', component: OrdersComponent },
 
             // Utilisateurs
             { path: 'users', component: UsersComponent, data: { role: 'user' } },
