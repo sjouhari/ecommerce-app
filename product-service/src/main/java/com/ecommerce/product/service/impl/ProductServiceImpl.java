@@ -201,13 +201,16 @@ public class ProductServiceImpl implements ProductService {
             }
 
             // Delete images
-            if(deletedImages != null) {
+            if (deletedImages != null) {
                 List<String> deletedImageList = List.of(deletedImages.split(","));
-                for (String fileName : deletedImageList) {
-                    fileStorageService.deleteImage(fileName);
-                    mediaRepository.deleteByUrl(fileName);
-                    product.getMedias().removeIf(media -> media.getUrl().equals(fileName));
-                }
+
+                deletedImageList.forEach(fileStorageService::deleteImage);
+
+                product.setMedias(
+                        product.getMedias().stream()
+                                .filter(media -> !deletedImageList.contains(media.getUrl()))
+                                .toList()
+                );
             }
 
             Product savedProduct = productRepository.save(product);

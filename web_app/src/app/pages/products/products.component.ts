@@ -73,12 +73,11 @@ export class ProductsComponent implements OnInit {
     authService = inject(AuthService);
     messageService = inject(MessageService);
     confirmationService = inject(ConfirmationService);
-
     formBuilder = inject(FormBuilder);
+
     productFormGroup!: FormGroup;
 
     products = signal<Product[]>([]);
-
     statuses!: any[];
     categories = signal<Category[]>([]);
     subCategories = signal<SubCategory[]>([]);
@@ -103,18 +102,22 @@ export class ProductsComponent implements OnInit {
 
         this.initProductFormGroup();
 
-        this.productService.getProducts().subscribe({
-            next: (products) => {
-                this.products.set(products);
+        this.getProducts();
+
+        this.categoryService.getCategories().subscribe({
+            next: (categories) => {
+                this.categories.set(categories);
             },
             error: (error) => {
                 console.log(error); //TODO: handle error
             }
         });
+    }
 
-        this.categoryService.getCategories().subscribe({
-            next: (categories) => {
-                this.categories.set(categories);
+    getProducts() {
+        this.productService.getProducts().subscribe({
+            next: (products) => {
+                this.products.set(products);
             },
             error: (error) => {
                 console.log(error); //TODO: handle error
@@ -282,15 +285,17 @@ export class ProductsComponent implements OnInit {
         const formData = new FormData();
         formData.append('product', JSON.stringify(this.productFormGroup.value));
 
-        if (this.productFormGroup.value.id) {
+        const productId = this.productFormGroup.value.id;
+        if (productId) {
             this.uploadedFiles.forEach((image: File) => formData.append('newImages', image));
             formData.append('deletedImages', this.deletedProductImages().toString());
-            this.productService.updateProduct(this.productFormGroup.value.id, formData).subscribe({
+            this.productService.updateProduct(productId, formData).subscribe({
                 next: (product) => {
-                    this.products.set(this.products().map((p) => (p.id === product.id ? product : p)));
+                    this.getProducts();
                     this.productDialog = false;
                     this.productFormGroup.reset();
                     this.deletedProductImages.set([]);
+                    this.uploadedFiles = [];
                     this.productImages.set([]);
                     this.messageService.add({
                         severity: 'success',
@@ -300,22 +305,26 @@ export class ProductsComponent implements OnInit {
                     });
                 },
                 error: (error) => {
-                    console.log(error);
+                    console.log(error); //TODO: handle error
                 }
             });
         } else {
             this.uploadedFiles.forEach((image: File) => formData.append('images', image));
             this.productService.createProduct(formData).subscribe({
                 next: (product) => {
-                    this.products.set([...this.products(), product]);
+                    this.getProducts();
                     this.productDialog = false;
                     this.productFormGroup.reset();
+                    this.uploadedFiles = [];
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Création',
                         detail: 'Le produit a été créé avec succès.',
                         life: 3000
                     });
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
                 }
             });
         }

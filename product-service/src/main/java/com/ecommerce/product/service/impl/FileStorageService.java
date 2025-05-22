@@ -37,11 +37,22 @@ public class FileStorageService {
 
     public void deleteImage(String fileName) {
         try {
-            Path path = Paths.get(imagesPath);
-            Path imagePath = path.resolve(fileName);
-            Files.delete(imagePath);
+            // Empêche les chemins malveillants
+            if (fileName.contains("..")) {
+                throw new RuntimeException("Invalid file name: " + fileName);
+            }
+
+            Path filePath = Paths.get(imagesPath).resolve(fileName).normalize();
+
+            if (Files.exists(filePath)) {
+                Files.delete(filePath);
+            } else {
+                // Optionnel : logger que le fichier n'existe pas
+                System.out.println("File not found: " + filePath);
+            }
         } catch (IOException e) {
-            throw new RuntimeException("Failed to delete product image", e);
+            throw new RuntimeException("Failed to delete product image: " + fileName, e);
         }
     }
+
 }

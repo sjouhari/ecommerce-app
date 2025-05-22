@@ -40,7 +40,7 @@ public class Product extends BaseEntity {
     @ManyToOne
     private Tva tva;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Media> medias;
 
 }
