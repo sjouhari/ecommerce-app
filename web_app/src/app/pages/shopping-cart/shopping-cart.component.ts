@@ -277,6 +277,7 @@ export class ShoppingCartComponent implements OnInit {
 
         const orderRequest = {
             userId: this.authService.getCurrentUser()!.id,
+            userName: this.authService.getCurrentUser()!.firstName + ' ' + this.authService.getCurrentUser()!.lastName,
             orderItemsIds: orderItems.map((item) => item.id),
             paymentMethod: this.selectedPaymentMethod,
             deliveryAddressId: this.selectedAddress()!.id,

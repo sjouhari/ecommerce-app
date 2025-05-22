@@ -23,6 +23,7 @@ public class Order extends BaseEntity {
     private Long id;
 
     private Long userId;
+    private String userName;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
