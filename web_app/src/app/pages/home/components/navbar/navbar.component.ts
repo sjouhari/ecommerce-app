@@ -28,21 +28,11 @@ export class NavbarComponent implements OnInit {
     authService = inject(AuthService);
 
     categories = signal<Category[]>([]);
-    shoppingCart = signal<ShoppingCart | null>(null);
 
     ngOnInit() {
         this.categoryService.getCategories().subscribe({
             next: (categories) => {
                 this.categories.set(categories);
-            },
-            error: (error) => {
-                console.log(error); //TODO: handle error
-            }
-        });
-
-        this.shoppingCartService.getShoppingCart(this.authService.getCurrentUser()?.id!).subscribe({
-            next: (cart) => {
-                this.shoppingCart.set(cart);
             },
             error: (error) => {
                 console.log(error); //TODO: handle error

@@ -1,14 +1,28 @@
 import { OrderItem } from './../models/order/order-item.model';
 import { ShoppingCart } from './../models/order/shopping-cart.model';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ShoppingCartService {
     http = inject(HttpClient);
+    authService = inject(AuthService);
+
+    shoppingCart = signal<ShoppingCart | null>(null);
+
+    constructor() {
+        this.getShoppingCart(this.authService.getCurrentUser()?.id!).subscribe((cart) => {
+            this.setShoppingCart(cart);
+        });
+    }
+
+    setShoppingCart(cart: ShoppingCart) {
+        this.shoppingCart.set(cart);
+    }
 
     baseUrl = 'http://localhost:8080/api/shopping-cart';
 

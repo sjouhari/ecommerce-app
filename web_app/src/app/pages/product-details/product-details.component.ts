@@ -114,6 +114,7 @@ export class ProductDetailsComponent implements OnInit {
                 })
                 .subscribe({
                     next: (cart) => {
+                        this.shoppingCartService.setShoppingCart(cart);
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Ajout au panier',

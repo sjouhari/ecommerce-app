@@ -50,12 +50,12 @@
         <!-- <button pButton pRipple label="Login" routerLink="/login" [rounded]="true" [text]="true"></button>
         <button pButton pRipple label="Register" routerLink="/register" [rounded]="true"></button> -->
         <div class="flex flex-wrap gap-2 align-items-center">
-            <p-overlaybadge class="mr-3 cursor-pointer" [value]="shoppingCart() ? shoppingCart()!.orderItems.length : 0" (click)="toggleDataTable(op2, $event)">
+            <p-overlaybadge class="mr-3 cursor-pointer" [value]="shoppingCartService.shoppingCart() ? shoppingCartService.shoppingCart()!.orderItems.length : 0" (click)="toggleDataTable(op2, $event)">
                 <i class="pi pi-shopping-cart text-4xl"></i>
             </p-overlaybadge>
             <p-popover #op2 id="overlay_panel" [style]="{ width: '600px' }">
-                @if (shoppingCart() && shoppingCart()!.orderItems.length > 0) {
-                    <p-table [value]="shoppingCart()!.orderItems" selectionMode="single" dataKey="id" [rows]="5" [paginator]="true">
+                @if (shoppingCartService.shoppingCart() && shoppingCartService.shoppingCart()!.orderItems.length > 0) {
+                    <p-table [value]="shoppingCartService.shoppingCart()!.orderItems" selectionMode="single" dataKey="id" [rows]="5" [paginator]="true">
                         <ng-template #header>
                             <tr>
                                 <th>Image</th>
