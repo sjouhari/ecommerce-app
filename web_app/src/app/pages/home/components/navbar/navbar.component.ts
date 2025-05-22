@@ -43,4 +43,9 @@ export class NavbarComponent implements OnInit {
     toggleDataTable(op: Popover, event: any) {
         op.toggle(event);
     }
+
+    gotoCart(op: Popover, event: any) {
+        this.toggleDataTable(op, event);
+        this.router.navigate(['/home/shopping-cart']);
+    }
 }

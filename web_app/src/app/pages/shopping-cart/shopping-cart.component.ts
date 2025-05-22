@@ -43,8 +43,6 @@ export class ShoppingCartComponent implements OnInit {
 
     selectedQuantity: number = 1;
     timeoutMap: { [key: number]: any } = {};
-
-    shoppingCart = signal<ShoppingCart | null>(null);
     totalPrice = signal<number>(0);
 
     addresses = signal<Address[]>([]);
@@ -70,8 +68,8 @@ export class ShoppingCartComponent implements OnInit {
     getShoppingCart() {
         this.shoppingCartService.getShoppingCart(this.authService.getCurrentUser()?.id!).subscribe({
             next: (cart) => {
-                this.shoppingCart.set(cart);
                 this.calculateTotalPrice();
+                this.shoppingCartService.setShoppingCart(cart);
             },
             error: (error) => {
                 console.log(error); //TODO: handle error
@@ -213,12 +211,13 @@ export class ShoppingCartComponent implements OnInit {
     }
 
     calculateTotalPrice() {
-        if (!this.shoppingCart()) return;
-        if (this.shoppingCart()?.orderItems.length == 0) {
+        if (!this.shoppingCartService.shoppingCart()) return;
+        if (this.shoppingCartService.shoppingCart()?.orderItems.length == 0) {
             this.totalPrice.set(0);
         } else {
             this.totalPrice.set(
-                this.shoppingCart()!
+                this.shoppingCartService
+                    .shoppingCart()!
                     .orderItems.filter((item) => item.selected)
                     .reduce((acc, item) => acc + item.price * item.quantity, 0)
             );
@@ -230,7 +229,7 @@ export class ShoppingCartComponent implements OnInit {
     }
 
     placeOrder() {
-        const orderItems = this.shoppingCart()?.orderItems.filter((item) => item.selected) || [];
+        const orderItems = this.shoppingCartService.shoppingCart()?.orderItems.filter((item) => item.selected) || [];
         if (orderItems.length === 0) {
             this.messageService.add({
                 severity: 'error',
@@ -302,5 +301,13 @@ export class ShoppingCartComponent implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    disabled() {
+        if (this.loading()) return true;
+        if (!this.shoppingCartService.shoppingCart()) return true;
+        if (this.shoppingCartService.shoppingCart()?.orderItems?.length == 0) return true;
+        if (this.shoppingCartService.shoppingCart()?.orderItems?.filter((item) => item.selected).length == 0) return true;
+        return false;
     }
 }
