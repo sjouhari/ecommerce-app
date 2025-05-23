@@ -56,18 +56,31 @@ export class AppMenu {
                         ]
                     },
                     {
-                        label: 'Clients',
+                        label: 'Gestion des utilisateurs',
                         icon: 'pi pi-fw pi-users',
-                        routerLink: ['/users']
-                    },
-                    {
-                        label: 'Promotions',
-                        icon: 'pi pi-fw pi-star',
                         items: [
-                            { label: 'Coupons', icon: 'pi pi-fw pi-ticket', routerLink: ['/coupons'] },
-                            { label: 'Réductions', icon: 'pi pi-fw pi-percentage', routerLink: ['/discounts'] }
+                            { label: 'Toutes les utilisateurs', icon: 'pi pi-fw pi-list', routerLink: ['/users'] },
+                            { label: 'Clients', icon: 'pi pi-fw pi-clock', routerLink: ['/clients'] },
+                            { label: 'Administrateurs', icon: 'pi pi-fw pi-ticket', routerLink: ['/admins'] },
+                            { label: 'Vendeurs', icon: 'pi pi-fw pi-briefcase', routerLink: ['/vendors'] }
                         ]
                     },
+                    {
+                        label: 'Gestion des permissions',
+                        icon: 'pi pi-fw pi-lock',
+                        items: [
+                            { label: 'Profils', icon: 'pi pi-fw pi-id-card', routerLink: ['/roles'] },
+                            { label: 'Fonctionnalités', icon: 'pi pi-fw pi-th-large', routerLink: ['/features'] }
+                        ]
+                    },
+                    // {
+                    //     label: 'Promotions',
+                    //     icon: 'pi pi-fw pi-star',
+                    //     items: [
+                    //         { label: 'Coupons', icon: 'pi pi-fw pi-ticket', routerLink: ['/coupons'] },
+                    //         { label: 'Réductions', icon: 'pi pi-fw pi-percentage', routerLink: ['/discounts'] }
+                    //     ]
+                    // },
                     // {
                     //     label: 'Rapports',
                     //     icon: 'pi pi-fw pi-chart-bar',
@@ -77,16 +90,6 @@ export class AppMenu {
                     //         { label: 'Clients', icon: 'pi pi-fw pi-users', routerLink: ['/reports/customers'] }
                     //     ]
                     // },
-                    {
-                        label: 'Gestion des permissions',
-                        icon: 'pi pi-fw pi-lock',
-                        items: [
-                            { label: 'Profils', icon: 'pi pi-fw pi-id-card', routerLink: ['/roles'] },
-                            { label: 'Fonctionnalités', icon: 'pi pi-fw pi-th-large', routerLink: ['/features'] },
-                            { label: 'Administrateurs', icon: 'pi pi-fw pi-ticket', routerLink: ['/admins'] },
-                            { label: 'Vendeurs', icon: 'pi pi-fw pi-briefcase', routerLink: ['/vendors'] }
-                        ]
-                    },
                     {
                         label: 'Paramètres',
                         icon: 'pi pi-fw pi-cog',

@@ -48,7 +48,8 @@ export const appRoutes: Routes = [
             { path: 'orders/returns', component: OrdersComponent },
 
             // Utilisateurs
-            { path: 'users', component: UsersComponent, data: { role: 'user' } },
+            { path: 'users', component: UsersComponent, data: { role: 'all' } },
+            { path: 'clients', component: UsersComponent, data: { role: 'client' } },
             { path: 'admins', component: UsersComponent, data: { role: 'admin' } },
             { path: 'vendors', component: UsersComponent, data: { role: 'vendor' } },
 
