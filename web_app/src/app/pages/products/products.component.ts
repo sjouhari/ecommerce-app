@@ -30,6 +30,8 @@ import { ProductColor } from '../../models/product/product-color';
 import { AuthService } from '../../services/auth.service';
 import { TVA } from '../../models/product/tva.model';
 import { Media } from '../../models/product/media.model';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { IftaLabelModule } from 'primeng/iftalabel';
 
 @Component({
     selector: 'app-products',
@@ -55,7 +57,9 @@ import { Media } from '../../models/product/media.model';
         InputIconModule,
         IconFieldModule,
         ConfirmDialogModule,
-        FileUpload
+        FileUpload,
+        FloatLabelModule,
+        IftaLabelModule
     ],
     templateUrl: 'products.component.html',
     providers: [MessageService, ConfirmationService]
@@ -81,7 +85,7 @@ export class ProductsComponent implements OnInit {
     statuses!: any[];
     categories = signal<Category[]>([]);
     subCategories = signal<SubCategory[]>([]);
-    sizes = signal<Size[]>([]);
+    sizes: Size[] = [];
     colors = Object.entries(ProductColor).map(([key, value]) => ({ key, value }));
 
     selectedProducts!: Product[] | null;
@@ -129,12 +133,12 @@ export class ProductsComponent implements OnInit {
         if (product && product.categoryName) {
             this.selectedCategory = this.categories().find((category) => category.name === product?.categoryName)!;
             this.subCategories.set(this.selectedCategory.subCategories);
-            this.sizes.set(this.selectedCategory.sizes);
+            this.sizes = this.selectedCategory.sizes;
             this.productImages.set(product.medias);
         } else {
             this.selectedCategory = null;
             this.subCategories.set([]);
-            this.sizes.set([]);
+            this.sizes = [];
             this.productImages.set([]);
         }
 
@@ -152,10 +156,10 @@ export class ProductsComponent implements OnInit {
                     this.formBuilder.group({
                         id: new FormControl(stock.id || null),
                         productId: new FormControl(stock.productId || null),
-                        size: new FormControl(stock.size || null, [Validators.required]),
-                        color: new FormControl(stock.color || '', [Validators.required]),
-                        quantity: new FormControl(stock.quantity || '', [Validators.required]),
-                        price: new FormControl(stock.price || '', [Validators.required])
+                        size: new FormControl(stock.size, [Validators.required]),
+                        color: new FormControl(stock.color, [Validators.required]),
+                        quantity: new FormControl(stock.quantity, [Validators.required]),
+                        price: new FormControl(stock.price, [Validators.required])
                     })
                 )
             )
@@ -169,7 +173,7 @@ export class ProductsComponent implements OnInit {
     onSelectCategory(categoryId: number) {
         this.selectedCategory = this.categories().find((category) => category.id === categoryId)!;
         this.subCategories.set(this.selectedCategory.subCategories);
-        this.sizes.set(this.selectedCategory.sizes);
+        this.sizes = this.selectedCategory.sizes;
         this.addStockEntry();
     }
 
