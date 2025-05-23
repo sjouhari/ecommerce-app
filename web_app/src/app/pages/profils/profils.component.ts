@@ -23,6 +23,7 @@ import { ProfilService } from '../../services/profil.service';
 import { PickListModule } from 'primeng/picklist';
 import { FeatureService } from '../../services/feature.service';
 import { Feature } from '../../models/user/feature.model';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
     selector: 'app-profils',
@@ -47,7 +48,8 @@ import { Feature } from '../../models/user/feature.model';
         InputIconModule,
         IconFieldModule,
         ConfirmDialogModule,
-        PickListModule
+        PickListModule,
+        FloatLabelModule
     ],
     templateUrl: 'profils.component.html',
     providers: [MessageService, ConfirmationService]

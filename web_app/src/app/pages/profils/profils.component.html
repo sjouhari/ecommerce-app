@@ -1,7 +1,7 @@
 <p-toast></p-toast>
 
 <div class="flex justify-between items-center mb-3">
-        <h5 class="m-0">Gestion des profiles</h5>
+        <h5 class="m-0">Gestion des profils</h5>
         <p-button label="Nouveau" icon="pi pi-plus" severity="success" class="mr-2" (onClick)="openNew()" />
 </div>
 
@@ -29,16 +29,18 @@
     </div>
 }
 
-<p-dialog [(visible)]="profilDialog" [style]="{ width: '600px' }" header="Profiles" [modal]="true">
+<p-dialog [(visible)]="profilDialog" [style]="{ width: '600px' }" header="Profils" [modal]="true">
         <ng-template #content>
             <form [formGroup]="profilFormGroup" (ngSubmit)="saveProfil()" class="flex flex-col gap-3">
                 <input type="hidden" formControlName="id" />
                 <div>
-                    <label for="name" class="block font-bold mb-2">Nom</label>
-                    <input type="text" pInputText id="name" formControlName="name" required autofocus fluid />
+                    <p-floatlabel variant="in">
+                        <input pInputText id="name" type="text" formControlName="name" class="w-full" />
+                        <label for="name">Nom</label>
+                    </p-floatlabel>
                     @if(formControls['name'].errors && formControls['name'].touched) {
                         @if(formControls['name'].errors['required']) {
-                            <small class="text-red-500">Le nom de la catégorie est obligatoire.</small>
+                            <small class="text-red-500">Le nom du profil est obligatoire.</small>
                         }
                     }
                 </div>
