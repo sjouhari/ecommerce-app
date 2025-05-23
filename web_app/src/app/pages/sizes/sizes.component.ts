@@ -22,6 +22,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SizeService } from '../../services/size.service';
 import { Category } from '../../models/category/category.model';
 import { CategoryService } from '../../services/category.service';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
     selector: 'app-sizes',
@@ -45,7 +46,8 @@ import { CategoryService } from '../../services/category.service';
         TagModule,
         InputIconModule,
         IconFieldModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        FloatLabelModule
     ],
     templateUrl: 'sizes.component.html',
     providers: [MessageService, ConfirmationService]

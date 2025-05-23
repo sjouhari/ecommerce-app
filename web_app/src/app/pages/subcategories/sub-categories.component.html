@@ -65,7 +65,7 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="subCategoryDialog" [style]="{ width: '600px' }" header="Catégorie" [modal]="true">
+<p-dialog [(visible)]="subCategoryDialog" [style]="{ width: '600px' }" header="Sous Catégorie" [modal]="true">
         <ng-template #content>
             <form [formGroup]="subCategoryFormGroup" (ngSubmit)="saveSubCategory()" class="flex flex-col gap-3 mt-4">
                 <input type="hidden" pInputText id="id" formControlName="id" />
@@ -84,20 +84,24 @@
                     }
                 </div>
                 <div>
-                    <label for="name" class="block font-bold mb-2">Nom</label>
-                    <input type="text" pInputText id="name" formControlName="name" fluid />
+                    <p-floatlabel variant="in">
+                        <input pInputText id="name" type="text" formControlName="name" class="w-full" />
+                        <label for="name">Nom</label>
+                    </p-floatlabel>
                     @if(formControls['name'].errors && formControls['name'].touched) {
                         @if(formControls['name'].errors['required']) {
-                            <small class="text-red-500">Le nom de la catégorie est obligatoire.</small>
+                            <small class="text-red-500">Le nom de la sous catégorie est obligatoire.</small>
                         }
                     }
                 </div>
                 <div>
-                    <label for="description" class="block font-bold mb-2">Description</label>
-                    <textarea id="description" pTextarea formControlName="description" rows="3" cols="20" fluid></textarea>
+                    <p-floatlabel variant="in">
+                        <textarea pTextarea id="description" type="text" formControlName="description" class="w-full"></textarea>
+                        <label for="description">Description</label>
+                    </p-floatlabel>
                     @if(formControls['description'].errors && formControls['description'].touched) {
                         @if(formControls['description'].errors['required']) {
-                            <small class="text-red-500">La description de la catégorie est obligatoire.</small>
+                            <small class="text-red-500">La description de la sous catégorie est obligatoire.</small>
                         }
                     }
                 </div>

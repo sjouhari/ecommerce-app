@@ -20,6 +20,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Category } from '../../models/category/category.model';
 import { CategoryService } from '../../services/category.service';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
     selector: 'app-categories',
@@ -43,7 +44,8 @@ import { CategoryService } from '../../services/category.service';
         TagModule,
         InputIconModule,
         IconFieldModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        FloatLabelModule
     ],
     templateUrl: 'categories.component.html',
     providers: [MessageService, ConfirmationService]

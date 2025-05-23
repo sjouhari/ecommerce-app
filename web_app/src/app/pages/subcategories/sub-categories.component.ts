@@ -22,6 +22,7 @@ import { Category } from '../../models/category/category.model';
 import { SubCategoryService } from '../../services/sub-category.service';
 import { SubCategory } from '../../models/category/sub-category.model';
 import { CategoryService } from '../../services/category.service';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
     selector: 'app-categories',
@@ -45,7 +46,8 @@ import { CategoryService } from '../../services/category.service';
         TagModule,
         InputIconModule,
         IconFieldModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        FloatLabelModule
     ],
     templateUrl: 'sub-categories.component.html',
     providers: [MessageService, ConfirmationService]

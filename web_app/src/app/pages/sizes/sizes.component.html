@@ -64,7 +64,7 @@
         <ng-template #content>
             <form [formGroup]="sizeFormGroup" (ngSubmit)="saveSize()" class="flex flex-col gap-3 mt-4">
                 <input type="hidden" formControlName="id" />
-                <label for="name" class="block font-bold mb-2">Sous Catégorie</label>
+                <label for="name" class="block font-bold mb-2">Catégorie</label>
                 <div>
                     @for(category of categories(); track category.id) {
                         <div class="flex items-center mb-3">
@@ -72,18 +72,20 @@
                             <label [for]="category.name + '-' + category.id" class="ml-2">{{ category.name }}</label>
                             @if(formControls['categoryId'].errors && formControls['categoryId'].touched) {
                                 @if(formControls['categoryId'].errors['required']) {
-                                    <small class="text-red-500">Le nom du produit est obligatoire.</small>
+                                    <small class="text-red-500">Veuillez choisir une catégorie.</small>
                                 }
                             }
                         </div>
                     }
                 </div>
                 <div>
-                    <label for="libelle" class="block font-bold mb-2">Libellé</label>
-                    <input type="text" pInputText id="libelle" formControlName="libelle" fluid />
+                    <p-floatlabel variant="in">
+                        <input pInputText id="libelle" type="text" formControlName="libelle" class="w-full" />
+                        <label for="libelle">Libellé</label>
+                    </p-floatlabel>
                     @if(formControls['libelle'].errors && formControls['libelle'].touched) {
                         @if(formControls['libelle'].errors['required']) {
-                            <small class="text-red-500">Le libelle de la taille est obligatoire.</small>
+                            <small class="text-red-500">Le libellé de la taille est obligatoire.</small>
                         }
                     }
                     
