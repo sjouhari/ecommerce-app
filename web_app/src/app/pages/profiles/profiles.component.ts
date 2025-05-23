@@ -51,10 +51,10 @@ import { FloatLabelModule } from 'primeng/floatlabel';
         PickListModule,
         FloatLabelModule
     ],
-    templateUrl: 'profils.component.html',
+    templateUrl: 'profiles.component.html',
     providers: [MessageService, ConfirmationService]
 })
-export class ProfilsComponent implements OnInit {
+export class ProfilesComponent implements OnInit {
     profilDialog: boolean = false;
 
     profilFormGroup!: FormGroup;

@@ -82,6 +82,7 @@ export class ProductsComponent implements OnInit {
     productFormGroup!: FormGroup;
 
     products = signal<Product[]>([]);
+    loading = signal<boolean>(false);
     statuses!: any[];
     categories = signal<Category[]>([]);
     subCategories = signal<SubCategory[]>([]);
@@ -286,6 +287,8 @@ export class ProductsComponent implements OnInit {
             return;
         }
 
+        this.loading.set(true);
+
         const formData = new FormData();
         formData.append('product', JSON.stringify(this.productFormGroup.value));
 
@@ -301,6 +304,7 @@ export class ProductsComponent implements OnInit {
                     this.deletedProductImages.set([]);
                     this.uploadedFiles = [];
                     this.productImages.set([]);
+                    this.loading.set(false);
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Modification',
@@ -310,6 +314,7 @@ export class ProductsComponent implements OnInit {
                 },
                 error: (error) => {
                     console.log(error); //TODO: handle error
+                    this.loading.set(false);
                 }
             });
         } else {
@@ -320,6 +325,7 @@ export class ProductsComponent implements OnInit {
                     this.productDialog = false;
                     this.productFormGroup.reset();
                     this.uploadedFiles = [];
+                    this.loading.set(false);
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Création',
@@ -328,6 +334,7 @@ export class ProductsComponent implements OnInit {
                     });
                 },
                 error: (error) => {
+                    this.loading.set(false);
                     console.log(error); //TODO: handle error
                 }
             });

@@ -20,6 +20,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FeatureService } from '../../services/feature.service';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
     selector: 'app-features',
@@ -43,7 +44,8 @@ import { FeatureService } from '../../services/feature.service';
         TagModule,
         InputIconModule,
         IconFieldModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        FloatLabelModule
     ],
     templateUrl: 'features.component.html',
     providers: [MessageService, ConfirmationService]

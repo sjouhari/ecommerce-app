@@ -10,7 +10,7 @@ import { ProductsComponent } from './app/pages/products/products.component';
 import { UsersComponent } from './app/pages/users/users.component';
 import { CategoriesComponent } from './app/pages/categories/categories.component';
 import { SubCategoriesComponent } from './app/pages/subcategories/sub-categories.component';
-import { ProfilsComponent } from './app/pages/profils/profils.component';
+import { ProfilesComponent } from './app/pages/profiles/profiles.component';
 import { SizesComponent } from './app/pages/sizes/sizes.component';
 import { FeaturesComponent } from './app/pages/features/features.component';
 import { HomeComponent } from './app/pages/home/home.component';
@@ -54,7 +54,7 @@ export const appRoutes: Routes = [
             { path: 'vendors', component: UsersComponent, data: { role: 'vendor' } },
 
             // Permissions et rôles
-            { path: 'roles', component: ProfilsComponent },
+            { path: 'roles', component: ProfilesComponent },
             { path: 'features', component: FeaturesComponent },
 
             // Promotions

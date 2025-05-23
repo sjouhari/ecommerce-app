@@ -231,7 +231,7 @@
 
     <ng-template #footer>
         <p-button label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
-        <p-button label="Enregistrer" icon="pi pi-check" (click)="saveProduct()" />
+        <p-button label="Enregistrer" icon="pi pi-check" (click)="saveProduct()" [loading]="loading()" [disabled]="loading() || productFormGroup.invalid" />
     </ng-template>
 </p-dialog>
 
