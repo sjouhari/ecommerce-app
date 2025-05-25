@@ -2,7 +2,7 @@ import { Component, inject, input, OnInit, signal, ViewChild } from '@angular/co
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
@@ -74,11 +74,57 @@ export class UsersComponent implements OnInit {
     loading = signal(false);
 
     selectedUsers!: User[] | null;
+    selectedUser!: User | null;
 
     @ViewChild('dt') dt!: Table;
 
     ngOnInit() {
         this.initUserFormGroup();
+        this.getUsers();
+
+        this.profilService.getProfils().subscribe({
+            next: (profils) => {
+                this.profiles.set(profils);
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
+    }
+
+    initUserFormGroup(user?: User) {
+        this.userFormGroup = this.formBuilder.group({
+            id: new FormControl(user?.id || null),
+            firstName: new FormControl(user?.firstName || '', [Validators.required]),
+            lastName: new FormControl(user?.lastName || '', [Validators.required]),
+            email: new FormControl(user?.email || '', [Validators.required, Validators.email]),
+            enabled: new FormControl(user?.enabled || false),
+            profilesIds: this.formBuilder.array(user?.profils?.map((p) => new FormControl(p.id)) || [])
+        });
+    }
+
+    get profilesFormArray(): FormArray {
+        return this.userFormGroup.get('profilesIds') as FormArray;
+    }
+
+    isChecked(id: number): boolean {
+        return this.profilesFormArray.controls.some((control) => control.value === id);
+    }
+
+    onCheckboxChange(event: any) {
+        const profilesIds = this.profilesFormArray;
+        const value = +event.target.value;
+        if (event.target.checked) {
+            profilesIds.push(new FormControl(value));
+        } else {
+            const index = profilesIds.controls.findIndex((ctrl) => ctrl.value === value);
+            if (index !== -1) {
+                profilesIds.removeAt(index);
+            }
+        }
+    }
+
+    getUsers() {
         this.userService.getUsers().subscribe({
             next: (users) => {
                 this.route.data.subscribe((data) => {
@@ -100,25 +146,6 @@ export class UsersComponent implements OnInit {
                 console.log(error); //TODO: handle error
             }
         });
-
-        this.profilService.getProfils().subscribe({
-            next: (profils) => {
-                this.profiles.set(profils);
-            },
-            error: (error) => {
-                console.log(error); //TODO: handle error
-            }
-        });
-    }
-
-    initUserFormGroup(user?: User) {
-        this.userFormGroup = this.formBuilder.group({
-            id: new FormControl(user?.id || null),
-            firstName: new FormControl(user?.firstName || '', [Validators.required]),
-            lastName: new FormControl(user?.lastName || '', [Validators.required]),
-            email: new FormControl(user?.email || '', [Validators.required, Validators.email]),
-            profiles: new FormControl(user ? [...user.profils.map((p) => p.id)] : [])
-        });
     }
 
     get formControls() {
@@ -137,6 +164,7 @@ export class UsersComponent implements OnInit {
     editUser(user: User) {
         this.initUserFormGroup(user);
         this.userDialog = true;
+        this.selectedUser = user;
     }
 
     deleteSelectedUsers() {
@@ -175,7 +203,7 @@ export class UsersComponent implements OnInit {
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Suppression',
-                    detail: 'Fonctionnalité supprimée avec succès.',
+                    detail: 'Utilisateur supprimée avec succès.',
                     life: 3000
                 });
             }
@@ -194,18 +222,18 @@ export class UsersComponent implements OnInit {
     }
 
     saveUser() {
-        console.log(this.userFormGroup.value);
         if (this.userFormGroup.invalid) {
             this.userFormGroup.markAllAsTouched();
             return;
         }
 
-        if (this.userFormGroup.value.id === 1000) {
+        if (this.userFormGroup.value.id) {
             this.userService.updateUser(this.userFormGroup.value).subscribe({
-                next: (feature) => {
-                    this.users.update((features) => features.map((f) => (f.id === feature.id ? feature : f)));
+                next: (user) => {
                     this.userDialog = false;
                     this.userFormGroup.reset();
+                    this.selectedUser = null;
+                    this.getUsers();
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Modification',
@@ -217,7 +245,7 @@ export class UsersComponent implements OnInit {
                     console.log(error); //TODO: handle error
                 }
             });
-        } else if (0) {
+        } else {
             this.userService.createUser(this.userFormGroup.value).subscribe({
                 next: (user) => {
                     this.userDialog = false;

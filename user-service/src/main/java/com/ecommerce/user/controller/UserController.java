@@ -2,10 +2,10 @@ package com.ecommerce.user.controller;
 
 import com.ecommerce.user.dto.MessageResponseDto;
 import com.ecommerce.user.dto.ResetPasswordRequestDto;
+import com.ecommerce.user.dto.UpdateUserDto;
 import com.ecommerce.user.dto.UserDto;
 import com.ecommerce.user.service.UserService;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.QueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody @Valid UserDto userDto) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody @Valid UpdateUserDto userDto) {
         return ResponseEntity.ok(userService.updateUser(id, userDto));
     }
 

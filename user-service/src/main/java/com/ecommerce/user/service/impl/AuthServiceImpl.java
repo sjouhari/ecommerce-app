@@ -23,9 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -92,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
 			throw new RuntimeException("Adresse email deja utilisé par un autre utilisateur.");
 		}
 
-		Set<Profil> profils = new HashSet<>();
+		List<Profil> profils = new ArrayList<>();
 
 		profils.add(profilRepository.findByName("ROLE_USER").orElseThrow(
 				() -> new ResourceNotFoundException("Profil", "name", "ROLE_USER")

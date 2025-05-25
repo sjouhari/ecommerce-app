@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class InitUserServiceDatabase {
            }
 
            if(userRepository.count() == 0) {
-               userRepository.save(new User(null, "Admin", "Admin", "admin@gmail.com", passwordEncoder.encode("Admin123@@"), true, true, 0, LocalDateTime.now(), true, "AdminStore", new HashSet<>(profilRepository.findAll())));
+               userRepository.save(new User(null, "Admin", "Admin", "admin@gmail.com", passwordEncoder.encode("Admin123@@"), true, true, 0, LocalDateTime.now(), true, "AdminStore", new ArrayList<>(profilRepository.findAll())));
            }
         };
     }

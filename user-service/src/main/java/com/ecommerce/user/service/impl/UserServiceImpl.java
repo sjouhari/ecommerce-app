@@ -4,11 +4,14 @@ import com.ecommerce.shared.dto.UserEvent;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.ecommerce.user.dto.MessageResponseDto;
 import com.ecommerce.user.dto.ResetPasswordRequestDto;
+import com.ecommerce.user.dto.UpdateUserDto;
 import com.ecommerce.user.dto.UserDto;
+import com.ecommerce.user.entity.Profil;
 import com.ecommerce.user.entity.User;
 import com.ecommerce.user.exception.EmailVerificationException;
 import com.ecommerce.user.kafka.KafkaUserProducer;
 import com.ecommerce.user.mapper.UserMapper;
+import com.ecommerce.user.repository.ProfilRepository;
 import com.ecommerce.user.repository.UserRepository;
 import com.ecommerce.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProfilRepository profilRepository;
 
     @Autowired
     private KafkaUserProducer kafkaUserProducer;
@@ -65,10 +71,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(Long id, UserDto userDto) {
-        getUserById(id);
-        User user = UserMapper.INSTANCE.userDtoToUser(userDto);
+    public UserDto updateUser(Long id, UpdateUserDto userDto) {
+        User userToUpdate = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", id.toString())
+        );
+        User user = UserMapper.INSTANCE.updateUserDtoToUser(userDto);
         user.setId(id);
+        user.setPassword(userToUpdate.getPassword());
+        List<Profil> profiles = profilRepository.findAllById(userDto.getProfilesIds());
+        user.setProfils(profiles);
         User savedUser = userRepository.save(user);
         return UserMapper.INSTANCE.userToUserDto(savedUser);
     }

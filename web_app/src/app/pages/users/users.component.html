@@ -113,13 +113,20 @@
                 <div class="col-span-12">
                     <label class="block mb-3">Profils</label>
                     <div class="flex gap-3">
-                        @for(profile of profiles(); track profile.id) {
-                            <div>
-                                <p-checkbox formControlName="profiles" [value]="profile.id" [inputId]="profile.name" />
-                                <label [for]="profile.name" class="ml-2">{{ profile.name }}</label>
-                            </div>
+                        @for (profile of profiles(); track profile.id) {
+                          <div>
+                            <input
+                              type="checkbox"
+                              [value]="profile.id"
+                              [checked]="isChecked(profile.id)"
+                              (change)="onCheckboxChange($event)"
+                              [id]="'profile_' + profile.id"
+                            />
+                            <label [for]="'profile_' + profile.id" class="ml-2">{{ profile.name }}</label>
+                          </div>
                         }
-                    </div>
+                      </div>
+                      
                 </div>
                 <div class="col-span-12 flex justify-end gap-3">
                     <p-button type="button" label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
