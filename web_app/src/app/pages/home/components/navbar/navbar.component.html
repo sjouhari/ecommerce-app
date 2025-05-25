@@ -11,28 +11,7 @@
         </li>
         <li>
             <div class="flex flex-wrap gap-2 align-items-center">
-                <a (mousedown)="toggleDataTable(cat, $event)" (mouseenter)="toggleDataTable(cat, $event)" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">Catégories</a>
-                <p-popover (mousedown)="toggleDataTable(cat, $event)" #cat id="categories_popover" [style]="{ width: '60%' }">
-                    @if (categories().length > 0) {
-                        <ul class="grid grid-cols-4 p-3 cursor-pointer">
-                            @for (category of categories(); track category.id) {
-                                <li class="text-surface-900 pb-2">
-                                    <a (click)="router.navigate(['/list-products'], { fragment: 'home' })" pRipple class="py-3 px-0 font-medium text-xl hover:text-primary">{{ category.name }}</a>
-                                    <ul>
-                                        @for (subCategory of category.subCategories; track subCategory.id) {
-                                            <li class="text-surface-900 py-2 ml-3">
-                                                <a href="#" class=" hover:text-primary">{{ subCategory.name }}</a>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
-                            }
-                        </ul>
-                    } @else {
-                        <p>Aucune catégorie</p>
-                    }
-                </p-popover>
-                <p-toast />
+                <a (click)="router.navigate(['/home'], { fragment: 'categories' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">Catégories</a>
             </div>
         </li>
         <li>
@@ -47,43 +26,47 @@
         </li>
     </ul>
     <div class="flex border-t lg:border-t-0 border-surface py-4 lg:py-0 mt-4 lg:mt-0 gap-2">
-        <!-- <button pButton pRipple label="Login" routerLink="/login" [rounded]="true" [text]="true"></button>
-        <button pButton pRipple label="Register" routerLink="/register" [rounded]="true"></button> -->
-        <div class="flex flex-wrap gap-2 align-items-center">
-            <p-overlaybadge class="mr-3 cursor-pointer" [value]="shoppingCartService.shoppingCart() ? shoppingCartService.shoppingCart()!.orderItems.length : 0" (click)="toggleDataTable(op2, $event)">
-                <i class="pi pi-shopping-cart text-4xl"></i>
-            </p-overlaybadge>
-            <p-popover #op2 id="overlay_panel" [style]="{ width: '600px' }">
-                @if (shoppingCartService.shoppingCart() && shoppingCartService.shoppingCart()!.orderItems.length > 0) {
-                    <p-table [value]="shoppingCartService.shoppingCart()!.orderItems" selectionMode="single" dataKey="id" [rows]="5" [paginator]="true">
-                        <ng-template #header>
-                            <tr>
-                                <th>Image</th>
-                                <th>Nom</th>
-                                <th>Taille</th>
-                                <th>Couleur</th>
-                                <th>Quantité</th>
-                                <th>Prix</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template #body let-item>
-                            <tr [pSelectableRow]="item">
-                                <td><img [src]="'http://localhost:8080/api/products/images/' + item.productImage" class="w-16 shadow-sm" /></td>
-                                <td>{{ item.productName }}</td>
-                                <td>{{ item.size }}</td>
-                                <td>{{ item.color }}</td>
-                                <td>{{ item.quantity }}</td>
-                                <td>{{ item.price * item.quantity }}</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
+        @if(authService.isLoggedIn()) {
+            <div class="flex flex-wrap gap-2 align-items-center">
+                <p-overlaybadge class="mr-3 cursor-pointer" [value]="shoppingCartService.shoppingCart() ? shoppingCartService.shoppingCart()!.orderItems.length : 0" (click)="toggleDataTable(op2, $event)">
+                    <i class="pi pi-shopping-cart text-4xl"></i>
+                </p-overlaybadge>
+                <p-popover #op2 id="overlay_panel" [style]="{ width: '600px' }">
+                    @if (shoppingCartService.shoppingCart() && shoppingCartService.shoppingCart()!.orderItems.length > 0) {
+                        <p-table [value]="shoppingCartService.shoppingCart()!.orderItems" selectionMode="single" dataKey="id" [rows]="5" [paginator]="true">
+                            <ng-template #header>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Nom</th>
+                                    <th>Taille</th>
+                                    <th>Couleur</th>
+                                    <th>Quantité</th>
+                                    <th>Prix</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template #body let-item>
+                                <tr [pSelectableRow]="item">
+                                    <td><img [src]="'http://localhost:8080/api/products/images/' + item.productImage" class="w-16 shadow-sm" /></td>
+                                    <td>{{ item.productName }}</td>
+                                    <td>{{ item.size }}</td>
+                                    <td>{{ item.color }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.price * item.quantity }}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    } @else {
+                        <p>Aucun produit dans le panier</p>
+                    }
                     <a pButton (click)="gotoCart(op2, $event)" label="Accéder au panier" class="w-full py-2" severity="contrast"></a>
-                } @else {
-                    <p>Aucun produit dans le panier</p>
-                }
-            </p-popover>
-            <p-toast />
-        </div>
-        <a href="#"><p-chip label="SAID JOUHARI" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" styleClass="px-3 py-2"></p-chip></a>
+                </p-popover>
+            </div>
+            <a routerLink="/home/profile"><p-chip label="SAID JOUHARI" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" styleClass="px-3 py-2"></p-chip></a>
+        } @else {
+            <div>
+                <button pButton pRipple label="Login" routerLink="/login" [rounded]="true" [text]="true"></button>
+                <button pButton pRipple label="Register" routerLink="/register" [rounded]="true"></button>
+            </div>
+        }
     </div>
 </div>

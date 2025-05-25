@@ -1,7 +1,6 @@
-import { PaymentMethod } from '../../models/order/payment-methods';
+import { PaymentMethods } from '../../models/order/payment-methods';
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { ShoppingCartService } from '../../services/shopping-cart.service';
-import { ShoppingCart } from '../../models/order/shopping-cart.model';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { InputNumber } from 'primeng/inputnumber';
@@ -47,9 +46,9 @@ export class ShoppingCartComponent implements OnInit {
 
     addresses = signal<Address[]>([]);
     selectedAddress = signal<Address | null>(null);
-    selectedPaymentMethod: PaymentMethod | null = null;
+    selectedPaymentMethod: PaymentMethods | null = null;
 
-    paymentMethods = Object.entries(PaymentMethod).map(([key, value]) => ({ key, value }));
+    paymentMethods = Object.entries(PaymentMethods).map(([key, value]) => ({ key, value }));
     chequeNumber = '';
     bankName = '';
 

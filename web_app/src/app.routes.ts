@@ -20,6 +20,7 @@ import { HeroWidget } from './app/pages/home/components/herowidget';
 import { ShoppingCartComponent } from './app/pages/shopping-cart/shopping-cart.component';
 import { OrderSummaryComponent } from './app/pages/order-summary/order-summary.component';
 import { OrdersComponent } from './app/pages/orders/orders.component';
+import { UserProfileComponent } from './app/pages/user-profile/user-profile.component';
 
 export const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -56,15 +57,16 @@ export const appRoutes: Routes = [
             // Permissions et rôles
             { path: 'roles', component: ProfilesComponent },
             { path: 'features', component: FeaturesComponent },
+            { path: 'profile', component: UserProfileComponent },
 
-            // Promotions
-            { path: 'coupons', component: ProductsComponent },
-            { path: 'discounts', component: ProductsComponent },
+            // // Promotions
+            // { path: 'coupons', component: ProductsComponent },
+            // { path: 'discounts', component: ProductsComponent },
 
-            // Rapports
-            { path: 'reports/sales', component: ProductsComponent },
-            { path: 'reports/products', component: ProductsComponent },
-            { path: 'reports/customers', component: ProductsComponent },
+            // // Rapports
+            // { path: 'reports/sales', component: ProductsComponent },
+            // { path: 'reports/products', component: ProductsComponent },
+            // { path: 'reports/customers', component: ProductsComponent },
 
             // Paramètres
             { path: 'settings', component: ProductsComponent }
@@ -78,10 +80,10 @@ export const appRoutes: Routes = [
             { path: 'list-products', component: ListProductsComponent },
             { path: 'list-products/:id', component: ProductDetailsComponent },
             { path: 'shopping-cart', component: ShoppingCartComponent },
-            { path: 'order-summary/:id', component: OrderSummaryComponent }
+            { path: 'order-summary/:id', component: OrderSummaryComponent },
+            { path: 'profile', component: UserProfileComponent }
         ]
     },
-
     { path: 'notfound', component: Notfound },
     { path: '**', redirectTo: '/notfound' }
 ];

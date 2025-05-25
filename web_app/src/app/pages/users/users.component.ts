@@ -24,6 +24,8 @@ import { first, last } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Profil } from '../../models/user/profil.model';
 import { ProfilService } from '../../services/profil.service';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { Checkbox } from 'primeng/checkbox';
 
 @Component({
     selector: 'app-users',
@@ -47,7 +49,9 @@ import { ProfilService } from '../../services/profil.service';
         TagModule,
         InputIconModule,
         IconFieldModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        FloatLabelModule,
+        Checkbox
     ],
     templateUrl: 'users.component.html',
     providers: [MessageService, ConfirmationService]
@@ -66,7 +70,7 @@ export class UsersComponent implements OnInit {
     route = inject(ActivatedRoute);
 
     users = signal<User[]>([]);
-    profils = signal<Profil[]>([]);
+    profiles = signal<Profil[]>([]);
     loading = signal(false);
 
     selectedUsers!: User[] | null;
@@ -86,7 +90,7 @@ export class UsersComponent implements OnInit {
                 } else if (this.role === 'vendor') {
                     const vendors = users.filter((user) => user.profils.map((profil) => profil.name).includes('ROLE_SELLER') && !user.profils.map((profil) => profil.name).includes('ROLE_ADMIN'));
                     this.users.set(vendors);
-                } else if (this.role === 'user') {
+                } else if (this.role === 'client') {
                     this.users.set(users.filter((user) => !user.profils.map((profil) => profil.name).includes('ROLE_ADMIN') && !user.profils.map((profil) => profil.name).includes('ROLE_SELLER')));
                 } else {
                     this.users.set(users);
@@ -99,7 +103,7 @@ export class UsersComponent implements OnInit {
 
         this.profilService.getProfils().subscribe({
             next: (profils) => {
-                this.profils.set(profils);
+                this.profiles.set(profils);
             },
             error: (error) => {
                 console.log(error); //TODO: handle error
@@ -112,7 +116,8 @@ export class UsersComponent implements OnInit {
             id: new FormControl(user?.id || null),
             firstName: new FormControl(user?.firstName || '', [Validators.required]),
             lastName: new FormControl(user?.lastName || '', [Validators.required]),
-            email: new FormControl(user?.email || '', [Validators.required, Validators.email])
+            email: new FormControl(user?.email || '', [Validators.required, Validators.email]),
+            profiles: new FormControl(user ? [...user.profils.map((p) => p.id)] : [])
         });
     }
 
@@ -189,12 +194,13 @@ export class UsersComponent implements OnInit {
     }
 
     saveUser() {
+        console.log(this.userFormGroup.value);
         if (this.userFormGroup.invalid) {
             this.userFormGroup.markAllAsTouched();
             return;
         }
 
-        if (this.userFormGroup.value.id) {
+        if (this.userFormGroup.value.id === 1000) {
             this.userService.updateUser(this.userFormGroup.value).subscribe({
                 next: (feature) => {
                     this.users.update((features) => features.map((f) => (f.id === feature.id ? feature : f)));
@@ -211,7 +217,7 @@ export class UsersComponent implements OnInit {
                     console.log(error); //TODO: handle error
                 }
             });
-        } else {
+        } else if (0) {
             this.userService.createUser(this.userFormGroup.value).subscribe({
                 next: (user) => {
                     this.userDialog = false;

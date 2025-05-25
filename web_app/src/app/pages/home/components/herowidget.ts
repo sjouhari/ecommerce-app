@@ -5,10 +5,11 @@ import { GalleriaModule } from 'primeng/galleria';
 import { RippleModule } from 'primeng/ripple';
 import { CategoriesWidget } from './categorieswidget';
 import { NewProductsComponent } from './new-products/new-products.component';
+import { FooterWidget } from './footerwidget';
 
 @Component({
     selector: 'hero-widget',
-    imports: [ButtonModule, RippleModule, GalleriaModule, Carousel, CategoriesWidget, NewProductsComponent],
+    imports: [ButtonModule, RippleModule, GalleriaModule, Carousel, CategoriesWidget, NewProductsComponent, FooterWidget],
     template: `
         <div id="hero" class="flex flex-col overflow-hidden">
             <p-carousel [value]="images()" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions">
@@ -25,6 +26,7 @@ import { NewProductsComponent } from './new-products/new-products.component';
         </div>
         <categories-widget />
         <app-new-products />
+        <footer-widget />
     `
 })
 export class HeroWidget {

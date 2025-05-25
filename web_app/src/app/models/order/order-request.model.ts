@@ -1,11 +1,11 @@
-import { PaymentMethod } from './payment-methods';
+import { PaymentMethods } from './payment-methods';
 
 export interface OrderRequest {
     userId: number;
     userName: string;
     deliveryAddressId: number;
     orderItemsIds: (number | undefined)[];
-    paymentMethod: PaymentMethod;
+    paymentMethod: PaymentMethods;
     chequeNumber?: string;
     bankName?: string;
 }
