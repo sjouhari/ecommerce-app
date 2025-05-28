@@ -10,7 +10,7 @@ public interface InventoryService {
 
     boolean checkAvailability(InventoryDto inventoryDto);
 
-    InventoryDto updateQuantity(InventoryDto inventoryDto);
+    void deductQuantity(InventoryDto inventoryDto);
 
     InventoryDto createInventory(InventoryDto inventoryDto);
 

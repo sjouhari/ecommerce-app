@@ -84,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
         UserDto userDto = userApiClient.getUserById(orderRequestDto.getUserId(), token);
 
         // Get order items
-        List<OrderItem> orderItems = orderItemRepository.findAllByIdIn(orderRequestDto.getOrderItemsIds());
+        List<OrderItem> orderItems = orderItemRepository.findAllById(orderRequestDto.getOrderItemsIds());
 
         // Check stock availability for each order item
         orderItems.forEach(orderItem -> {
@@ -93,8 +93,6 @@ public class OrderServiceImpl implements OrderService {
                 throw new StockInsufficientException(orderItem.getProductId(), orderItem.getSize(), orderItem.getColor().toString());
             }
         });
-
-        // Prepare Payment Method
 
         // Create new Order
         Order order = new Order();
@@ -105,8 +103,6 @@ public class OrderServiceImpl implements OrderService {
         // Create New Payment Method
         PaymentMethod paymentMethod = getPaymentMethod(orderRequestDto);
         paymentMethod.setStatus(PaymentMethodStatus.PENDING);
-        paymentMethod.setOrder(order);
-        order.setPaymentMethod(paymentMethod);
 
         // Create new Facture
         Invoice invoice = new Invoice();
@@ -127,6 +123,12 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setOrder(savedOrder);
             orderItem.setShoppingCart(null);
             orderItemRepository.save(orderItem);
+        });
+
+        // Deduct stock for each order item
+        orderItems.forEach(orderItem -> {
+            InventoryDto inventoryDto = OrderItemMapper.INSTANCE.orderItemToInventoryDto(orderItem);
+            inventoryApiClient.deductQuantity(inventoryDto, token);
         });
 
         // Send order placed event

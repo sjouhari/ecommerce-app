@@ -28,13 +28,9 @@ export class AppMenu {
                         routerLink: ['/']
                     },
                     {
-                        label: 'Produits',
-                        icon: 'pi pi-fw pi-tags',
-                        items: [
-                            { label: 'Tous les produits', icon: 'pi pi-fw pi-list', routerLink: ['/products'] },
-                            { label: 'Ajouter un produit', icon: 'pi pi-fw pi-plus', routerLink: ['/products/new'] },
-                            { label: 'Stock', icon: 'pi pi-fw pi-box', routerLink: ['/inventory'] }
-                        ]
+                        label: 'Gestion des produits',
+                        icon: 'pi pi-fw pi-box',
+                        routerLink: ['/products']
                     },
                     {
                         label: 'Gestion des catégories',

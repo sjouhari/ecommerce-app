@@ -33,7 +33,4 @@ public class PaymentMethod {
     @Enumerated(EnumType.STRING)
     private PaymentMethodStatus status;
 
-    @OneToOne
-    private Order order;
-
 }

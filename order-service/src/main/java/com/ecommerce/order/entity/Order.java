@@ -31,9 +31,6 @@ public class Order extends BaseEntity {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Invoice invoice;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    private PaymentMethod paymentMethod;
-
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems;
 

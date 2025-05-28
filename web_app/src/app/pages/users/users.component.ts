@@ -20,12 +20,10 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user/user.model';
-import { first, last } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Profil } from '../../models/user/profil.model';
 import { ProfilService } from '../../services/profil.service';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { Checkbox } from 'primeng/checkbox';
 
 @Component({
     selector: 'app-users',
@@ -50,8 +48,7 @@ import { Checkbox } from 'primeng/checkbox';
         InputIconModule,
         IconFieldModule,
         ConfirmDialogModule,
-        FloatLabelModule,
-        Checkbox
+        FloatLabelModule
     ],
     templateUrl: 'users.component.html',
     providers: [MessageService, ConfirmationService]

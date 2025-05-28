@@ -33,14 +33,13 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public InventoryDto updateQuantity(InventoryDto inventoryDto) {
+    public void deductQuantity(InventoryDto inventoryDto) {
         Inventory inventory = inventoryRepository.findByProductIdAndSizeAndColor(inventoryDto.getProductId(), inventoryDto.getSize(), inventoryDto.getColor()).orElseThrow(
                 () -> new StockNotFoundException(inventoryDto)
         );
 
-        inventory.setQuantity(inventory.getQuantity() + inventoryDto.getQuantity());
-        Inventory savedInventory = inventoryRepository.save(inventory);
-        return InventoryMapper.INSTANCE.inventoryToInventoryDto(savedInventory);
+        inventory.setQuantity(inventory.getQuantity() - inventoryDto.getQuantity());
+        inventoryRepository.save(inventory);
     }
 
     @Override

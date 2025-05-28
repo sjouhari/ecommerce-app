@@ -39,10 +39,6 @@ export class ProductDetailsComponent implements OnInit {
     totalPrice = signal<number>(0);
     quantityInStock = signal<number>(0);
 
-    price = computed(() => {
-        return this.totalPrice() * this.selectedQuantity;
-    });
-
     product = signal<Product | null>(null);
     _activeIndex: number = 0;
 
@@ -130,12 +126,7 @@ export class ProductDetailsComponent implements OnInit {
 
     calculateTotalePrice() {
         let stock = this.product()?.stock;
-        if (this.selectedSize && !this.selectedColor) {
-            stock = stock!.filter((stock) => stock.size === this.selectedSize);
-        }
-        if (this.selectedColor && this.selectedSize) {
-            stock = stock!.filter((stock) => stock.color === this.selectedColor && stock.size === this.selectedSize);
-        }
+        stock = stock!.filter((stock) => stock.color === this.selectedColor && stock.size === this.selectedSize);
         this.quantityInStock.set(stock![0].quantity);
         this.totalPrice.set(stock![0].price * this.selectedQuantity);
     }

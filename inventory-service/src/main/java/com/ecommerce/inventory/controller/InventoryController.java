@@ -29,10 +29,11 @@ public class InventoryController {
         return inventoryService.checkAvailability(inventoryDto);
     }
 
-    @PutMapping("/updateQuantity")
-    public ResponseEntity<InventoryDto> updateQuantity(@RequestBody @Valid InventoryDto inventoryDto) {
-        return ResponseEntity.ok(inventoryService.updateQuantity(inventoryDto));
-    } // fix request body and add id
+    @PutMapping("/deductQuantity")
+    public ResponseEntity<Void> updateQuantity(@RequestBody @Valid InventoryDto inventoryDto) {
+        inventoryService.deductQuantity(inventoryDto);
+        return ResponseEntity.ok().build();
+    }
 
     @PostMapping
     public ResponseEntity<InventoryDto> createInventory(@RequestBody @Valid InventoryDto inventoryDto) {
