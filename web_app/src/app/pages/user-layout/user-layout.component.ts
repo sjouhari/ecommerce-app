@@ -3,8 +3,8 @@ import { RouterModule } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 
 @Component({
-    selector: 'app-home',
+    selector: 'app-user-layout',
     imports: [RouterModule, NavbarComponent],
-    templateUrl: './home.component.html'
+    templateUrl: './user-layout.component.html'
 })
-export class HomeComponent {}
+export class UserLayoutComponent {}

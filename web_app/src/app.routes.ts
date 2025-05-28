@@ -13,14 +13,14 @@ import { SubCategoriesComponent } from './app/pages/subcategories/sub-categories
 import { ProfilesComponent } from './app/pages/profiles/profiles.component';
 import { SizesComponent } from './app/pages/sizes/sizes.component';
 import { FeaturesComponent } from './app/pages/features/features.component';
-import { HomeComponent } from './app/pages/home/home.component';
 import { ListProductsComponent } from './app/pages/list-products/list-products.component';
 import { ProductDetailsComponent } from './app/pages/product-details/product-details.component';
-import { HeroWidget } from './app/pages/home/components/herowidget';
 import { ShoppingCartComponent } from './app/pages/shopping-cart/shopping-cart.component';
 import { OrderSummaryComponent } from './app/pages/order-summary/order-summary.component';
 import { OrdersComponent } from './app/pages/orders/orders.component';
 import { UserProfileComponent } from './app/pages/user-profile/user-profile.component';
+import { UserLayoutComponent } from './app/pages/user-layout/user-layout.component';
+import { HomeComponent } from './app/pages/user-layout/components/home/home.component';
 
 export const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -74,9 +74,9 @@ export const appRoutes: Routes = [
     },
     {
         path: 'home',
-        component: HomeComponent,
+        component: UserLayoutComponent,
         children: [
-            { path: '', component: HeroWidget },
+            { path: '', component: HomeComponent },
             { path: 'list-products', component: ListProductsComponent },
             { path: 'list-products/:id', component: ProductDetailsComponent },
             { path: 'shopping-cart', component: ShoppingCartComponent },
