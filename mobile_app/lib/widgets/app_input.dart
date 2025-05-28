@@ -28,11 +28,11 @@ class AppInput extends StatelessWidget {
       obscuringCharacter: '*',
       validator: validator,
       keyboardType: keyboardType,
-      style: const TextStyle(color: Colors.black, fontSize: 20),
+      style: const TextStyle(color: Colors.black),
       autofillHints: [AutofillHints.email],
       decoration: InputDecoration(
         hintText: label,
-        hintStyle: TextStyle(color: Colors.black, fontSize: 20),
+        hintStyle: TextStyle(color: Colors.black),
         contentPadding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),

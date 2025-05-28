@@ -148,10 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          AppText(
-                            text: "Vous avez deja un compte ?",
-                            fontSize: 20,
-                          ),
+                          AppText(text: "Vous avez deja un compte ?"),
                           AppTextButton(
                             onPressed: () {
                               CustomNavigator.goBack(context);

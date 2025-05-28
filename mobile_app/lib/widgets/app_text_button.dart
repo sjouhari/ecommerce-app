@@ -11,7 +11,7 @@ class AppTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onPressed,
-      child: AppText(text: label, fontSize: 20, color: Colors.blue),
+      child: AppText(text: label, color: Colors.blue),
     );
   }
 }

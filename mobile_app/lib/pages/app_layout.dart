@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/pages/home.dart';
+import 'package:mobile_app/pages/profile.dart';
+import 'package:mobile_app/pages/shopping-cart.dart';
 
 class AppLayout extends StatefulWidget {
   const AppLayout({super.key});
@@ -9,23 +11,24 @@ class AppLayout extends StatefulWidget {
 }
 
 class _AppLayoutState extends State<AppLayout> {
+  int _currentIndex = 0;
+  List<Widget> pages = [HomePage(), ShoppingCartPage(), ProfilePage()];
+
   @override
   Widget build(BuildContext context) {
-    int currentIndex = 0;
-
-    List<Widget> pages = [HomePage(), HomePage(), HomePage()];
-
     return SafeArea(
       child: Scaffold(
-        body: pages[currentIndex],
+        body: pages[_currentIndex],
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: currentIndex,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          currentIndex: _currentIndex,
           onTap: (index) {
             setState(() {
-              currentIndex = index;
+              _currentIndex = index;
             });
           },
-          iconSize: 32,
+          iconSize: 25,
           selectedIconTheme: IconThemeData(
             color: const Color.fromARGB(255, 217, 111, 104),
           ),
@@ -33,7 +36,7 @@ class _AppLayoutState extends State<AppLayout> {
             color: const Color.fromARGB(255, 70, 70, 70),
           ),
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil"),
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart_checkout),
               label: "Panier",

@@ -139,10 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        AppText(
-                          text: "Vous n'avez pas de compte ?",
-                          fontSize: 20,
-                        ),
+                        AppText(text: "Vous n'avez pas de compte ?"),
                         AppTextButton(
                           onPressed: () {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
