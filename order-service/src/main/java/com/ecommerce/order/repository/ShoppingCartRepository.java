@@ -9,4 +9,6 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long
 
     Optional<ShoppingCart> findByUserId(Long userId);
 
+    ShoppingCart getByUserId(Long userId);
+
 }

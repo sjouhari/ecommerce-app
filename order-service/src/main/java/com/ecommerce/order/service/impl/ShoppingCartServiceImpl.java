@@ -15,6 +15,7 @@ import com.ecommerce.shared.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -38,6 +39,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCart cart = new ShoppingCart();
         if (shoppingCart.isPresent()) {
             cart = shoppingCart.get();
+            Optional<OrderItem> item = cart.getOrderItems().stream()
+                    .filter(orderItem ->
+                            Objects.equals(orderItem.getProductId(), orderItemDto.getProductId())
+                                    && Objects.equals(orderItem.getSize(), orderItemDto.getSize())
+                                    && Objects.equals(orderItem.getColor(), orderItemDto.getColor()))
+                    .findFirst();
+            if (item.isPresent()) {
+                OrderItem orderItem = item.get();
+                updateItemQuantity(orderItem.getId(), new UpdateOrderItemQauntityDto(orderItemDto.getQuantity()));
+                return getShoppingCartByUserId(userId);
+            }
         } else {
             cart.setUserId(userId);
         }
