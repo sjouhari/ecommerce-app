@@ -59,18 +59,38 @@ export class ProductDetailsComponent implements OnInit {
                 next: (product) => {
                     this.product.set(product);
                     this.images = product.medias;
-                    this.colors = product.stock?.map((stock) => stock.color) || [];
                     this.sizes = [...new Set(product.stock?.map((stock) => stock.size))];
                     this.totalPrice.set(product.stock[0].price);
-                    this.selectedColor = product.stock[0].color;
                     this.selectedSize = product.stock[0].size;
-                    this.quantityInStock.set(product.stock[0].quantity);
+                    this.getSizeColors();
+                    this.getColorQuantity();
                 },
                 error: (error) => {
                     console.log(error); //TODO: handle error
                 }
             });
         }
+    }
+
+    getSizeColors() {
+        this.colors = [];
+        this.product()?.stock?.forEach((stock) => {
+            if (stock.size === this.selectedSize) {
+                this.colors.push(stock.color);
+            }
+        });
+        this.selectedColor = this.colors[0];
+    }
+
+    getColorQuantity() {
+        this.product()?.stock?.forEach((stock) => {
+            if (stock.size === this.selectedSize && stock.color === this.selectedColor) {
+                this.quantityInStock.set(stock.quantity);
+                if (this.selectedQuantity > this.quantityInStock()) {
+                    this.selectedQuantity = this.quantityInStock();
+                }
+            }
+        });
     }
 
     goBack() {
@@ -124,14 +144,21 @@ export class ProductDetailsComponent implements OnInit {
         }
     }
 
-    calculateTotalePrice() {
-        let stock = this.product()?.stock;
-        stock = stock!.filter((stock) => stock.color === this.selectedColor && stock.size === this.selectedSize);
-        this.quantityInStock.set(stock![0].quantity);
-        this.totalPrice.set(stock![0].price * this.selectedQuantity);
+    onSizeChange() {
+        this.getSizeColors();
+        this.getColorQuantity();
+        this.onQuantityChange();
     }
 
-    disableColor(color: string) {
-        return !this.selectedSize || !this.product()!.stock?.some((stock) => stock.size === this.selectedSize && stock.color === color);
+    onColorChange() {
+        this.getColorQuantity();
+        this.onQuantityChange();
+    }
+
+    onQuantityChange() {
+        if (this.selectedQuantity > this.quantityInStock()) {
+            this.selectedQuantity = this.quantityInStock();
+        }
+        this.totalPrice.set(this.selectedQuantity * this.product()!.stock!.find((stock) => stock.color === this.selectedColor && stock.size === this.selectedSize)!.price);
     }
 }

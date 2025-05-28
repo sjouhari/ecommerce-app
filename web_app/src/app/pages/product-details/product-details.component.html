@@ -27,7 +27,7 @@
                     <div class="flex flex-wrap gap-4">
                         @for(size of sizes; track size) {
                             <div class="flex items-center">
-                                <p-radiobutton [value]="size" [inputId]="size" [(ngModel)]="selectedSize" (onClick)="calculateTotalePrice()" />
+                                <p-radiobutton [value]="size" [inputId]="size" [(ngModel)]="selectedSize" (onClick)="onSizeChange()" />
                                 <label [for]="size" class="ml-2">{{ size }}</label>
                             </div>
                         }
@@ -40,7 +40,7 @@
                     <div class="flex flex-wrap gap-4">
                         @for(color of colors; track color) {
                             <div class="flex items-center">
-                                <p-radiobutton [(ngModel)]="selectedColor" [value]="color" [inputId]="color" [disabled]="disableColor(color)" (onClick)="calculateTotalePrice()" />
+                                <p-radiobutton [(ngModel)]="selectedColor" [value]="color" [inputId]="color" (onClick)="onColorChange()" />
                                 <label [for]="color" class="ml-2">{{ color }}</label>
                             </div>
                         }
@@ -55,13 +55,12 @@
                             inputId="quantity"
                             [(ngModel)]="selectedQuantity"
                             [showButtons]="true"
-                            (onInput)="calculateTotalePrice()"
+                            (onInput)="onQuantityChange()"
                             buttonLayout="horizontal"
                             [min]="1"
                             [max]="quantityInStock()"
                             [inputStyle]="{ width: '4rem', 'text-align': 'center' }"
-                            [disabled]="!selectedColor"
-                            >
+                        >
                             <ng-template #incrementbuttonicon>
                                 <span class="pi pi-plus"></span>
                             </ng-template>
@@ -76,7 +75,7 @@
                             size="large"
                             severity="success"
                             (click)="addToCart()"
-                            ></button>
+                        ></button>
                     </div>
                 </div>
 
