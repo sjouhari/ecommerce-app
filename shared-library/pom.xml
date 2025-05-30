@@ -6,11 +6,23 @@
 		<groupId>com.ecommerce</groupId>
 		<artifactId>ecommerce-parent-service</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>shared-library</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>shared-library</name>
 	<description>Shared Library</description>
 	<packaging>jar</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<classifier>exec</classifier>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

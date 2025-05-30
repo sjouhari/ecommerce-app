@@ -6,7 +6,7 @@
 		<groupId>com.ecommerce</groupId>
 		<artifactId>ecommerce-parent-service</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>category-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
