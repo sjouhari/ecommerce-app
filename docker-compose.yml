@@ -1,0 +1,132 @@
+version: '3.9'
+
+services:
+  registry-service:
+    build:
+      context: ./registry-service
+    container_name: registry-service
+    ports:
+      - "8761:8761"
+    networks:
+      - spring-net
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - registry-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka
+    networks:
+      - spring-net
+
+  user-service:
+    build:
+      context: ./user-service
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - registry-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka
+    networks:
+      - spring-net
+
+  category-service:
+    build:
+      context: ./category-service
+    container_name: category-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - registry-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka
+    networks:
+      - spring-net
+
+  product-service:
+    build:
+      context: ./product-service
+    container_name: product-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - registry-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka
+    networks:
+      - spring-net
+
+  comment-service:
+    build:
+      context: ./comment-service
+    container_name: comment-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - registry-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka
+    networks:
+      - spring-net
+
+  inventory-service:
+    build:
+      context: ./inventory-service
+    container_name: inventory-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - registry-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka
+    networks:
+      - spring-net
+
+  order-service:
+    build:
+      context: ./order-service
+    container_name: order-service
+    ports:
+      - "8086:8086"
+    depends_on:
+      - registry-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka
+    networks:
+      - spring-net
+
+  contact-service:
+    build:
+      context: ./contact-service
+    container_name: contact-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      - registry-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka
+    networks:
+      - spring-net
+
+  email-service:
+    build:
+      context: ./email-service
+    container_name: email-service
+    ports:
+      - "8088:8088"
+    depends_on:
+      - registry-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka
+    networks:
+      - spring-net
+
+networks:
+  spring-net:
+    driver: bridge
