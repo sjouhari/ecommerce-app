@@ -1,6 +1,7 @@
 package com.ecommerce.category.service.impl;
 
 import com.ecommerce.category.dto.SizeDto;
+import com.ecommerce.category.dto.SizeResponseDto;
 import com.ecommerce.category.entity.Category;
 import com.ecommerce.category.entity.Size;
 import com.ecommerce.category.entity.SubCategory;
@@ -24,13 +25,13 @@ public class SizeServiceImpl implements SizeService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public List<SizeDto> getAllSizes() {
+    public List<SizeResponseDto> getAllSizes() {
         List<Size> sizes = sizeRepository.findAll();
         return SizeMapper.INSTANCE.sizesToSizeDtos(sizes);
     }
 
     @Override
-    public SizeDto getSizeById(Long id) {
+    public SizeResponseDto getSizeById(Long id) {
         Size size = sizeRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Size", "id", id.toString())
         );
@@ -38,7 +39,7 @@ public class SizeServiceImpl implements SizeService {
     }
 
     @Override
-    public SizeDto createSize(SizeDto sizeDto) {
+    public SizeResponseDto createSize(SizeDto sizeDto) {
         Size size = SizeMapper.INSTANCE.sizeDtoToSize(sizeDto);
         Category category = categoryRepository.findById(sizeDto.getCategoryId()).orElseThrow(
                 () -> new ResourceNotFoundException("Category", "id", sizeDto.getCategoryId().toString())
@@ -49,7 +50,7 @@ public class SizeServiceImpl implements SizeService {
     }
 
     @Override
-    public SizeDto updateSize(Long id, SizeDto sizeDto) {
+    public SizeResponseDto updateSize(Long id, SizeDto sizeDto) {
         getSizeById(id);
         Size size = SizeMapper.INSTANCE.sizeDtoToSize(sizeDto);
         Category category = categoryRepository.findById(sizeDto.getCategoryId()).orElseThrow(

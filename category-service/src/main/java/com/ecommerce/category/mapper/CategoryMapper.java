@@ -1,6 +1,6 @@
 package com.ecommerce.category.mapper;
 
-import com.ecommerce.category.dto.CategoryDto;
+import com.ecommerce.category.dto.CategoryRequestDto;
 import com.ecommerce.category.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -12,10 +12,10 @@ public interface CategoryMapper extends SubCategoryMapper, SizeMapper {
 
     CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
 
-    Category categoryDtoToCategory(CategoryDto categoryDto);
+    Category categoryDtoToCategory(CategoryRequestDto categoryRequestDto);
 
-    CategoryDto categoryToCategoryDto(Category category);
+    CategoryRequestDto categoryToCategoryDto(Category category);
 
-    List<CategoryDto> categoriesToCategoryDtos(List<Category> categories);
+    List<CategoryRequestDto> categoriesToCategoryDtos(List<Category> categories);
 
 }

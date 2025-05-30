@@ -1,18 +1,19 @@
 package com.ecommerce.category.service;
 
 import com.ecommerce.category.dto.SubCategoryDto;
+import com.ecommerce.category.dto.SubCategoryResponseDto;
 
 import java.util.List;
 
 public interface SubCategoryService {
 
-    List<SubCategoryDto> getAllSubCategories();
+    List<SubCategoryResponseDto> getAllSubCategories();
 
-    SubCategoryDto getSubCategoryById(Long id);
+    SubCategoryResponseDto getSubCategoryById(Long id);
 
-    SubCategoryDto createSubCategory(SubCategoryDto subCategoryDto);
+    SubCategoryResponseDto createSubCategory(SubCategoryDto subCategoryDto);
 
-    SubCategoryDto updateSubCategory(Long id, SubCategoryDto subCategoryDto);
+    SubCategoryResponseDto updateSubCategory(Long id, SubCategoryDto subCategoryDto);
 
     void deleteSubCategory(Long id);
 

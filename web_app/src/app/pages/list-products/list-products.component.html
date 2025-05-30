@@ -1,5 +1,5 @@
 <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold">Liste des produits</h1>
+    <h1 class="text-2xl font-bold">Découvrir nos produits</h1>
     <p-iconfield>
         <p-inputicon styleClass="pi pi-search" />
         <input pInputText [(ngModel)]="searchTerm" type="text" (input)="appliquerFilters()" placeholder="Rechercher..." />
@@ -7,7 +7,7 @@
 </div>
 <div class="grid grid-cols-12 gap-4 m-0">
     <div class="col-span-2 p-4 border-1 border-surface rounded-border">
-        <h1 class="text-2xl font-bold">Filtrer</h1>
+        <h1 class="text-2xl font-bold">Appliquer des filtres</h1>
         <h2 class="text-xl font-bold">Catégories</h2>
         <div>
             @for(category of categories(); track category.id) {
@@ -42,7 +42,7 @@
             </div>
         }
         <h2 class="text-xl font-bold">Couleurs</h2>
-        <div>
+        <div class="flex flex-wrap gap-1">
             @for(color of colors; track color.key) {
                 <div class="flex items-center mb-2">
                     <p-checkbox [inputId]="color.key" name="colors" [value]="color.key" [(ngModel)]="selectedColors" (onChange)="appliquerFilters()" />

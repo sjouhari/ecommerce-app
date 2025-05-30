@@ -1,8 +1,8 @@
-import { Size } from './size.model';
+import { Category } from './category.model';
 
 export interface SubCategory {
     id: number;
-    categoryId: number;
     name: string;
     description: string;
+    category: Category;
 }

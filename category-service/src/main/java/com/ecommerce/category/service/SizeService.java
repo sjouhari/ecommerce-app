@@ -1,18 +1,19 @@
 package com.ecommerce.category.service;
 
 import com.ecommerce.category.dto.SizeDto;
+import com.ecommerce.category.dto.SizeResponseDto;
 
 import java.util.List;
 
 public interface SizeService {
 
-    List<SizeDto> getAllSizes();
+    List<SizeResponseDto> getAllSizes();
 
-    SizeDto getSizeById(Long id);
+    SizeResponseDto getSizeById(Long id);
 
-    SizeDto createSize(SizeDto sizeDto);
+    SizeResponseDto createSize(SizeDto sizeDto);
 
-    SizeDto updateSize(Long id, SizeDto sizeDto);
+    SizeResponseDto updateSize(Long id, SizeDto sizeDto);
 
     void deleteSize(Long id);
 

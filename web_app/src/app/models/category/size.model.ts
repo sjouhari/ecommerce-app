@@ -1,5 +1,7 @@
+import { Category } from './category.model';
+
 export interface Size {
     id: number;
-    categoryId: number;
     libelle: string;
+    category: Category;
 }

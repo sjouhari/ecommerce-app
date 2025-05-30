@@ -55,7 +55,7 @@
     </div>
 
     <div class="col-span-4 p-3 border-1 border-surface rounded">
-        <h3 class="text-xl font-bold m-0">Résumé</h3>
+        <h3 class="text-xl font-bold mb-3">Résumé</h3>
         <div class="flex justify-between items-center mb-3">
             <span class="font-bold">Prix totale du panier</span>
             <span class="font-medium ml-2">{{ totalPrice() + ' MAD'}}</span>
@@ -65,7 +65,7 @@
             <span class="font-medium ml-2">0 MAD</span>
         </div>
         <div class="flex justify-between items-center pt-3 border-top-1 border-surface">
-            <span class="font-bold text-2xl">Prix totale</span>
+            <span class="font-bold text-xl">Prix totale</span>
             <span class="font-medium ml-2">{{ totalPrice() + ' MAD'}}</span>
         </div>
 
@@ -121,7 +121,7 @@
     </div>
 </div>
 
-<p-dialog [(visible)]="addressDialog" [style]="{ width: '70%', padding: '1.5rem' }" header="Détail du produit" [modal]="true">
+<p-dialog [(visible)]="addressDialog" [style]="{ width: '70%', padding: '1.5rem' }" header="Adresse de livraison" [modal]="true">
     <ng-template #content>
         <form [formGroup]="addressFormGroup" class="grid grid-cols-12 gap-3 border p-3 rounded">
             <div class="col-span-12">

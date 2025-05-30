@@ -12,7 +12,6 @@ import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { CategoryService } from '../../../../services/category.service';
 import { Category } from '../../../../models/category/category.model';
 import { ShoppingCartService } from '../../../../services/shopping-cart.service';
-import { ShoppingCart } from '../../../../models/order/shopping-cart.model';
 import { AuthService } from '../../../../services/auth.service';
 
 @Component({
@@ -38,6 +37,10 @@ export class NavbarComponent implements OnInit {
                 console.log(error); //TODO: handle error
             }
         });
+    }
+
+    getFullName() {
+        return this.authService.getCurrentUser()?.firstName + ' ' + this.authService.getCurrentUser()?.lastName;
     }
 
     toggleDataTable(op: Popover, event: any) {

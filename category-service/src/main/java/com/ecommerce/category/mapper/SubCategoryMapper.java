@@ -1,9 +1,9 @@
 package com.ecommerce.category.mapper;
 
 import com.ecommerce.category.dto.SubCategoryDto;
+import com.ecommerce.category.dto.SubCategoryResponseDto;
 import com.ecommerce.category.entity.SubCategory;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -15,10 +15,9 @@ public interface SubCategoryMapper {
 
     SubCategory subCategoryDtoToSubCategory(SubCategoryDto subCategoryDto);
 
-    @Mapping(target = "categoryId", source = "category.id")
-    SubCategoryDto subCategoryToSubCategoryDto(SubCategory subCategory);
+    SubCategoryResponseDto subCategoryToSubCategoryDto(SubCategory subCategory);
 
-    List<SubCategoryDto> subCategoriesToSubCateoryDtos(List<SubCategory> subCategories);
+    List<SubCategoryResponseDto> subCategoriesToSubCateoryDtos(List<SubCategory> subCategories);
 
 
 }

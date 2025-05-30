@@ -94,7 +94,7 @@ export class SubCategoriesComponent implements OnInit {
             id: new FormControl(subCategory?.id || null),
             name: new FormControl(subCategory?.name || '', [Validators.required]),
             description: new FormControl(subCategory?.description || '', [Validators.required]),
-            categoryId: new FormControl(subCategory?.categoryId || '', [Validators.required])
+            categoryId: new FormControl(subCategory?.category.id || '', [Validators.required])
         });
     }
 
@@ -102,11 +102,11 @@ export class SubCategoriesComponent implements OnInit {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
 
-    openNew() {
+    addEditSubCategory(subCategory?: SubCategory) {
         this.categoryService.getCategories().subscribe({
             next: (allCategories) => {
                 this.categories.set(allCategories);
-                this.initSubCategoryFormGroup();
+                this.initSubCategoryFormGroup(subCategory);
                 if (allCategories.length > 0) {
                     this.subCategoryDialog = true;
                 } else {
@@ -122,11 +122,6 @@ export class SubCategoriesComponent implements OnInit {
                 console.log(error); // TODO: handle error
             }
         });
-    }
-
-    editSubCategory(subCategory: SubCategory) {
-        this.initSubCategoryFormGroup(subCategory);
-        this.subCategoryDialog = true;
     }
 
     deleteSelectedSubCategories() {

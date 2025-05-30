@@ -67,8 +67,8 @@ export class ShoppingCartComponent implements OnInit {
     getShoppingCart() {
         this.shoppingCartService.getShoppingCart(this.authService.getCurrentUser()?.id!).subscribe({
             next: (cart) => {
-                this.calculateTotalPrice();
                 this.shoppingCartService.setShoppingCart(cart);
+                this.calculateTotalPrice();
             },
             error: (error) => {
                 console.log(error); //TODO: handle error
@@ -193,7 +193,6 @@ export class ShoppingCartComponent implements OnInit {
                 this.shoppingCartService.deleteItemFromShoppingCart(id).subscribe({
                     next: () => {
                         this.getShoppingCart();
-                        this.calculateTotalPrice();
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Suppression',

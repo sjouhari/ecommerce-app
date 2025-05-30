@@ -89,7 +89,7 @@ export class SizesComponent implements OnInit {
         this.sizeFormGroup = this.formBuilder.group({
             id: new FormControl(size?.id || null),
             libelle: new FormControl(size?.libelle || '', [Validators.required]),
-            categoryId: new FormControl(size?.categoryId || '', [Validators.required])
+            categoryId: new FormControl(size?.category.id || '', [Validators.required])
         });
     }
 

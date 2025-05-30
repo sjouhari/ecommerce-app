@@ -1,6 +1,6 @@
 package com.ecommerce.category.service.impl;
 
-import com.ecommerce.category.dto.CategoryDto;
+import com.ecommerce.category.dto.CategoryRequestDto;
 import com.ecommerce.category.entity.Category;
 import com.ecommerce.category.mapper.CategoryMapper;
 import com.ecommerce.category.repository.CategoryRepository;
@@ -18,13 +18,13 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public List<CategoryDto> getAllCategories() {
+    public List<CategoryRequestDto> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
         return CategoryMapper.INSTANCE.categoriesToCategoryDtos(categories);
     }
 
     @Override
-    public CategoryDto getCategoryById(Long id) {
+    public CategoryRequestDto getCategoryById(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Category", "id", id.toString())
         );
@@ -32,16 +32,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto createCategory(CategoryDto categoryDto) {
-        Category category = CategoryMapper.INSTANCE.categoryDtoToCategory(categoryDto);
+    public CategoryRequestDto createCategory(CategoryRequestDto categoryRequestDto) {
+        Category category = CategoryMapper.INSTANCE.categoryDtoToCategory(categoryRequestDto);
         Category savedCategory = categoryRepository.save(category);
         return CategoryMapper.INSTANCE.categoryToCategoryDto(savedCategory);
     }
 
     @Override
-    public CategoryDto updateCategory(Long id, CategoryDto categoryDto) {
+    public CategoryRequestDto updateCategory(Long id, CategoryRequestDto categoryRequestDto) {
         getCategoryById(id);
-        Category category = CategoryMapper.INSTANCE.categoryDtoToCategory(categoryDto);
+        Category category = CategoryMapper.INSTANCE.categoryDtoToCategory(categoryRequestDto);
         category.setId(id);
         Category updatedCategory = categoryRepository.save(category);
         return CategoryMapper.INSTANCE.categoryToCategoryDto(updatedCategory);

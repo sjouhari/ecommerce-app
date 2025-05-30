@@ -4,12 +4,12 @@ import { Carousel } from 'primeng/carousel';
 import { RippleModule } from 'primeng/ripple';
 import { NewProductsComponent } from '../new-products/new-products.component';
 import { FooterWidget } from '../footerwidget';
-import { CategoriesWidget } from '../categorieswidget';
+import { ListCategoriesComponent } from '../categories/list-categories.component';
 
 @Component({
     selector: 'app-home',
-    imports: [ButtonModule, RippleModule, Carousel, CategoriesWidget, NewProductsComponent, FooterWidget],
-
+    imports: [ButtonModule, RippleModule, Carousel, ListCategoriesComponent, NewProductsComponent, FooterWidget],
+    standalone: true,
     templateUrl: './home.component.html'
 })
 export class HomeComponent {

@@ -50,9 +50,9 @@
                                     <th pSortableColumn="customer">Product <p-sortIcon field="customer" /></th>
                                     <th pSortableColumn="date">Image <p-sortIcon field="date" /></th>
                                     <th pSortableColumn="amount">Taille <p-sortIcon field="amount" /></th>
-                                    <th pSortableColumn="status">Couleur <p-sortIcon field="status" /></th>
-                                    <th pSortableColumn="status">Prix <p-sortIcon field="status" /></th>
-                                    <th pSortableColumn="status">Quantité <p-sortIcon field="status" /></th>
+                                    <th class="text-center" pSortableColumn="status">Couleur <p-sortIcon field="status" /></th>
+                                    <th class="text-center" pSortableColumn="status">Prix <p-sortIcon field="status" /></th>
+                                    <th class="text-center" pSortableColumn="status">Quantité <p-sortIcon field="status" /></th>
                                 </tr>
                             </ng-template>
                             <ng-template #body let-item>
@@ -60,10 +60,10 @@
                                     <td>{{ item.id }}</td>
                                     <td>{{ item.productName }}</td>
                                     <td><img [src]="'http://localhost:8080/api/products/images/' + item.productImage" [alt]="item.productName" style="width: 60px" class="rounded" /></td>
-                                    <td>{{ item.size }}</td>
-                                    <td>{{ item.color }}</td>
-                                    <td>{{ item.price }}</td>
-                                    <td>{{ item.quantity }}</td>
+                                    <td class="text-center">{{ item.size }}</td>
+                                    <td class="text-center">{{ item.color }}</td>
+                                    <td class="text-center">{{ item.price }}</td>
+                                    <td class="text-center">{{ item.quantity }}</td>
                                 </tr>
                             </ng-template>
                             <ng-template #emptymessage>

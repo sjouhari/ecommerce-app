@@ -1,6 +1,6 @@
 <div class="flex justify-content-center align-items-center h-screen" style="background-color: #f3f4f6;">
-    <form [formGroup]="registerFormGroup" (ngSubmit)="register()" class="w-30rem border-1 surface-border p-5 border-round bg-white">
-        <i class="pi pi-cart-arrow-down text-8xl text-center w-full text-blue-400"></i>
+    <form [formGroup]="registerFormGroup" (ngSubmit)="register()" class="w-6 border-1 surface-border p-5 border-round bg-white">
+        <img src="assets/logo/app-logo.png" class="h-4rem mx-auto" alt="APP LOGO" />
         <h1 class="text-center text-2xl text-gray-600 mb-5">Créer un compte</h1>
 
         @if(errorMessage()) {
@@ -15,24 +15,27 @@
             </div>
         } 
 
-        <div class="mb-3">
-            <p-floatlabel variant="in">
-                <input pInputText id="lastName" type="text" formControlName="lastName" class="w-full" />
-                <label for="lastName">Nom</label>
-            </p-floatlabel>
-            @if(formControls['lastName'].errors && formControls['lastName'].touched && formControls['lastName'].errors['required']) {
-                <small class="text-red-500">Nom obligatoire.</small>
-            }
+        <div class="flex justify-content-between gap-3 mb-3">
+            <div class="w-full">
+                <p-floatlabel variant="in">
+                    <input pInputText id="lastName" type="text" formControlName="lastName" fluid />
+                    <label for="lastName">Nom</label>
+                </p-floatlabel>
+                @if(formControls['lastName'].errors && formControls['lastName'].touched && formControls['lastName'].errors['required']) {
+                    <small class="text-red-500">Nom obligatoire.</small>
+                }
+            </div>
+            <div class="w-full">
+                <p-floatlabel variant="in">
+                    <input pInputText id="firstName" type="text" formControlName="firstName" fluid />
+                    <label for="firstName">Prénom</label>
+                </p-floatlabel>
+                @if(formControls['firstName'].errors && formControls['firstName'].touched && formControls['firstName'].errors['required']) {
+                    <small class="text-red-500">Prénom obligatoire.</small>
+                }
+            </div>
         </div>
-        <div class="mb-3">
-            <p-floatlabel variant="in">
-                <input pInputText id="firstName" type="text" formControlName="firstName" class="w-full" />
-                <label for="firstName">Prénom</label>
-            </p-floatlabel>
-            @if(formControls['firstName'].errors && formControls['firstName'].touched && formControls['firstName'].errors['required']) {
-                <small class="text-red-500">Prénom obligatoire.</small>
-            }
-        </div>
+
         <div class="mb-3">
             <p-floatlabel variant="in">
                 <input pInputText id="email" type="text" formControlName="email" class="w-full" />

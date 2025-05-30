@@ -1,9 +1,9 @@
 package com.ecommerce.category.mapper;
 
 import com.ecommerce.category.dto.SizeDto;
+import com.ecommerce.category.dto.SizeResponseDto;
 import com.ecommerce.category.entity.Size;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -15,9 +15,8 @@ public interface SizeMapper {
 
     Size sizeDtoToSize(SizeDto sizeDto);
 
-    @Mapping(target = "categoryId", source = "category.id")
-    SizeDto sizeToSizeDto(Size size);
+    SizeResponseDto sizeToSizeDto(Size size);
 
-    List<SizeDto> sizesToSizeDtos(List<Size> sizes);
+    List<SizeResponseDto> sizesToSizeDtos(List<Size> sizes);
 
 }

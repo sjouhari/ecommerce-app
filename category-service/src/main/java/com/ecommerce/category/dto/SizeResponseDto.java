@@ -1,4 +1,4 @@
-package com.ecommerce.product.dto;
+package com.ecommerce.category.dto;
 
 import com.ecommerce.shared.dto.CategoryDto;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubCategoryDto {
+public class SizeResponseDto {
+
     private Long id;
-    private String name;
+    private String libelle;
     private CategoryDto category;
+
 }

@@ -1,6 +1,7 @@
 package com.ecommerce.category.service.impl;
 
 import com.ecommerce.category.dto.SubCategoryDto;
+import com.ecommerce.category.dto.SubCategoryResponseDto;
 import com.ecommerce.category.entity.Category;
 import com.ecommerce.category.entity.SubCategory;
 import com.ecommerce.category.mapper.SubCategoryMapper;
@@ -23,13 +24,13 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public List<SubCategoryDto> getAllSubCategories() {
+    public List<SubCategoryResponseDto> getAllSubCategories() {
         List<SubCategory> categories = subCategoryRepository.findAll();
         return SubCategoryMapper.INSTANCE.subCategoriesToSubCateoryDtos(categories);
     }
 
     @Override
-    public SubCategoryDto getSubCategoryById(Long id) {
+    public SubCategoryResponseDto getSubCategoryById(Long id) {
         SubCategory subCategory = subCategoryRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("SubCategory", "id", id.toString())
         );
@@ -37,7 +38,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
-    public SubCategoryDto createSubCategory(SubCategoryDto subCategoryDto) {
+    public SubCategoryResponseDto createSubCategory(SubCategoryDto subCategoryDto) {
         SubCategory subCategory = SubCategoryMapper.INSTANCE.subCategoryDtoToSubCategory(subCategoryDto);
         Category category = categoryRepository.findById(subCategoryDto.getCategoryId()).orElseThrow(
                 () -> new ResourceNotFoundException("Category", "id", subCategoryDto.getCategoryId().toString())
@@ -48,7 +49,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
-    public SubCategoryDto updateSubCategory(Long id, SubCategoryDto subCategoryDto) {
+    public SubCategoryResponseDto updateSubCategory(Long id, SubCategoryDto subCategoryDto) {
         getSubCategoryById(id);
         SubCategory subCategory = SubCategoryMapper.INSTANCE.subCategoryDtoToSubCategory(subCategoryDto);
         subCategory.setId(id);

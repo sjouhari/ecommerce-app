@@ -39,8 +39,8 @@
                 Libellé
                 <p-sortIcon field="libelle" />
             </th>
-            <th pSortableColumn="categoryId">Catégorie
-                <p-sortIcon field="categoryId" />
+            <th pSortableColumn="category.name">Catégorie
+                <p-sortIcon field="category.name" />
             </th>
             <th style="min-width: 7rem"></th>
         </tr>
@@ -51,7 +51,7 @@
                 <p-tableCheckbox [value]="size" />
             </td>
             <td style="min-width: 16rem">{{ size.libelle }}</td>
-            <td style="min-width: 16rem">{{ size.categoryId }}</td>
+            <td style="min-width: 16rem">{{ size.category.name }}</td>
             <td>
                 <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editSize(size)" />
                 <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteSize(size)" />
@@ -63,7 +63,6 @@
 <p-dialog [(visible)]="sizeDialog" [style]="{ width: '600px' }" header="Taille" [modal]="true">
         <ng-template #content>
             <form [formGroup]="sizeFormGroup" (ngSubmit)="saveSize()" class="flex flex-col gap-3 mt-4">
-                <input type="hidden" formControlName="id" />
                 <label class="block font-bold mb-2">Catégorie</label>
                 <div>
                     @for(category of categories(); track category.id) {

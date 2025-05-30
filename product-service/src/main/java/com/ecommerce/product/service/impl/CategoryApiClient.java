@@ -1,7 +1,7 @@
 package com.ecommerce.product.service.impl;
 
-import com.ecommerce.product.dto.CategoryDto;
 import com.ecommerce.product.dto.SubCategoryDto;
+import com.ecommerce.shared.dto.CategoryDto;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

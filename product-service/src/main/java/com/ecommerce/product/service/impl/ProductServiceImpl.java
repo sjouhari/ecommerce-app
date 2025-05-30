@@ -10,6 +10,7 @@ import com.ecommerce.product.repository.ProductRepository;
 import com.ecommerce.product.repository.TvaRepository;
 import com.ecommerce.product.service.ProductService;
 import com.ecommerce.shared.dto.InventoryDto;
+import com.ecommerce.shared.dto.CategoryDto;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
                     List<InventoryDto> stock = inventoryApiClient.getInventoriesByProductId(productResponseDto.getId(), token);
                     productResponseDto.setStock(stock);
                     SubCategoryDto subCategoryDto = categoryApiClient.getSubCategoryById(productResponseDto.getSubCategoryId(), token);
-                    CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategoryId(), token);
+                    CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategory().getId(), token);
                     productResponseDto.setCategoryName(categoryDto.getName());
                     productResponseDto.setSubCategoryName(subCategoryDto.getName());
                     return productResponseDto;
@@ -66,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
                     List<InventoryDto> stock = inventoryApiClient.getInventoriesByProductId(productResponseDto.getId(), token);
                     productResponseDto.setStock(stock);
                     SubCategoryDto subCategoryDto = categoryApiClient.getSubCategoryById(productResponseDto.getSubCategoryId(), token);
-                    CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategoryId(), token);
+                    CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategory().getId(), token);
                     productResponseDto.setCategoryName(categoryDto.getName());
                     productResponseDto.setSubCategoryName(subCategoryDto.getName());
                     return productResponseDto;
@@ -81,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
         );
         List<InventoryDto> stock = inventoryApiClient.getInventoriesByProductId(id, token);
         SubCategoryDto subCategoryDto = categoryApiClient.getSubCategoryById(product.getSubCategoryId(), token);
-        CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategoryId(), token);
+        CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategory().getId(), token);
         ProductResponseDto productResponseDto = ProductMapper.INSTANCE.productToProductResponseDto(product);
         productResponseDto.setStock(stock);
         productResponseDto.setSubCategoryName(subCategoryDto.getName());

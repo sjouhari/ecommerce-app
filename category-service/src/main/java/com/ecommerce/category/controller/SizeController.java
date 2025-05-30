@@ -1,6 +1,7 @@
 package com.ecommerce.category.controller;
 
 import com.ecommerce.category.dto.SizeDto;
+import com.ecommerce.category.dto.SizeResponseDto;
 import com.ecommerce.category.service.SizeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,22 +21,22 @@ public class SizeController {
     private SizeService sizeService;
 
     @GetMapping
-    public ResponseEntity<List<SizeDto>> getAllSizes() {
+    public ResponseEntity<List<SizeResponseDto>> getAllSizes() {
         return ResponseEntity.ok(sizeService.getAllSizes());
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<SizeDto> getSizeById(@PathVariable Long id) {
+    public ResponseEntity<SizeResponseDto> getSizeById(@PathVariable Long id) {
         return ResponseEntity.ok(sizeService.getSizeById(id));
     }
 
     @PostMapping
-    public ResponseEntity<SizeDto> createSize(@RequestBody @Valid SizeDto sizeDto) {
+    public ResponseEntity<SizeResponseDto> createSize(@RequestBody @Valid SizeDto sizeDto) {
         return new ResponseEntity<>(sizeService.createSize(sizeDto), HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<SizeDto> updateSize(@PathVariable Long id, @RequestBody @Valid SizeDto sizeDto) {
+    public ResponseEntity<SizeResponseDto> updateSize(@PathVariable Long id, @RequestBody @Valid SizeDto sizeDto) {
         return new ResponseEntity<>(sizeService.updateSize(id, sizeDto), HttpStatus.CREATED);
     }
 
