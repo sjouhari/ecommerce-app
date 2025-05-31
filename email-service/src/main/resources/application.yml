@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: EMAIL-SERVICE
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jouharisaid41@gmail.com
+    password: tpij bxen pajn efrh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  kafka:
+    consumer:
+      bootstrap-servers: kafka:9092
+      group-id: user_email_confirmation
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          deserializer:
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+          json:
+            trusted:
+              packages: com.ecommerce.shared.dto
+            value:
+              default:
+                type: com.ecommerce.shared.dto.UserEvent
+
+server:
+  port: 8088
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://registry-service:8761/eureka
+
+kafka:
+  topic:
+    name: user_confirmation
+    user:
+      confirmed:
+        name: user_confirmed
+    forgot:
+      password:
+        name: forgot_password
+    reset:
+      password:
+        name: reset_password
+    order:
+      placed:
+        name: order_placed
+      status:
+        changed:
+          name: order_status_changed

@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: CATEGORY-SERVICE
+  datasource:
+    url: jdbc:postgresql://category-db:5432/category_db
+    username: category
+    password: category
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8082
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://registry-service:8761/eureka
+
+app:
+  jwt-secret: aedcc9ba7b99c71aa607c0edd214c3f476b81ffd29c86ae85f7db93353d51f7f
+  jwt-expiration-milliseconds: 604800000

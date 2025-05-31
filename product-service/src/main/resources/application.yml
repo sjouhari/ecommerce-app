@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: PRODUCT-SERVICE
+
+  datasource:
+    url: jdbc:postgresql://product-db:5432/product_db
+    username: product
+    password: product
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8083
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://registry-service:8761/eureka
+
+app:
+  images:
+    path: images/products
+
+  jwt-secret: aedcc9ba7b99c71aa607c0edd214c3f476b81ffd29c86ae85f7db93353d51f7f
+  jwt-expiration-milliseconds: 604800000

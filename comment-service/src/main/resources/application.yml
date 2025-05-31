@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: COMMENT-SERVICE
+  datasource:
+    url: jdbc:postgresql://comment-db:5432/comment_db
+    username: comment
+    password: comment
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8084
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://registry-service:8761/eureka
+
+app:
+  jwt-secret: aedcc9ba7b99c71aa607c0edd214c3f476b81ffd29c86ae85f7db93353d51f7f
+  jwt-expiration-milliseconds: 604800000

@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: CONTACT-SERVICE
+
+  datasource:
+    url: jdbc:postgresql://contact-db:5432/contact_db
+    username: contact
+    password: contact
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  kafka:
+    producer:
+      bootstrap-servers: kafka:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+
+server:
+  port: 8087
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://registry-service:8761/eureka
+
+app:
+  jwt-secret: aedcc9ba7b99c71aa607c0edd214c3f476b81ffd29c86ae85f7db93353d51f7f
+  jwt-expiration-milliseconds: 604800000
