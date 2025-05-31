@@ -30,26 +30,26 @@
 }
 
 <p-dialog [(visible)]="profilDialog" [style]="{ width: '600px' }" header="Profils" [modal]="true">
-        <ng-template #content>
-            <form [formGroup]="profilFormGroup" (ngSubmit)="saveProfil()" class="flex flex-col gap-3">
-                <input type="hidden" formControlName="id" />
-                <div>
-                    <p-floatlabel variant="in">
-                        <input pInputText id="name" type="text" formControlName="name" class="w-full" />
-                        <label for="name">Nom</label>
-                    </p-floatlabel>
-                    @if(formControls['name'].errors && formControls['name'].touched) {
-                        @if(formControls['name'].errors['required']) {
-                            <small class="text-red-500">Le nom du profil est obligatoire.</small>
-                        }
+    <ng-template #content>
+        <form [formGroup]="profilFormGroup" (ngSubmit)="saveProfil()" class="flex flex-col gap-3">
+            <input type="hidden" formControlName="id" />
+            <div>
+                <p-floatlabel variant="in">
+                    <input pInputText id="name" type="text" formControlName="name" class="w-full" />
+                    <label for="name">Nom</label>
+                </p-floatlabel>
+                @if(formControls['name'].errors && formControls['name'].touched) {
+                    @if(formControls['name'].errors['required']) {
+                        <small class="text-red-500">Le nom du profil est obligatoire.</small>
                     }
-                </div>
-                <div class="flex justify-end gap-3">
-                    <p-button type="button" label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
-                    <p-button type="submit" label="Enregistrer" icon="pi pi-check" [loading]="loading()" [disabled]="!profilFormGroup.valid || loading()" />
-                </div>
-            </form>
-        </ng-template>
+                }
+            </div>
+            <div class="flex justify-end gap-3">
+                <p-button type="button" label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
+                <p-button type="submit" label="Enregistrer" icon="pi pi-check" [loading]="loading()" [disabled]="!profilFormGroup.valid || loading()" />
+            </div>
+        </form>
+    </ng-template>
 </p-dialog>
 
 <p-confirmdialog [style]="{ width: '450px' }" />

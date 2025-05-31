@@ -73,48 +73,48 @@
 </p-table>
 
 <p-dialog [(visible)]="featureDialog" [style]="{ width: '600px' }" header="Fonctionnalité" [modal]="true">
-        <ng-template #content>
-            <form [formGroup]="featureFormGroup" (ngSubmit)="saveFeature()" class="flex flex-col gap-3 mt-4">
-                <input type="hidden" formControlName="id" />
-                <div>
-                    <p-floatlabel variant="in">
-                        <input pInputText id="libelle" type="text" formControlName="libelle" class="w-full" />
-                        <label for="libelle">Libellé</label>
-                    </p-floatlabel>
-                    @if(formControls['libelle'].errors && formControls['libelle'].touched) {
-                        @if(formControls['libelle'].errors['required']) {
-                            <small class="text-red-500">Le libellé est obligatoire.</small>
-                        }
+    <ng-template #content>
+        <form [formGroup]="featureFormGroup" (ngSubmit)="saveFeature()" class="flex flex-col gap-3 mt-4">
+            <input type="hidden" formControlName="id" />
+            <div>
+                <p-floatlabel variant="in">
+                    <input pInputText id="libelle" type="text" formControlName="libelle" class="w-full" />
+                    <label for="libelle">Libellé</label>
+                </p-floatlabel>
+                @if(formControls['libelle'].errors && formControls['libelle'].touched) {
+                    @if(formControls['libelle'].errors['required']) {
+                        <small class="text-red-500">Le libellé est obligatoire.</small>
                     }
-                </div>
-                <div>
-                    <p-floatlabel variant="in">
-                        <input pInputText id="resourceName" type="text" formControlName="resourceName" class="w-full" />
-                        <label for="resourceName">Ressource</label>
-                    </p-floatlabel>
-                    @if(formControls['resourceName'].errors && formControls['resourceName'].touched) {
-                        @if(formControls['resourceName'].errors['required']) {
-                            <small class="text-red-500">Le nom de la ressouce est obligatoire.</small>
-                        }
+                }
+            </div>
+            <div>
+                <p-floatlabel variant="in">
+                    <input pInputText id="resourceName" type="text" formControlName="resourceName" class="w-full" />
+                    <label for="resourceName">Ressource</label>
+                </p-floatlabel>
+                @if(formControls['resourceName'].errors && formControls['resourceName'].touched) {
+                    @if(formControls['resourceName'].errors['required']) {
+                        <small class="text-red-500">Le nom de la ressouce est obligatoire.</small>
                     }
-                </div>
-                <div>
-                    <p-floatlabel variant="in">
-                        <input pInputText id="action" type="text" formControlName="action" class="w-full" />
-                        <label for="action">Action</label>
-                    </p-floatlabel>
-                    @if(formControls['action'].errors && formControls['action'].touched) {
-                        @if(formControls['action'].errors['required']) {
-                            <small class="text-red-500">Le nom de la catégorie est obligatoire.</small>
-                        }
+                }
+            </div>
+            <div>
+                <p-floatlabel variant="in">
+                    <input pInputText id="action" type="text" formControlName="action" class="w-full" />
+                    <label for="action">Action</label>
+                </p-floatlabel>
+                @if(formControls['action'].errors && formControls['action'].touched) {
+                    @if(formControls['action'].errors['required']) {
+                        <small class="text-red-500">Le nom de la catégorie est obligatoire.</small>
                     }
-                </div>
-                <div class="flex justify-end gap-3">
-                    <p-button type="button" label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
-                    <p-button type="submit" label="Enregistrer" icon="pi pi-check" [loading]="loading()" [disabled]="!featureFormGroup.valid || loading()" />
-                </div>
-            </form>
-        </ng-template>
+                }
+            </div>
+            <div class="flex justify-end gap-3">
+                <p-button type="button" label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
+                <p-button type="submit" label="Enregistrer" icon="pi pi-check" [loading]="loading()" [disabled]="!featureFormGroup.valid || loading()" />
+            </div>
+        </form>
+    </ng-template>
 </p-dialog>
 
 <p-confirmdialog [style]="{ width: '450px' }" />
