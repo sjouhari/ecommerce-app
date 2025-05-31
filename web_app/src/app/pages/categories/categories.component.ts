@@ -119,7 +119,7 @@ export class CategoriesComponent implements OnInit {
                 this.selectedCategories = null;
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Suppression de catégories',
+                    summary: 'Suppression',
                     detail: 'Les catégories sélectionnées et leurs sous catégories ont été supprimées avec succès.',
                     life: 3000
                 });
@@ -140,8 +140,8 @@ export class CategoriesComponent implements OnInit {
                 this.onDeleteCategory(category);
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Category Deleted',
+                    summary: 'Suppression',
+                    detail: 'La catégorie ' + category.name + ' a été supprimée avec succès.',
                     life: 3000
                 });
             }
