@@ -17,6 +17,7 @@
 
 	<!-- Define child modules -->
 	<modules>
+		<module>shared-library</module>
 		<module>registry-service</module>
 		<module>api-gateway</module>
 		<module>user-service</module>
@@ -27,7 +28,6 @@
 		<module>order-service</module>
 		<module>contact-service</module>
 		<module>email-service</module>
-		<module>shared-library</module>
 	</modules>
 
 	<properties>
@@ -160,20 +160,6 @@
 							<version>${lombok-mapstruct-binding.version}</version>
 						</path>
 					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-
-			<!-- Spring Boot Maven Plugin -->
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
