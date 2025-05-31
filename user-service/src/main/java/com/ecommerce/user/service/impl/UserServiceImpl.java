@@ -153,4 +153,12 @@ public class UserServiceImpl implements UserService {
         kafkaUserProducer.sendMessage(userEvent, userResetPasswordTopicName);
     }
 
+    @Override
+    public String getUserFullName(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", id.toString())
+        );
+        return user.getFirstName() + " " + user.getLastName();
+    }
+
 }

@@ -27,4 +27,6 @@ public interface UserService {
 
     void updatePassword(Long id, ResetPasswordRequestDto resetPasswordRequestDto);
 
+    String getUserFullName(Long id);
+
 }

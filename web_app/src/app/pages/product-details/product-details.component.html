@@ -1,7 +1,7 @@
 <p-toast></p-toast>
 @if(product()) {
-    <div class="grid grid-cols-12 p-4 m-0 bg-transparent">
-        <div class="col-offset-1 col-span-5">
+    <div class="grid grid-cols-12 m-0 bg-transparent">
+        <div class="col-span-4">
             <p-galleria [value]="images" [responsiveOptions]="responsiveOptions"  [thumbnailsPosition]="'left'" [containerStyle]="{ 'height': '500px' }" [numVisible]="5" [(activeIndex)]="activeIndex">
                 <ng-template #item let-item>
                     <img src="http://localhost:8080/api/products/images/{{ item.url}}" style="height: 500px;" />
@@ -88,5 +88,27 @@
                 </button>
             </div>
         </div>
+        <section class="col-span-3 border-1 border-gray-200 p-3">
+            <h2 class="text-xl font-bold m-0">Commentaires</h2>
+            <div class="flex flex-col gap-3 mt-3 overflow-auto" style="height: 68vh;">
+                @for(comment of comments(); track comment.id) {
+                    <div class="bg-gray-100 p-2 rounded">
+                        <p class="font-bold m-0">{{ comment.username }}</p>
+                        <p class="mb-1">{{ comment.content }}</p>
+                        <p class="text-sm text-gray-500 m-0">{{ comment.createdAt  | date: 'dd/MM/yyyy à HH:mm' }}</p>
+                    </div>   
+                } @empty {
+                    <div>
+                        <p>Aucun commentaire pour le moment, Soyez le premier a commenter.</p>
+                    </div>
+                }
+            </div>
+            <div class="flex justify-between pt-3 border-top-1 border-surface gap-2">
+                <textarea id="new-comment" pTextarea [(ngModel)]="comment" placeholder="Ajouter un commentaire" class="w-full" rows="2" fluid></textarea>
+                <div class="flex items-end">
+                    <button pButton (click)="addComment()" icon="pi pi-send"></button>
+                </div>
+            </div>
+        </section>
     </div>
 }

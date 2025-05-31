@@ -24,37 +24,48 @@ public class CommentServiceImpl implements CommentService {
     private UserApiClient userApiClient;
 
     @Override
-    public List<CommentDto> getAllComments() {
+    public List<CommentDto> getAllComments(String token) {
         List<Comment> comments = commentRepository.findAll();
-        return CommentMapper.INSTANCE.commentsToCommentDtos(comments);
+        List<CommentDto> commentDtos = CommentMapper.INSTANCE.commentsToCommentDtos(comments);
+        return commentDtos.stream()
+                .map(commentDto -> {
+                    String username = userApiClient.getUserFullName(commentDto.getUserId(), token);
+                    commentDto.setUsername(username);
+                    return commentDto;
+                }).toList();
     }
 
     @Override
-    public CommentDto getCommentById(Long id) {
+    public CommentDto getCommentById(Long id, String token) {
         Comment comment = commentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Comment", "id", id.toString())
         );
-        return CommentMapper.INSTANCE.commentToCommentDto(comment);
+        CommentDto commentDto = CommentMapper.INSTANCE.commentToCommentDto(comment);
+        String username = userApiClient.getUserFullName(commentDto.getUserId(), token);
+        commentDto.setUsername(username);
+        return commentDto;
     }
 
     @Override
     public CommentDto createComment(CommentDto commentDto, String token) {
         // Verfier l'existence de l'utilisateur
-        if(!userApiClient.userExistsById(commentDto.getUserId(), token)) {
-            throw new ResourceNotFoundException("User", "id", commentDto.getUserId().toString());
-        }
+        String username = userApiClient.getUserFullName(commentDto.getUserId(), token);
         // Verifier l'existence du produit
         if(!productApiClient.productExistsById(commentDto.getProductId(), token)) {
             throw new ResourceNotFoundException("Product", "id", commentDto.getProductId().toString());
         }
         Comment comment = CommentMapper.INSTANCE.commentDtoToComment(commentDto);
         Comment savedComment = commentRepository.save(comment);
-        return CommentMapper.INSTANCE.commentToCommentDto(savedComment);
+        CommentDto newCommentDto = CommentMapper.INSTANCE.commentToCommentDto(savedComment);
+        newCommentDto.setUsername(username);
+        return newCommentDto;
     }
 
     @Override
     public CommentDto updateComment(Long id, CommentDto commentDto) {
-        getCommentById(id);
+        commentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Comment", "id", id.toString())
+        );
         Comment comment = CommentMapper.INSTANCE.commentDtoToComment(commentDto);
         comment.setId(id);
         Comment savedComment = commentRepository.save(comment);
@@ -62,20 +73,26 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public String deleteComment(Long id) {
-        getCommentById(id);
+    public void deleteComment(Long id) {
+        commentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Comment", "id", id.toString())
+        );
         commentRepository.deleteById(id);
-        return "Comment deleted successfully";
     }
 
     @Override
-    public List<CommentDto> getCommentsByProductId(Long productId) {
+    public List<CommentDto> getCommentsByProductId(Long productId, String token) {
         List<Comment> comments = commentRepository.findAllByProductId(productId);
-        return CommentMapper.INSTANCE.commentsToCommentDtos(comments);
+        List<CommentDto> commentDtos = CommentMapper.INSTANCE.commentsToCommentDtos(comments);
+        return commentDtos.stream()
+                .map(commentDto -> {
+                    commentDto.setUsername(userApiClient.getUserFullName(commentDto.getUserId(), token));
+                    return commentDto;
+                }).toList();
     }
 
     @Override
-    public List<CommentDto> getCommentsByUserId(Long userId) {
+    public List<CommentDto> getCommentsByUserId(Long userId, String token) {
         List<Comment> comments = commentRepository.findAllByUserId(userId);
         return CommentMapper.INSTANCE.commentsToCommentDtos(comments);
     }

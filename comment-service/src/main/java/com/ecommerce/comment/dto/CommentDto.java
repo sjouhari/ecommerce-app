@@ -22,7 +22,6 @@ public class CommentDto {
 
     private LocalDateTime createdAt;
 
-    @NotNull(message = "Rating is required")
     private double rating;
 
     @NotNull(message = "Product id is required")
@@ -30,5 +29,7 @@ public class CommentDto {
 
     @NotNull(message = "User id is required")
     private Long userId;
+
+    private String username;
 
 }

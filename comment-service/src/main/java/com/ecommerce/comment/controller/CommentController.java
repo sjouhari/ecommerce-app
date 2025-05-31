@@ -20,23 +20,23 @@ public class CommentController {
     private CommentService commentService;
 
     @GetMapping
-    public ResponseEntity<List<CommentDto>> getAllComments() {
-        return ResponseEntity.ok(commentService.getAllComments());
+    public ResponseEntity<List<CommentDto>> getAllComments(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(commentService.getAllComments(token));
     }
 
     @GetMapping("user/{userId}")
-    public ResponseEntity<List<CommentDto>> getAllCommentsByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(commentService.getCommentsByUserId(userId));
+    public ResponseEntity<List<CommentDto>> getAllCommentsByUserId(@PathVariable Long userId, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(commentService.getCommentsByUserId(userId, token));
     }
 
     @GetMapping("product/{productId}")
-    public ResponseEntity<List<CommentDto>> getAllCommentsByProductId(@PathVariable Long productId) {
-            return ResponseEntity.ok(commentService.getCommentsByProductId(productId));
+    public ResponseEntity<List<CommentDto>> getAllCommentsByProductId(@PathVariable Long productId, @RequestHeader("Authorization") String token) {
+            return ResponseEntity.ok(commentService.getCommentsByProductId(productId, token));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<CommentDto> getCommentById(@PathVariable Long id){
-        return ResponseEntity.ok(commentService.getCommentById(id));
+    public ResponseEntity<CommentDto> getCommentById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(commentService.getCommentById(id, token));
     }
 
     @PostMapping
@@ -50,8 +50,9 @@ public class CommentController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long id) {
-        return ResponseEntity.ok(commentService.deleteComment(id));
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
+        commentService.deleteComment(id);
+        return ResponseEntity.ok().build();
     }
 
 

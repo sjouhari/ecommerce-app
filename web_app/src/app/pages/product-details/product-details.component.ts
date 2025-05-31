@@ -14,10 +14,14 @@ import { Location } from '@angular/common';
 import { ShoppingCartService } from '../../services/shopping-cart.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastModule } from 'primeng/toast';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { TextareaModule } from 'primeng/textarea';
+import { CommentModel } from '../../models/product/comment.model';
+import { CommentService } from '../../services/comment.service';
 
 @Component({
     selector: 'app-product-details',
-    imports: [GalleriaModule, ButtonModule, RadioButtonModule, InputNumber, FormsModule, ToastModule],
+    imports: [GalleriaModule, ButtonModule, RadioButtonModule, InputNumber, FormsModule, ToastModule, FloatLabelModule, TextareaModule],
     templateUrl: './product-details.component.html',
     providers: [MessageService]
 })
@@ -28,10 +32,13 @@ export class ProductDetailsComponent implements OnInit {
     authService = inject(AuthService);
     messageService = inject(MessageService);
     location = inject(Location);
+    commentService = inject(CommentService);
 
     images: Media[] = [];
     colors: ProductColor[] = [];
     sizes: string[] | undefined = [];
+    comment: string = '';
+    comments = signal<CommentModel[]>([]);
 
     selectedColor: ProductColor | null = null;
     selectedSize: string | null = null;
@@ -64,12 +71,24 @@ export class ProductDetailsComponent implements OnInit {
                     this.selectedSize = product.stock[0].size;
                     this.getSizeColors();
                     this.getColorQuantity();
+                    this.getProductComments(+id);
                 },
                 error: (error) => {
                     console.log(error); //TODO: handle error
                 }
             });
         }
+    }
+
+    getProductComments(productId: number) {
+        this.commentService.getProductComments(productId).subscribe({
+            next: (comments) => {
+                this.comments.set(comments);
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
     }
 
     getSizeColors() {
@@ -160,5 +179,34 @@ export class ProductDetailsComponent implements OnInit {
             this.selectedQuantity = this.quantityInStock();
         }
         this.totalPrice.set(this.selectedQuantity * this.product()!.stock!.find((stock) => stock.color === this.selectedColor && stock.size === this.selectedSize)!.price);
+    }
+
+    addComment() {
+        if (!this.comment) {
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Veuillez saisir un commentaire' });
+            return;
+        }
+
+        const commentModel: CommentModel = {
+            productId: this.product()!.id,
+            userId: this.authService.getCurrentUser()!.id,
+            content: this.comment,
+            rating: 5
+        };
+
+        this.commentService.createComment(commentModel).subscribe({
+            next: (comment) => {
+                this.getProductComments(this.product()!.id);
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Commentaire ajouté',
+                    detail: 'Votre commentaire a été ajouté avec succès'
+                });
+                this.comment = '';
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
     }
 }

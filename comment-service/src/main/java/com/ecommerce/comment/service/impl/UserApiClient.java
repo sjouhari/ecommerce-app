@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @Headers("Authorization: {token}")
 public interface UserApiClient {
 
-    @GetMapping("api/users/existsById/{id}")
-    boolean userExistsById(@PathVariable Long id, @RequestHeader("Authorization") String token);
+    @GetMapping("api/users/full-name/{id}")
+    String getUserFullName(@PathVariable Long id, @RequestHeader("Authorization") String token);
 }

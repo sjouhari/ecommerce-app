@@ -68,4 +68,9 @@ public class UserController {
         userService.updatePassword(id, resetPasswordRequestDto);
     }
 
+    @GetMapping("/full-name/{id}")
+    public String getUserFullName(@PathVariable Long id) {
+        return userService.getUserFullName(id);
+    }
+
 }
