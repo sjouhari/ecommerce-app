@@ -21,7 +21,7 @@ eureka:
 
 app:
   images:
-    path: images/products
+    path: /app/images
 
   jwt-secret: aedcc9ba7b99c71aa607c0edd214c3f476b81ffd29c86ae85f7db93353d51f7f
   jwt-expiration-milliseconds: 604800000

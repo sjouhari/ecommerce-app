@@ -94,6 +94,8 @@ services:
       - LOGGING_LEVEL_ROOT=WARN
     networks:
       - ecommerce-net
+    volumes:
+      - product-images:/app/images
 
   comment-service:
     build:
@@ -280,6 +282,7 @@ volumes:
   comment-db-data:
   category-db-data:
   contact-db-data:
+  product-images:
 
 networks:
   ecommerce-net:

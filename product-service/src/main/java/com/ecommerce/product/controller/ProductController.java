@@ -1,10 +1,9 @@
 package com.ecommerce.product.controller;
 
-import com.ecommerce.product.dto.ProductRequestDto;
 import com.ecommerce.product.dto.ProductResponseDto;
 import com.ecommerce.product.service.ProductService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
@@ -27,6 +26,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Value("${app.images.path}")
+    private String imagesPath;
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getAllProducts(@RequestHeader("Authorization") String token) {
@@ -75,7 +77,7 @@ public class ProductController {
     @GetMapping("/images/{imageName:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String imageName) {
         try {
-            Path imagePath = Paths.get("images/products/").resolve(imageName).normalize();
+            Path imagePath = Paths.get(imagesPath).resolve(imageName).normalize();
             Resource resource = new UrlResource(imagePath.toUri());
 
             if (resource.exists()) {
