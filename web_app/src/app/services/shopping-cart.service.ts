@@ -15,9 +15,11 @@ export class ShoppingCartService {
     shoppingCart = signal<ShoppingCart | null>(null);
 
     constructor() {
-        this.getShoppingCart(this.authService.currentUser()?.id!).subscribe((cart) => {
-            this.setShoppingCart(cart);
-        });
+        if (this.authService.isLoggedIn()) {
+            this.getShoppingCart(this.authService.currentUser()?.id!).subscribe((cart) => {
+                this.setShoppingCart(cart);
+            });
+        }
     }
 
     setShoppingCart(cart: ShoppingCart) {

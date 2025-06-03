@@ -36,10 +36,10 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/api/orders", "/api/orders/**").hasAuthority("USER_READ")
-						.requestMatchers(HttpMethod.POST, "/api/orders").hasAuthority("USER_CREATE")
-						.requestMatchers(HttpMethod.PUT, "/api/orders/**").hasAuthority("USER_UPDATE")
-						.requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasAuthority("USER_DELETE")
+						.requestMatchers(HttpMethod.GET, "/api/orders", "/api/orders/**").hasAuthority("ORDER_READ")
+						.requestMatchers(HttpMethod.POST, "/api/orders").hasAuthority("PLACE_ORDER")
+						.requestMatchers(HttpMethod.PUT, "/api/orders/**").hasAuthority("UPDATE_ORDER")
+						.requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasAuthority("ORDER_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)

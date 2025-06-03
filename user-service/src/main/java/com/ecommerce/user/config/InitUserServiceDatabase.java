@@ -40,7 +40,7 @@ public class InitUserServiceDatabase {
                        new Feature(null, "Consulter les produits", "PRODUCT", "READ"),
                        new Feature(null, "Modifier un produit", "PRODUCT", "UPDATE"),
                        new Feature(null, "Supprimer un produit", "PRODUCT", "DELETE"),
-                       new Feature(null, "Ajouter une commande", "ORDER", "CREATE"),
+                       new Feature(null, "Ajouter une commande", "ORDER", "PLACE"),
                        new Feature(null, "Consulter les commandes", "ORDER", "READ"),
                        new Feature(null, "Modifier une commande", "ORDER", "UPDATE"),
                        new Feature(null, "Supprimer une commande", "ORDER", "DELETE"),
@@ -61,7 +61,7 @@ public class InitUserServiceDatabase {
                                featureRepository.findByResourceNameAndAction("USER", "READ").orElseThrow(),
                                featureRepository.findByResourceNameAndAction("PRODUCT", "READ").orElseThrow(),
                                featureRepository.findByResourceNameAndAction("ORDER", "READ").orElseThrow(),
-                               featureRepository.findByResourceNameAndAction("ORDER", "CREATE").orElseThrow(),
+                               featureRepository.findByResourceNameAndAction("ORDER", "PLACE").orElseThrow(),
                                featureRepository.findByResourceNameAndAction("ORDER", "UPDATE").orElseThrow(),
                                featureRepository.findByResourceNameAndAction("ORDER", "DELETE").orElseThrow()
                        )))
@@ -70,6 +70,7 @@ public class InitUserServiceDatabase {
 
            if(userRepository.count() == 0) {
                userRepository.save(new User(null, "Admin", "Admin", "admin@gmail.com", passwordEncoder.encode("Admin123@@"), true, true, 0, LocalDateTime.now(), true, "AdminStore", new ArrayList<>(profilRepository.findAll())));
+               userRepository.save(new User(null, "Seller", "Seller", "seller@gmail.com", passwordEncoder.encode("Seller123@@"), true, true, 0, LocalDateTime.now(), true, "AdminStore", new ArrayList<>(profilRepository.findAll())));
            }
         };
     }

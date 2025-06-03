@@ -12,6 +12,10 @@ export class InitializerComponent {
     router = inject(Router);
 
     constructor() {
+        if (!this.authService.getToken()) {
+            this.router.navigate(['/home']);
+            return;
+        }
         this.authService.getCurrentUser().subscribe({
             next: (user) => {
                 this.authService.setCurrentUser(user);
@@ -21,8 +25,9 @@ export class InitializerComponent {
                     this.router.navigate(['/home']);
                 }
             },
-            error: () => {
+            error: (error) => {
                 this.authService.setCurrentUser(null);
+                this.authService.logout();
                 this.router.navigate(['/home']);
             }
         });
