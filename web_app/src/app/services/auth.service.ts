@@ -25,7 +25,6 @@ export class AuthService {
     }
 
     register(registerRequest: RegisterRequest): Observable<RegisterResponse> {
-        console.log(registerRequest);
         return this.httpClient.post<RegisterResponse>(`${this.baseUrl}/auth/register`, registerRequest);
     }
 

@@ -33,7 +33,7 @@ public class SecurityConfig {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
 						.requestMatchers(HttpMethod.GET, "/api/products/images/**").permitAll()
-						.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**", "/api/tvas", "/api/tvas/**").hasAuthority("PRODUCT_READ")
+						.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**", "/api/tvas", "/api/tvas/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/products", "/api/tvas").hasAuthority("PRODUCT_CREATE")
 						.requestMatchers(HttpMethod.PUT, "/api/products/**", "/api/tvas/**").hasAuthority("PRODUCT_UPDATE")
 						.requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/tvas/**").hasAuthority("PRODUCT_DELETE")

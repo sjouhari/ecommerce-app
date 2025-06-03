@@ -1,22 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MenuItem } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-menu',
     standalone: true,
-    imports: [CommonModule, AppMenuitem, RouterModule],
+    imports: [CommonModule, AppMenuitem, RouterModule, ConfirmDialogModule],
+    providers: [ConfirmationService],
     template: `<ul class="layout-menu">
-        <ng-container *ngFor="let item of model; let i = index">
-            <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true"></li>
-            <li *ngIf="item.separator" class="menu-separator"></li>
-        </ng-container>
-    </ul> `
+            <ng-container *ngFor="let item of model; let i = index">
+                <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true"></li>
+                <li *ngIf="item.separator" class="menu-separator"></li>
+            </ng-container>
+        </ul>
+        <p-confirmdialog [style]="{ width: '600px' }" />`
 })
 export class AppMenu {
     model: MenuItem[] = [];
+
+    authService = inject(AuthService);
+    confirmationService = inject(ConfirmationService);
 
     ngOnInit() {
         this.model = [
@@ -93,7 +100,17 @@ export class AppMenu {
                     },
                     {
                         label: 'Déconnexion',
-                        icon: 'pi pi-fw pi-sign-out'
+                        icon: 'pi pi-fw pi-sign-out',
+                        command: () => {
+                            this.confirmationService.confirm({
+                                message: 'Êtes-vous sûr de vouloir vous deconnecter ?',
+                                header: 'Déconnexion',
+                                icon: 'pi pi-exclamation-triangle',
+                                accept: () => {
+                                    this.authService.logout();
+                                }
+                            });
+                        }
                     }
                 ]
             }

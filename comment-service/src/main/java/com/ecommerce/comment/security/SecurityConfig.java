@@ -36,7 +36,7 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/api/comments", "/api/comments/**").hasAuthority("USER_READ")
+						.requestMatchers(HttpMethod.GET, "/api/comments", "/api/comments/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/comments").hasAuthority("USER_CREATE")
 						.requestMatchers(HttpMethod.PUT, "/api/comments/**").hasAuthority("USER_UPDATE")
 						.requestMatchers(HttpMethod.DELETE, "/api/comments/**").hasAuthority("USER_DELETE")

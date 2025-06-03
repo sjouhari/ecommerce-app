@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
                 this.authService.getCurrentUser().subscribe({
                     next: (user) => {
                         this.authService.setCurrentUser(user);
-                        this.router.navigate(['/']);
+                        this.router.navigate(['/initialization']);
                         this.loading.set(false);
                     },
                     error: () => {

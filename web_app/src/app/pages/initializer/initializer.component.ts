@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -15,7 +15,11 @@ export class InitializerComponent {
         this.authService.getCurrentUser().subscribe({
             next: (user) => {
                 this.authService.setCurrentUser(user);
-                this.router.navigate(['/']);
+                if (this.authService.isLoggedIn() && (this.authService.isAdmin() || this.authService.isSeller())) {
+                    this.router.navigate(['/']);
+                } else {
+                    this.router.navigate(['/home']);
+                }
             },
             error: () => {
                 this.authService.setCurrentUser(null);

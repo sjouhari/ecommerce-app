@@ -23,7 +23,7 @@ import { UserLayoutComponent } from './app/pages/user-layout/user-layout.compone
 import { HomeComponent } from './app/pages/user-layout/components/home/home.component';
 import { adminProfileGuard } from './app/guards/admin-profile.guard';
 import { sellerProfileGuard } from './app/guards/seller-profile.guard';
-import { InitializerComponent } from './app/initializer/initializer.component';
+import { InitializerComponent } from './app/pages/initializer/initializer.component';
 
 export const appRoutes: Routes = [
     { path: 'initialization', component: InitializerComponent },

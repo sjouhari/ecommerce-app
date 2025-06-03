@@ -10,7 +10,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { last } from 'rxjs';
 import { Address } from '../../models/order/address.model';
 import { AuthService } from '../../services/auth.service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { AddressService } from '../../services/address.service';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DialogModule } from 'primeng/dialog';
@@ -19,12 +19,13 @@ import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order/order.model';
 import { ToastModule } from 'primeng/toast';
 import { UserService } from '../../services/user.service';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
     selector: 'app-user-profile',
     templateUrl: './user-profile.component.html',
-    imports: [CommonModule, ReactiveFormsModule, ToastModule, DialogModule, TableModule, PanelModule, CardModule, ButtonModule, InputTextModule, PasswordModule, TextareaModule, FloatLabelModule],
-    providers: [MessageService]
+    imports: [CommonModule, ReactiveFormsModule, ToastModule, DialogModule, TableModule, PanelModule, CardModule, ButtonModule, InputTextModule, PasswordModule, TextareaModule, FloatLabelModule, ConfirmDialogModule],
+    providers: [MessageService, ConfirmationService]
 })
 export class UserProfileComponent implements OnInit {
     userInfosFormGroup!: FormGroup;
@@ -41,6 +42,7 @@ export class UserProfileComponent implements OnInit {
     addressService = inject(AddressService);
     orderService = inject(OrderService);
     userService = inject(UserService);
+    confirmationService = inject(ConfirmationService);
 
     addressDialog = signal(false);
 
@@ -112,7 +114,14 @@ export class UserProfileComponent implements OnInit {
     }
 
     logout() {
-        this.authService.logout();
+        this.confirmationService.confirm({
+            message: 'Êtes-vous sûr de vouloir vous deconnecter ?',
+            header: 'Déconnexion',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.authService.logout();
+            }
+        });
     }
 
     saveChanges() {

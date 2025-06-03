@@ -38,7 +38,7 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/api/categories", "/api/categories/**").hasAuthority("CATEGORY_READ")
+						.requestMatchers(HttpMethod.GET, "/api/categories", "/api/categories/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/categories").hasAuthority("CATEGORY_CREATE")
 						.requestMatchers(HttpMethod.PUT, "/api/categories/**").hasAuthority("CATEGORY_UPDATE")
 						.requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasAuthority("CATEGORY_DELETE")
