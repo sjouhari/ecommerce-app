@@ -142,8 +142,8 @@ public class UserServiceImpl implements UserService {
                 () -> new ResourceNotFoundException("User", "id", id.toString())
         );
 
-        if(!passwordEncoder.matches(resetPasswordRequestDto.getOldPassword(), user.getPassword())) {
-            throw new RuntimeException("Old password is incorrect");
+        if(!passwordEncoder.matches(resetPasswordRequestDto.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("Votre mot de passe actuel est incorrect.");
         }
 
         user.setPassword(passwordEncoder.encode(resetPasswordRequestDto.getNewPassword()));

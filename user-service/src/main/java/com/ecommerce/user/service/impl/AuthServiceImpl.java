@@ -19,6 +19,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -117,6 +118,27 @@ public class AuthServiceImpl implements AuthService {
 		user.setVerificationCodeExpireAt(LocalDateTime.now().plusHours(1));
         userRepository.save(user);
 		return new MessageResponseDto("Votre compte a été créé avec success. Veuillez verifier votre boite mail pour confirmer votre compte.");
+	}
+
+	@Override
+	public CurrentUserDto getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication == null || !authentication.isAuthenticated()) {
+			return null;
+		}
+
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof UserDetails userDetails) {
+			String userEmail = userDetails.getUsername();
+
+			User user = userRepository.findByEmail(userEmail).orElseThrow(
+					() -> new ResourceNotFoundException("User", "email", userEmail)
+			);
+			return UserMapper.INSTANCE.userToCurrentUserDto(user);
+		}
+
+		return null;
 	}
 
 }

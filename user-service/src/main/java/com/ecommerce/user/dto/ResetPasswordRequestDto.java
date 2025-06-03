@@ -12,9 +12,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResetPasswordRequestDto {
-    @NotBlank(message = "Old password is required")
+    @NotBlank(message = "Current password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
-    private String oldPassword;
+    private String currentPassword;
 
     @NotBlank(message = "New password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")

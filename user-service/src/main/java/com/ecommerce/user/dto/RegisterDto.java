@@ -30,7 +30,7 @@ public class RegisterDto {
     @Email(message = "Invalid email format")
     private String email;
 
-    private boolean enabled = true;
+    private boolean enabled = false;
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
