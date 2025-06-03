@@ -70,7 +70,6 @@ export class ListProductsComponent implements OnInit {
             const term = this.searchTerm.toLowerCase();
             this.filteredProducts.update((products) => products.filter((product) => product.name.toLowerCase().includes(term) || product.description.toLowerCase().includes(term)));
         }
-        console.log(this.filteredProducts());
 
         if (this.selectedCategories().length > 0) {
             this.subCategories.set(this.selectedCategories().flatMap((category) => category.subCategories));

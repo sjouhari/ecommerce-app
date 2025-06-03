@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../services/auth.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
     selector: 'app-login',
@@ -14,6 +15,7 @@ import { AuthService } from '../../../services/auth.service';
 export class LoginComponent implements OnInit {
     loginFormGroup!: FormGroup;
     authService = inject(AuthService);
+    userService = inject(UserService);
     router = inject(Router);
     formBuilder = inject(FormBuilder);
 
@@ -41,8 +43,16 @@ export class LoginComponent implements OnInit {
         this.authService.login(this.loginFormGroup.value).subscribe({
             next: (response) => {
                 this.authService.setToken(response.token);
-                this.loading.set(false);
-                this.router.navigate(['/']);
+                this.authService.getCurrentUser().subscribe({
+                    next: (user) => {
+                        this.authService.setCurrentUser(user);
+                        this.router.navigate(['/']);
+                        this.loading.set(false);
+                    },
+                    error: () => {
+                        this.authService.setCurrentUser(null);
+                    }
+                });
             },
             error: (error) => {
                 this.loading.set(false);

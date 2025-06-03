@@ -128,13 +128,13 @@ export class UsersComponent implements OnInit {
                     this.role = data['role'];
                 });
                 if (this.role === 'admin') {
-                    const admins = users.filter((user) => user.profils.map((profil) => profil.name).includes('ROLE_ADMIN'));
+                    const admins = users.filter((user) => user.profils?.map((profil) => profil.name).includes('ROLE_ADMIN'));
                     this.users.set(admins);
                 } else if (this.role === 'vendor') {
-                    const vendors = users.filter((user) => user.profils.map((profil) => profil.name).includes('ROLE_SELLER') && !user.profils.map((profil) => profil.name).includes('ROLE_ADMIN'));
+                    const vendors = users.filter((user) => user.profils?.map((profil) => profil.name).includes('ROLE_SELLER') && !user.profils.map((profil) => profil.name).includes('ROLE_ADMIN'));
                     this.users.set(vendors);
                 } else if (this.role === 'client') {
-                    this.users.set(users.filter((user) => !user.profils.map((profil) => profil.name).includes('ROLE_ADMIN') && !user.profils.map((profil) => profil.name).includes('ROLE_SELLER')));
+                    this.users.set(users.filter((user) => !user.profils?.map((profil) => profil.name).includes('ROLE_ADMIN') && !user.profils?.map((profil) => profil.name).includes('ROLE_SELLER')));
                 } else {
                     this.users.set(users);
                 }
@@ -225,7 +225,7 @@ export class UsersComponent implements OnInit {
         }
 
         if (this.userFormGroup.value.id) {
-            this.userService.updateUser(this.userFormGroup.value).subscribe({
+            this.userService.updateUser(this.userFormGroup.value.id, this.userFormGroup.value).subscribe({
                 next: (user) => {
                     this.userDialog = false;
                     this.userFormGroup.reset();

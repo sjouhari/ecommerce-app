@@ -1,17 +1,39 @@
 <p-toast></p-toast>
 @if(product()) {
     <div class="grid grid-cols-12 m-0 bg-transparent">
-        <div class="col-span-4">
-            <p-galleria [value]="images" [responsiveOptions]="responsiveOptions"  [thumbnailsPosition]="'left'" [containerStyle]="{ 'height': '500px' }" [numVisible]="5" [(activeIndex)]="activeIndex">
+        <!-- <div class="col-span-4">
+            <p-galleria [value]="images" [responsiveOptions]="responsiveOptions"  [thumbnailsPosition]="'left'" [containerStyle]="{ 'height': '60vh' }" [numVisible]="4" [(activeIndex)]="activeIndex">
                 <ng-template #item let-item>
-                    <img src="http://localhost:8080/api/products/images/{{ item.url}}" style="height: 500px;" />
+                    <div class="w-30rem h-30rem">
+                      <img
+                        [src]="'http://localhost:8080/api/products/images/' + item.url"
+                        class="w-full h-full object-cover"
+                        [alt]="item.name || 'image produit'"
+                        loading="lazy"
+                      />
+                    </div>
+                  </ng-template>
+                  
+                <ng-template #thumbnail let-item>
+                    <img
+                      [src]="'http://localhost:8080/api/products/images/' + item.url"
+                      style="width: 6rem; height: 4rem;"
+                      loading="lazy"
+                    />
+                  </ng-template>
+            </p-galleria>
+        </div> -->
+        <div class="card col-span-4">
+            <p-galleria [value]="images" [responsiveOptions]="responsiveOptions" [containerStyle]="{ 'height': '65vh' }" [numVisible]="7" [circular]="true">
+                <ng-template #item let-item>
+                    <img [src]="'http://localhost:8080/api/products/images/' + item.url" style="height:50vh; display: block;"/>
                 </ng-template>
-                <ng-template #thumbnail let-item class="h-full">
-                    <img src="http://localhost:8080/api/products/images/{{ item.url }}" style="width: 6rem;" />
+                <ng-template #thumbnail let-item>
+                    <img [src]="'http://localhost:8080/api/products/images/' + item.url" style="height: 5rem; width: 5rem; display: block;" />
                 </ng-template>
             </p-galleria>
         </div>
-        <div class="col-offset-1 col-span-5">
+        <div class="card ml-0 col-offset-1 col-span-5">
             <!-- Détails produit + Formulaire -->
             <div class="space-y-1">
                 <h5 class="text-xl font-semibold mb-1">{{ product()!.name }}</h5>
@@ -76,6 +98,14 @@
                             severity="success"
                             (click)="addToCart()"
                         ></button>
+                        <button
+                            pButton
+                            label="Acheter maintenant"
+                            icon="pi pi-check"
+                            size="large"
+                            severity="contrast"
+                            (click)="addToCart()"
+                        ></button>
                     </div>
                 </div>
 
@@ -88,9 +118,9 @@
                 </button>
             </div>
         </div>
-        <section class="col-span-3 border-1 border-gray-200 p-3">
+        <section class="card ml-0 col-span-3 border-1 border-gray-200 p-3">
             <h2 class="text-xl font-bold m-0">Commentaires</h2>
-            <div class="flex flex-col gap-3 mt-3 overflow-auto" style="height: 68vh;">
+            <div class="flex flex-col gap-3 mt-3 overflow-auto" style="height: 70vh;">
                 @for(comment of comments(); track comment.id) {
                     <div class="bg-gray-100 p-2 rounded">
                         <p class="font-bold m-0">{{ comment.username }}</p>
@@ -104,7 +134,7 @@
                 }
             </div>
             <div class="flex justify-between pt-3 border-top-1 border-surface gap-2">
-                <textarea id="new-comment" pTextarea [(ngModel)]="comment" placeholder="Ajouter un commentaire" class="w-full" rows="2" fluid></textarea>
+                <textarea id="new-comment" pTextarea [(ngModel)]="comment" placeholder="Ajouter un commentaire" class="w-full" rows="1" fluid></textarea>
                 <div class="flex items-end">
                     <button pButton (click)="addComment()" icon="pi pi-send"></button>
                 </div>

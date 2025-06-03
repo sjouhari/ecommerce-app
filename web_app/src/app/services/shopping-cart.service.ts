@@ -15,7 +15,7 @@ export class ShoppingCartService {
     shoppingCart = signal<ShoppingCart | null>(null);
 
     constructor() {
-        this.getShoppingCart(this.authService.getCurrentUser()?.id!).subscribe((cart) => {
+        this.getShoppingCart(this.authService.currentUser()?.id!).subscribe((cart) => {
             this.setShoppingCart(cart);
         });
     }

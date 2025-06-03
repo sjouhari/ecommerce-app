@@ -138,7 +138,7 @@ export class ProductDetailsComponent implements OnInit {
     addToCart() {
         if (this.product() && this.selectedSize && this.selectedColor) {
             this.shoppingCartService
-                .addItemToShoppingCart(this.authService.getCurrentUser()?.id!, {
+                .addItemToShoppingCart(this.authService.currentUser()?.id!, {
                     productId: this.product()!.id,
                     productName: this.product()!.name,
                     productImage: this.product()!.medias[0].url,
@@ -189,7 +189,7 @@ export class ProductDetailsComponent implements OnInit {
 
         const commentModel: CommentModel = {
             productId: this.product()!.id,
-            userId: this.authService.getCurrentUser()!.id,
+            userId: this.authService.currentUser()!.id!,
             content: this.comment,
             rating: 5
         };

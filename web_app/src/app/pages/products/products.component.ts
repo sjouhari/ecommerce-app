@@ -145,7 +145,7 @@ export class ProductsComponent implements OnInit {
 
         this.productFormGroup = this.formBuilder.group({
             id: new FormControl(product?.id || null),
-            sellerId: new FormControl(product?.sellerId || this.authService.getCurrentUser()?.id),
+            sellerId: new FormControl(product?.sellerId || this.authService.currentUser()?.id),
             tva: new FormControl(this.tva),
             name: new FormControl(product?.name || '', [Validators.required]),
             description: new FormControl(product?.description || '', [Validators.required]),
@@ -318,6 +318,16 @@ export class ProductsComponent implements OnInit {
                 }
             });
         } else {
+            if (this.uploadedFiles.length === 0) {
+                this.loading.set(false);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erreur',
+                    detail: 'Le produit doit avoir au moins une image.',
+                    life: 3000
+                });
+                return;
+            }
             this.uploadedFiles.forEach((image: File) => formData.append('images', image));
             this.productService.createProduct(formData).subscribe({
                 next: (product) => {

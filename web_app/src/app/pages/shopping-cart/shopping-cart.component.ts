@@ -54,7 +54,7 @@ export class ShoppingCartComponent implements OnInit {
 
     ngOnInit() {
         this.getShoppingCart();
-        this.addressService.getUserAddresses(this.authService.getCurrentUser()?.id!).subscribe({
+        this.addressService.getUserAddresses(this.authService.currentUser()?.id!).subscribe({
             next: (addresses) => {
                 this.addresses.set(addresses);
             },
@@ -65,7 +65,7 @@ export class ShoppingCartComponent implements OnInit {
     }
 
     getShoppingCart() {
-        this.shoppingCartService.getShoppingCart(this.authService.getCurrentUser()?.id!).subscribe({
+        this.shoppingCartService.getShoppingCart(this.authService.currentUser()?.id!).subscribe({
             next: (cart) => {
                 this.shoppingCartService.setShoppingCart(cart);
                 this.calculateTotalPrice();
@@ -80,7 +80,7 @@ export class ShoppingCartComponent implements OnInit {
     initAddressFormGroup(address?: Address) {
         this.addressFormGroup = this.formBuilder.group({
             id: new FormControl(address?.id || ''),
-            userId: new FormControl(this.authService.getCurrentUser()?.id),
+            userId: new FormControl(this.authService.currentUser()?.id),
             firstName: new FormControl(address?.firstName || '', [Validators.required]),
             lastName: new FormControl(address?.lastName || '', [Validators.required]),
             phone: new FormControl(address?.phone || '', [Validators.required]),
@@ -274,8 +274,8 @@ export class ShoppingCartComponent implements OnInit {
         this.loading.set(true);
 
         const orderRequest = {
-            userId: this.authService.getCurrentUser()!.id,
-            userName: this.authService.getCurrentUser()!.firstName + ' ' + this.authService.getCurrentUser()!.lastName,
+            userId: this.authService.currentUser()!.id!,
+            userName: this.authService.currentUser()!.firstName + ' ' + this.authService.currentUser()!.lastName,
             orderItemsIds: orderItems.map((item) => item.id),
             paymentMethod: this.selectedPaymentMethod,
             deliveryAddressId: this.selectedAddress()!.id,

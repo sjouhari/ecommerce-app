@@ -1,7 +1,7 @@
 import { User } from '../models/user/user.model';
 import { ForgotPasswordRequest } from './../models/auth/forgot-password.model';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LoginRequest, LoginResponse } from '../models/auth/login.model';
 import { RegisterRequest, RegisterResponse } from '../models/auth/register.model';
@@ -12,12 +12,13 @@ import { Router } from '@angular/router';
     providedIn: 'root'
 })
 export class AuthService {
+    private tokenKey = 'token';
+    private baseUrl = 'http://localhost:8080/api';
+
     httpClient = inject(HttpClient);
     router = inject(Router);
 
-    private tokenKey = 'token';
-
-    private baseUrl = 'http://localhost:8080/api';
+    currentUser = signal<User | null>(null);
 
     login(loginRequest: LoginRequest): Observable<LoginResponse> {
         return this.httpClient.post<LoginResponse>(`${this.baseUrl}/auth/login`, loginRequest);
@@ -37,6 +38,14 @@ export class AuthService {
         return this.httpClient.get<ForgotPasswordResponse>(`${this.baseUrl}/users/forgot-password?email=${forgotPasswordRequest.email}`);
     }
 
+    getCurrentUser(): Observable<User> {
+        return this.httpClient.get<User>(`${this.baseUrl}/auth/current-user`);
+    }
+
+    setCurrentUser(user: User | null) {
+        this.currentUser.set(user);
+    }
+
     setToken(token: string) {
         localStorage.setItem(this.tokenKey, token);
     }
@@ -46,22 +55,19 @@ export class AuthService {
     }
 
     isLoggedIn(): boolean {
-        const token = this.getToken();
-        return !!token && !this.isTokenExpired(token!);
+        return this.currentUser() !== null;
     }
 
-    getCurrentUser(): User | null {
-        const token = this.getToken();
-        if (!token) {
-            return null;
-        }
-        const payloadBase64 = token.split('.')[1];
-        const payload = JSON.parse(atob(payloadBase64));
-        const currentUser: User = payload.user;
-        return currentUser;
+    isAdmin(): boolean {
+        return this.currentUser()?.profils?.some((p) => p.name === 'ROLE_ADMIN') || false;
     }
 
-    isTokenExpired(token: string): boolean {
+    isSeller(): boolean {
+        return this.currentUser()?.profils?.some((p) => p.name === 'ROLE_SELLER') || false;
+    }
+
+    isTokenExpired(): boolean {
+        const token = this.getToken();
         if (!token) {
             return true;
         }

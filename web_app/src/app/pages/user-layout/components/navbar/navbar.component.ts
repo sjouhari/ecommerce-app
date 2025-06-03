@@ -40,7 +40,7 @@ export class NavbarComponent implements OnInit {
     }
 
     getFullName() {
-        return this.authService.getCurrentUser()?.firstName + ' ' + this.authService.getCurrentUser()?.lastName;
+        return this.authService.currentUser()?.firstName + ' ' + this.authService.currentUser()?.lastName;
     }
 
     toggleDataTable(op: Popover, event: any) {

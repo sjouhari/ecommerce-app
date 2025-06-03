@@ -44,7 +44,7 @@ export class AppTopbar {
     currentUser!: string;
 
     getUserFullName() {
-        return this.authService.getCurrentUser()?.firstName + ' ' + this.authService.getCurrentUser()?.lastName;
+        return this.authService.currentUser()?.firstName + ' ' + this.authService.currentUser()?.lastName;
     }
 
     toggleDarkMode() {

@@ -1,27 +1,23 @@
 <p-toast></p-toast>
-<div [class]="'grid grid-cols-12 gap-2 mx-8'">
+<div class="grid grid-cols-12 gap-2 mt-3 mx-8">
     <div class="col-span-7">
         <h1 class="text-xl text-center font-bold m-0 mb-3">Votre panier</h1>
-        @if(shoppingCartService.shoppingCart()?.orderItems?.length == 0) {
+        @if (shoppingCartService.shoppingCart()?.orderItems?.length == 0) {
             <p class="text-center">Votre panier est vide.</p>
         } @else {
-            <div class="flex flex-col gap-3">
-                @for(item of shoppingCartService.shoppingCart()?.orderItems; track item.id) {
+            <div class="card flex flex-col gap-3">
+                @for (item of shoppingCartService.shoppingCart()?.orderItems; track item.id) {
                     <div class="flex flex-wrap p-3 gap-4 w-full border-1 border-surface rounded">
                         <div class="card flex justify-center">
-                            <p-checkbox [inputId]="item.id!+''" [(ngModel)]="item.selected" [binary]="true" (onChange)="selectItem(item.id!, !!item.selected)" />
+                            <p-checkbox [inputId]="item.id! + ''" [(ngModel)]="item.selected" [binary]="true" (onChange)="selectItem(item.id!, !!item.selected)" />
                         </div>
-                        <img
-                            class="w-6rem shrink-0 rounded"
-                            [src]="'http://localhost:8080/api/products/images/' + item.productImage"
-                            [alt]="item.productName"
-                        />
+                        <img class="w-6rem shrink-0 rounded" [src]="'http://localhost:8080/api/products/images/' + item.productImage" [alt]="item.productName" />
                         <div class="flex-1 flex flex-col">
                             <span class="font-medium text-xl">{{ item.productName }}</span>
                             <span class="text-xl font-medium">{{ item.size }} - {{ item.color }}</span>
                         </div>
                         <div class="flex flex-col items-end justify-between">
-                            <span class="font-bold sm:ml-8">{{ item.price + ' MAD'}}</span>
+                            <span class="font-bold sm:ml-8">{{ item.price + ' MAD' }}</span>
                             <p-inputnumber
                                 inputId="quantity"
                                 [(ngModel)]="item.quantity"
@@ -39,26 +35,21 @@
                                     <span class="pi pi-minus"></span>
                                 </ng-template>
                             </p-inputnumber>
-                            <button
-                                pButton
-                                icon="pi pi-trash"
-                                size="small"
-                                severity="danger"
-                                (click)="removeItem(item.id!)"
-                            ></button>
+                            <button pButton icon="pi pi-trash" size="small" severity="danger" (click)="removeItem(item.id!)"></button>
                         </div>
                     </div>
                 } @empty {
-                    <p class="text-center">Votre panier est vide.</p>}
+                    <p class="text-center">Votre panier est vide.</p>
+                }
             </div>
         }
     </div>
 
-    <div class="col-span-4 p-3 border-1 border-surface rounded">
+    <div class="col-span-5 p-3 border-1 border-surface rounded">
         <h3 class="text-xl font-bold mb-3">Résumé</h3>
         <div class="flex justify-between items-center mb-3">
             <span class="font-bold">Prix totale du panier</span>
-            <span class="font-medium ml-2">{{ totalPrice() + ' MAD'}}</span>
+            <span class="font-medium ml-2">{{ totalPrice() + ' MAD' }}</span>
         </div>
         <div class="flex justify-between items-center mb-3">
             <span class="font-bold">Frais de livraison</span>
@@ -66,21 +57,21 @@
         </div>
         <div class="flex justify-between items-center pt-3 border-top-1 border-surface">
             <span class="font-bold text-xl">Prix totale</span>
-            <span class="font-medium ml-2">{{ totalPrice() + ' MAD'}}</span>
+            <span class="font-medium ml-2">{{ totalPrice() + ' MAD' }}</span>
         </div>
 
-        @if(checkout()) {
+        @if (checkout()) {
             <div class="my-3">
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="text-xl font-bold m-0">Adresse de livraison</h3>
                     <p-button icon="pi pi-plus" class="mr-3" [rounded]="true" [outlined]="true" (click)="showAddressDialog()" />
                 </div>
-                @for(address of addresses(); track address.id) {
+                @for (address of addresses(); track address.id) {
                     <div class="flex justify-between gap-1 mb-3 border-1 border-surface rounded p-2">
                         <div class="flex flex-col gap-2">
-                            <span class="font-medium">{{address.lastName}} {{address.firstName}}, {{address.phone}}</span>
-                            <span class="font-medium">{{address.deliveryAddress}}</span>
-                            <span class="font-medium">{{address.postalCode}}, {{address.city}}, {{address.country}}</span>
+                            <span class="font-medium">{{ address.lastName }} {{ address.firstName }}, {{ address.phone }}</span>
+                            <span class="font-medium">{{ address.deliveryAddress }}</span>
+                            <span class="font-medium">{{ address.postalCode }}, {{ address.city }}, {{ address.country }}</span>
                         </div>
                         <div class="flex flex-col justify-between items-center">
                             <p-radiobutton name="address" size="large" [value]="address" [(ngModel)]="selectedAddress" [inputId]="address.id + ''" />
@@ -95,12 +86,12 @@
                         @for (item of paymentMethods; track item.key) {
                             <div class="flex items-center">
                                 <p-radiobutton name="payement" [value]="item.key" [(ngModel)]="selectedPaymentMethod" [inputId]="item.key" />
-                                <label [for]="item.key" class="ml-2">{{item.value}}</label>
+                                <label [for]="item.key" class="ml-2">{{ item.value }}</label>
                             </div>
                         }
                     </div>
 
-                    @if(selectedPaymentMethod?.toString() === 'CHEQUE') {
+                    @if (selectedPaymentMethod?.toString() === 'CHEQUE') {
                         <span class="font-bold mb-2">Informations du chèque :</span>
                         <div class="grid grid-cols-12 gap-3">
                             <p-floatlabel class="col-span-6" variant="on">
@@ -117,7 +108,16 @@
             </div>
         }
 
-        <button pButton [label]="checkout() ? 'Commander' : 'Valider ma commande'" class="w-full mt-3" severity="contrast" icon="pi pi-check" [loading]="loading()" [disabled]="disabled()" (click)="checkout() ? placeOrder() : toggleCheckout()"></button>
+        <button
+            pButton
+            [label]="checkout() ? 'Commander' : 'Valider ma commande'"
+            class="w-full mt-3"
+            severity="contrast"
+            icon="pi pi-check"
+            [loading]="loading()"
+            [disabled]="disabled()"
+            (click)="checkout() ? placeOrder() : toggleCheckout()"
+        ></button>
     </div>
 </div>
 
@@ -132,7 +132,7 @@
                     <input pInputText id="lastName" type="text" formControlName="lastName" class="w-full" />
                     <label for="lastName">Nom</label>
                 </p-floatlabel>
-                @if(formControls['lastName'].errors && formControls['lastName'].touched && formControls['lastName'].errors['required']) {
+                @if (formControls['lastName'].errors && formControls['lastName'].touched && formControls['lastName'].errors['required']) {
                     <small class="text-red-500">Nom obligatoire.</small>
                 }
             </div>
@@ -142,7 +142,7 @@
                     <input pInputText id="firstName" type="text" formControlName="firstName" class="w-full" />
                     <label for="firstName">Prénom</label>
                 </p-floatlabel>
-                @if(formControls['firstName'].errors && formControls['firstName'].touched && formControls['firstName'].errors['required']) {
+                @if (formControls['firstName'].errors && formControls['firstName'].touched && formControls['firstName'].errors['required']) {
                     <small class="text-red-500">Prénom obligatoire.</small>
                 }
             </div>
@@ -152,7 +152,7 @@
                     <input pInputText id="phone" type="text" formControlName="phone" class="w-full" />
                     <label for="phone">N° Téléphone</label>
                 </p-floatlabel>
-                @if(formControls['phone'].errors && formControls['phone'].touched && formControls['phone'].errors['required']) {
+                @if (formControls['phone'].errors && formControls['phone'].touched && formControls['phone'].errors['required']) {
                     <small class="text-red-500">N° Téléphone obligatoire.</small>
                 }
             </div>
@@ -166,7 +166,7 @@
                     <input pInputText id="deliveryAddress" type="text" formControlName="deliveryAddress" class="w-full" />
                     <label for="deliveryAddress">Adresse</label>
                 </p-floatlabel>
-                @if(formControls['deliveryAddress'].errors && formControls['deliveryAddress'].touched && formControls['deliveryAddress'].errors['required']) {
+                @if (formControls['deliveryAddress'].errors && formControls['deliveryAddress'].touched && formControls['deliveryAddress'].errors['required']) {
                     <small class="text-red-500">Adresse obligatoire.</small>
                 }
             </div>
@@ -176,7 +176,7 @@
                     <input pInputText id="country" type="text" formControlName="country" class="w-full" />
                     <label for="country">Pays</label>
                 </p-floatlabel>
-                @if(formControls['country'].errors && formControls['country'].touched && formControls['country'].errors['required']) {
+                @if (formControls['country'].errors && formControls['country'].touched && formControls['country'].errors['required']) {
                     <small class="text-red-500">Pays est obligatoire.</small>
                 }
             </div>
@@ -186,7 +186,7 @@
                     <input pInputText id="city" type="text" formControlName="city" class="w-full" />
                     <label for="city">Ville</label>
                 </p-floatlabel>
-                @if(formControls['city'].errors && formControls['city'].touched && formControls['city'].errors['required']) {
+                @if (formControls['city'].errors && formControls['city'].touched && formControls['city'].errors['required']) {
                     <small class="text-red-500">Ville est obligatoire.</small>
                 }
             </div>
@@ -196,7 +196,7 @@
                     <input pInputText id="postalCode" type="text" formControlName="postalCode" class="w-full" />
                     <label for="postalCode">Code Postale</label>
                 </p-floatlabel>
-                @if(formControls['postalCode'].errors && formControls['postalCode'].touched && formControls['postalCode'].errors['required']) {
+                @if (formControls['postalCode'].errors && formControls['postalCode'].touched && formControls['postalCode'].errors['required']) {
                     <small class="text-red-500">Code Postale est obligatoire.</small>
                 }
             </div>

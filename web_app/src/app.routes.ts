@@ -21,15 +21,19 @@ import { OrdersComponent } from './app/pages/orders/orders.component';
 import { UserProfileComponent } from './app/pages/user-profile/user-profile.component';
 import { UserLayoutComponent } from './app/pages/user-layout/user-layout.component';
 import { HomeComponent } from './app/pages/user-layout/components/home/home.component';
+import { adminProfileGuard } from './app/guards/admin-profile.guard';
+import { sellerProfileGuard } from './app/guards/seller-profile.guard';
+import { InitializerComponent } from './app/initializer/initializer.component';
 
 export const appRoutes: Routes = [
+    { path: 'initialization', component: InitializerComponent },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     { path: 'forgot-password', component: ForgotPasswordComponent },
     {
         path: '',
         component: AppLayout,
-        // canActivate: [authGuard],
+        canActivate: [authGuard, adminProfileGuard, sellerProfileGuard],
         children: [
             { path: '', component: Dashboard },
 
@@ -58,15 +62,6 @@ export const appRoutes: Routes = [
             { path: 'roles', component: ProfilesComponent },
             { path: 'features', component: FeaturesComponent },
             { path: 'profile', component: UserProfileComponent },
-
-            // // Promotions
-            // { path: 'coupons', component: ProductsComponent },
-            // { path: 'discounts', component: ProductsComponent },
-
-            // // Rapports
-            // { path: 'reports/sales', component: ProductsComponent },
-            // { path: 'reports/products', component: ProductsComponent },
-            // { path: 'reports/customers', component: ProductsComponent },
 
             // Paramètres
             { path: 'settings', component: ProductsComponent }

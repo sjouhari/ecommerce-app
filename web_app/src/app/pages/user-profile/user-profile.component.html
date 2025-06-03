@@ -1,1 +1,203 @@
-<p>profile works!</p>
+<p-toast></p-toast>
+
+<div class="mx-8 my-3">
+    <div class="grid grid-cols-12 gap-3">
+        <div class="col-span-2 flex flex-col items-center">
+            <img src="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" alt="avatar" width="100" height="100" />
+            <p class="font-bold mt-2 mb-0">{{ getFullName() }}</p>
+            <p class="text-gray-500">{{ userInfosFormGroup.get('email')?.value }}</p>
+            <button pButton label="Déconnexion" icon="pi pi-sign-out" class="mt-2" (click)="logout()"></button>
+        </div>
+        <p-card header="Modifier mes informations" class="col-span-3">
+            <form class="flex flex-col gap-3" [formGroup]="userInfosFormGroup" (ngSubmit)="saveChanges()">
+                <div>
+                    <label class="block mb-2" for="lastName">Nom</label>
+                    <input id="lastName" type="text" pInputText formControlName="lastName" fluid />
+                </div>
+                <div>
+                    <label class="block mb-2" for="firstName">Prénom</label>
+                    <input id="firstName" type="text" pInputText formControlName="firstName" fluid />
+                </div>
+                <div>
+                    <label class="block mb-2" for="email">Email</label>
+                    <input id="email" type="email" pInputText formControlName="email" fluid readonly />
+                </div>
+                <div class="flex justify-end">
+                    <button pButton label="Sauvegarder" icon="pi pi-check" severity="success"></button>
+                </div>
+            </form>
+        </p-card>
+        <p-card header="Changer mon mot de passe" class="col-span-3">
+            <form class="flex flex-col gap-3" [formGroup]="changePasswordFormGroup" (ngSubmit)="changePassword()">
+                <div>
+                    <label class="block mb-2" for="currentPassword">Mot de passe actuel</label>
+                    <p-password id="currentPassword" formControlName="currentPassword" [toggleMask]="true" [feedback]="false" fluid />
+                    @if (passwdFormControls['currentPassword'].errors && passwdFormControls['currentPassword'].touched) {
+                        @if (passwdFormControls['currentPassword'].errors['required']) {
+                            <small class="text-red-500">Veuillez saisir votre mot de passe actuel.</small>
+                        }
+                        @if (passwdFormControls['currentPassword'].errors['minlength']) {
+                            <small class="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>
+                        }
+                    }
+                </div>
+                <div>
+                    <label class="block mb-2" for="newPassword">Nouveau mot de passe</label>
+                    <p-password id="newPassword" formControlName="newPassword" [toggleMask]="true" [feedback]="false" fluid />
+                    @if (passwdFormControls['newPassword'].errors && passwdFormControls['newPassword'].touched) {
+                        @if (passwdFormControls['newPassword'].errors['required']) {
+                            <small class="text-red-500">Veuillez saisir votre mot de passe actuel.</small>
+                        }
+                        @if (passwdFormControls['newPassword'].errors['minlength']) {
+                            <small class="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>
+                        }
+                    }
+                </div>
+                <div>
+                    <label class="block mb-2" for="confirmNewPassword">Confirmer le nouveau mot de passe</label>
+                    <p-password id="confirmNewPassword" formControlName="confirmNewPassword" [toggleMask]="true" [feedback]="false" fluid />
+                    @if (passwdFormControls['confirmNewPassword'].errors && passwdFormControls['confirmNewPassword'].touched) {
+                        @if (passwdFormControls['confirmNewPassword'].errors['required']) {
+                            <small class="text-red-500">Veuillez saisir votre mot de passe actuel.</small>
+                        }
+                        @if (passwdFormControls['confirmNewPassword'].errors['minlength']) {
+                            <small class="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>
+                        }
+                    }
+                </div>
+                <div class="flex justify-end">
+                    <button pButton label="Enregistrer" icon="pi pi-check" severity="success" [loading]="changePasswordBtnLoading()" [disabled]="changePasswordBtnLoading() || changePasswordFormGroup.invalid"></button>
+                </div>
+            </form>
+        </p-card>
+        <p-card header="Gérer mes adresses" class="col-span-4">
+            <div class="overflow-auto" style="height: 30vh">
+                @for (address of addresses(); track address.id) {
+                    <div class="flex justify-between gap-1 mb-3 border-1 border-surface rounded p-2">
+                        <div class="flex flex-col gap-2">
+                            <span class="font-medium">{{ address.lastName }} {{ address.firstName }}, {{ address.phone }}</span>
+                            <span class="font-medium">{{ address.deliveryAddress }}</span>
+                            <span class="font-medium">{{ address.postalCode }}, {{ address.city }}, {{ address.country }}</span>
+                        </div>
+                        <div class="flex flex-col justify-between items-center gap-1">
+                            <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="showAddressDialog(address)" />
+                            <p-button icon="pi pi-trash" [rounded]="true" [outlined]="true" severity="danger" (click)="showAddressDialog(address)" />
+                        </div>
+                    </div>
+                }
+            </div>
+            <p-button icon="pi pi-plus" [rounded]="true" [outlined]="true" (click)="showAddressDialog()"></p-button>
+        </p-card>
+
+        <p-panel header="Historique des commandes" class="col-span-12">
+            <p-table [value]="orders()" [responsiveLayout]="'scroll'">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>ID Commande</th>
+                        <th>Date</th>
+                        <th>Prix totale</th>
+                        <th>Statut</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-order>
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                        <td>{{ order.invoice.totalPrice | currency: 'MAD ' }}</td>
+                        <td>
+                            <span class="order-status" [ngClass]="'status-' + order.status.toLowerCase()">{{ order.status }}</span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>
+    </div>
+</div>
+
+<p-dialog [(visible)]="addressDialog" [style]="{ width: '70%', padding: '1.5rem' }" header="Adresse de livraison" [modal]="true">
+    <ng-template #content>
+        <form [formGroup]="addressFormGroup" class="grid grid-cols-12 gap-3 border p-3 rounded">
+            <div class="col-span-12">
+                <h3 class="text-lg font-bold m-0">Informations de contact</h3>
+            </div>
+            <div class="col-span-6">
+                <p-floatlabel variant="in">
+                    <input pInputText id="lastName" type="text" formControlName="lastName" class="w-full" />
+                    <label for="lastName">Nom</label>
+                </p-floatlabel>
+                @if (addressFormControls['lastName'].errors && addressFormControls['lastName'].touched && addressFormControls['lastName'].errors['required']) {
+                    <small class="text-red-500">Nom obligatoire.</small>
+                }
+            </div>
+
+            <div class="col-span-6">
+                <p-floatlabel variant="in">
+                    <input pInputText id="firstName" type="text" formControlName="firstName" class="w-full" />
+                    <label for="firstName">Prénom</label>
+                </p-floatlabel>
+                @if (addressFormControls['firstName'].errors && addressFormControls['firstName'].touched && addressFormControls['firstName'].errors['required']) {
+                    <small class="text-red-500">Prénom obligatoire.</small>
+                }
+            </div>
+
+            <div class="col-span-12">
+                <p-floatlabel variant="in">
+                    <input pInputText id="phone" type="text" formControlName="phone" class="w-full" />
+                    <label for="phone">N° Téléphone</label>
+                </p-floatlabel>
+                @if (addressFormControls['phone'].errors && addressFormControls['phone'].touched && addressFormControls['phone'].errors['required']) {
+                    <small class="text-red-500">N° Téléphone obligatoire.</small>
+                }
+            </div>
+
+            <div class="col-span-12">
+                <h3 class="text-lg font-bold m-0">Adresse de livraison</h3>
+            </div>
+
+            <div class="col-span-12">
+                <p-floatlabel variant="in">
+                    <input pInputText id="deliveryAddress" type="text" formControlName="deliveryAddress" class="w-full" />
+                    <label for="deliveryAddress">Adresse</label>
+                </p-floatlabel>
+                @if (addressFormControls['deliveryAddress'].errors && addressFormControls['deliveryAddress'].touched && addressFormControls['deliveryAddress'].errors['required']) {
+                    <small class="text-red-500">Adresse obligatoire.</small>
+                }
+            </div>
+
+            <div class="col-span-4">
+                <p-floatlabel variant="in">
+                    <input pInputText id="country" type="text" formControlName="country" class="w-full" />
+                    <label for="country">Pays</label>
+                </p-floatlabel>
+                @if (addressFormControls['country'].errors && addressFormControls['country'].touched && addressFormControls['country'].errors['required']) {
+                    <small class="text-red-500">Pays est obligatoire.</small>
+                }
+            </div>
+
+            <div class="col-span-4">
+                <p-floatlabel variant="in">
+                    <input pInputText id="city" type="text" formControlName="city" class="w-full" />
+                    <label for="city">Ville</label>
+                </p-floatlabel>
+                @if (addressFormControls['city'].errors && addressFormControls['city'].touched && addressFormControls['city'].errors['required']) {
+                    <small class="text-red-500">Ville est obligatoire.</small>
+                }
+            </div>
+
+            <div class="col-span-4">
+                <p-floatlabel variant="in">
+                    <input pInputText id="postalCode" type="text" formControlName="postalCode" class="w-full" />
+                    <label for="postalCode">Code Postale</label>
+                </p-floatlabel>
+                @if (addressFormControls['postalCode'].errors && addressFormControls['postalCode'].touched && addressFormControls['postalCode'].errors['required']) {
+                    <small class="text-red-500">Code Postale est obligatoire.</small>
+                }
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveAddress()" [loading]="addressBtnLoading()" [disabled]="addressFormGroup.invalid || addressBtnLoading()" />
+    </ng-template>
+</p-dialog>
