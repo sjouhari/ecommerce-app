@@ -6,12 +6,14 @@ import { Observable } from 'rxjs';
 import { LoginRequest, LoginResponse } from '../models/auth/login.model';
 import { RegisterRequest, RegisterResponse } from '../models/auth/register.model';
 import { ForgotPasswordResponse } from '../models/auth/forgot-password.model';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
     httpClient = inject(HttpClient);
+    router = inject(Router);
 
     private tokenKey = 'token';
 
@@ -28,6 +30,7 @@ export class AuthService {
 
     logout(): void {
         localStorage.removeItem(this.tokenKey);
+        this.router.navigate(['/login']);
     }
 
     forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): Observable<ForgotPasswordResponse> {
