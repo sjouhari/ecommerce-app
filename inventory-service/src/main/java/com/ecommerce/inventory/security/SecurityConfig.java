@@ -32,10 +32,10 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/api/inventories", "/api/inventories/checkAvailability").hasAuthority("PRODUCT_READ")
-						.requestMatchers(HttpMethod.POST, "/api/inventories", "/api/tvas").hasAuthority("PRODUCT_CREATE")
-						.requestMatchers(HttpMethod.PUT, "/api/inventories/**", "/api/tvas/**").hasAuthority("PRODUCT_UPDATE")
-						.requestMatchers(HttpMethod.DELETE, "/api/inventories/**", "/api/tvas/**").hasAuthority("PRODUCT_DELETE")
+						.requestMatchers(HttpMethod.GET).permitAll()
+						.requestMatchers(HttpMethod.POST).hasAuthority("PRODUCT_CREATE")
+						.requestMatchers(HttpMethod.PUT).hasAuthority("PRODUCT_UPDATE")
+						.requestMatchers(HttpMethod.DELETE).hasAuthority("PRODUCT_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)

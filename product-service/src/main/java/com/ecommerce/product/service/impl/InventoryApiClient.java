@@ -18,5 +18,5 @@ public interface InventoryApiClient {
     InventoryDto updateInventory(@PathVariable Long id,@RequestBody InventoryDto inventoryDto, @RequestHeader("Authorization") String token);
 
     @GetMapping("/api/inventories/product/{productId}")
-    List<InventoryDto> getInventoriesByProductId(@PathVariable Long productId, @RequestHeader("Authorization") String token);
+    List<InventoryDto> getInventoriesByProductId(@PathVariable Long productId);
 }

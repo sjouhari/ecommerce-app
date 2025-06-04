@@ -31,18 +31,18 @@ public class ProductController {
     private String imagesPath;
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts(@RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(productService.getAllProducts(token));
+    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/new")
-    public ResponseEntity<List<ProductResponseDto>> getAllNewProducts(@RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(productService.getNewProducts(token));
+    public ResponseEntity<List<ProductResponseDto>> getAllNewProducts() {
+        return ResponseEntity.ok(productService.getNewProducts());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(productService.getProductById(id, token));
+    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -12,10 +12,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -36,10 +32,10 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/api/contacts", "/api/contacts/**").hasAuthority("USER_READ")
-						.requestMatchers(HttpMethod.POST, "/api/contacts").hasAuthority("USER_CREATE")
-						.requestMatchers(HttpMethod.PUT, "/api/contacts/**").hasAuthority("USER_UPDATE")
-						.requestMatchers(HttpMethod.DELETE, "/api/contacts/**").hasAuthority("USER_DELETE")
+						.requestMatchers(HttpMethod.GET).hasAuthority("CONTACT_READ")
+						.requestMatchers(HttpMethod.POST).hasAuthority("CONTACT_CREATE")
+						.requestMatchers(HttpMethod.PUT).hasAuthority("CONTACT_UPDATE")
+						.requestMatchers(HttpMethod.DELETE).hasAuthority("CONTACT_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)

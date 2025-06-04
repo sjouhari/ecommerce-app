@@ -15,11 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.web.cors.CorsConfiguration;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -52,22 +47,20 @@ public class SecurityConfig {
 								"/api/users/forgot-password",
 								"/api/users/reset-password").permitAll()
 
-						.requestMatchers(HttpMethod.GET, "/api/profils", "/api/profils/**").hasAuthority("PROFIL_READ")
-						.requestMatchers(HttpMethod.POST, "/api/profils").hasAuthority("PROFIL_CREATE")
-						.requestMatchers(HttpMethod.PUT, "/api/profils/**").hasAuthority("PROFIL_UPDATE")
-						.requestMatchers(HttpMethod.DELETE, "/api/profils/**").hasAuthority("PROFIL_DELETE")
-						.requestMatchers(HttpMethod.POST, "/api/profils/add-features").hasAuthority("PROFIL_UPDATE")
-						.requestMatchers(HttpMethod.POST, "/api/profils/remove-features").hasAuthority("PROFIL_UPDATE")
+						.requestMatchers(HttpMethod.GET).hasAuthority("PROFIL_READ")
+						.requestMatchers(HttpMethod.POST).hasAuthority("PROFIL_CREATE")
+						.requestMatchers(HttpMethod.PUT).hasAuthority("PROFIL_UPDATE")
+						.requestMatchers(HttpMethod.DELETE).hasAuthority("PROFIL_DELETE")
 
-						.requestMatchers(HttpMethod.GET, "/api/features", "/api/features/**").hasAuthority("FEATURE_READ")
-						.requestMatchers(HttpMethod.POST, "/api/features").hasAuthority("FEATURE_CREATE")
-						.requestMatchers(HttpMethod.PUT, "/api/features/**").hasAuthority("FEATURE_UPDATE")
-						.requestMatchers(HttpMethod.DELETE, "/api/features/**").hasAuthority("FEATURE_DELETE")
+						.requestMatchers(HttpMethod.GET).hasAuthority("FEATURE_READ")
+						.requestMatchers(HttpMethod.POST).hasAuthority("FEATURE_CREATE")
+						.requestMatchers(HttpMethod.PUT).hasAuthority("FEATURE_UPDATE")
+						.requestMatchers(HttpMethod.DELETE).hasAuthority("FEATURE_DELETE")
 
-						.requestMatchers(HttpMethod.GET, "/api/users", "/api/users/**").hasAuthority("USER_READ")
-						.requestMatchers(HttpMethod.POST, "/api/users").hasAuthority("USER_CREATE")
-						.requestMatchers(HttpMethod.PUT, "/api/users/**").hasAuthority("USER_UPDATE")
-						.requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority("USER_DELETE")
+						.requestMatchers(HttpMethod.GET).hasAuthority("USER_READ")
+						.requestMatchers(HttpMethod.POST).hasAuthority("USER_CREATE")
+						.requestMatchers(HttpMethod.PUT).hasAuthority("USER_UPDATE")
+						.requestMatchers(HttpMethod.DELETE).hasAuthority("USER_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)
@@ -75,9 +68,7 @@ public class SecurityConfig {
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				).logout(logout -> logout
 						.logoutUrl("/api/auth/logout")
-						.logoutSuccessHandler((request, response, authentication) -> {
-							SecurityContextHolder.clearContext();
-						})
+						.logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
 				);
 
 		httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

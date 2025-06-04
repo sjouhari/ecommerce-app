@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    List<ProductResponseDto> getAllProducts(String token);
+    List<ProductResponseDto> getAllProducts();
 
 //    List<ProductResponseDto> getProductsBySellerId(Long sellerId);
 //
@@ -17,9 +17,9 @@ public interface ProductService {
 //
 //    List<ProductResponseDto> getProductsByStatus(ProductStatus status);
 
-    List<ProductResponseDto> getNewProducts(String token);
+    List<ProductResponseDto> getNewProducts();
 
-    ProductResponseDto getProductById(Long id, String token);
+    ProductResponseDto getProductById(Long id);
 
     ProductResponseDto createProduct(String productJson, List<MultipartFile> images, String token);
 

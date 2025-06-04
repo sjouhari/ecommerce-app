@@ -10,14 +10,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -38,10 +32,10 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/api/categories", "/api/categories/**").permitAll()
-						.requestMatchers(HttpMethod.POST, "/api/categories").hasAuthority("CATEGORY_CREATE")
-						.requestMatchers(HttpMethod.PUT, "/api/categories/**").hasAuthority("CATEGORY_UPDATE")
-						.requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasAuthority("CATEGORY_DELETE")
+						.requestMatchers(HttpMethod.GET).permitAll()
+						.requestMatchers(HttpMethod.POST).hasAuthority("CATEGORY_CREATE")
+						.requestMatchers(HttpMethod.PUT).hasAuthority("CATEGORY_UPDATE")
+						.requestMatchers(HttpMethod.DELETE).hasAuthority("CATEGORY_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)

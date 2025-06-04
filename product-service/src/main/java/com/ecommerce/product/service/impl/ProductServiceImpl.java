@@ -4,6 +4,7 @@ import com.ecommerce.product.dto.*;
 import com.ecommerce.product.entity.Media;
 import com.ecommerce.product.entity.Product;
 import com.ecommerce.product.entity.Tva;
+import com.ecommerce.product.exception.ProductNameAlreadyExistsException;
 import com.ecommerce.product.mapper.ProductMapper;
 import com.ecommerce.product.repository.MediaRepository;
 import com.ecommerce.product.repository.ProductRepository;
@@ -43,47 +44,35 @@ public class ProductServiceImpl implements ProductService {
     private MediaRepository mediaRepository;
 
     @Override
-    public List<ProductResponseDto> getAllProducts(String token) {
+    public List<ProductResponseDto> getAllProducts() {
         List<Product> products = productRepository.findAll();
-        List<ProductResponseDto> productResponseDtos = ProductMapper.INSTANCE.productsToProductResponseDtos(products);
-        return productResponseDtos.stream().map(
-                productResponseDto -> {
-                    List<InventoryDto> stock = inventoryApiClient.getInventoriesByProductId(productResponseDto.getId(), token);
-                    productResponseDto.setStock(stock);
-                    SubCategoryDto subCategoryDto = categoryApiClient.getSubCategoryById(productResponseDto.getSubCategoryId(), token);
-                    CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategory().getId(), token);
-                    productResponseDto.setCategoryName(categoryDto.getName());
-                    productResponseDto.setSubCategoryName(subCategoryDto.getName());
-                    return productResponseDto;
-                }
+        return products.stream().map(
+                this::getProductResponseDto
         ).toList();
     }
 
     @Override
-    public List<ProductResponseDto> getNewProducts(String token) {
-        List<ProductResponseDto> productResponseDtos = ProductMapper.INSTANCE.productsToProductResponseDtos(productRepository.findAllNewProducts());
-        return productResponseDtos.stream().map(
-                productResponseDto -> {
-                    List<InventoryDto> stock = inventoryApiClient.getInventoriesByProductId(productResponseDto.getId(), token);
-                    productResponseDto.setStock(stock);
-                    SubCategoryDto subCategoryDto = categoryApiClient.getSubCategoryById(productResponseDto.getSubCategoryId(), token);
-                    CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategory().getId(), token);
-                    productResponseDto.setCategoryName(categoryDto.getName());
-                    productResponseDto.setSubCategoryName(subCategoryDto.getName());
-                    return productResponseDto;
-                }
+    public List<ProductResponseDto> getNewProducts() {
+        List<Product> products = productRepository.findAllNewProducts();
+        return products.stream().map(
+                this::getProductResponseDto
         ).toList();
     }
 
     @Override
-    public ProductResponseDto getProductById(Long id, String token) {
+    public ProductResponseDto getProductById(Long id) {
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Product", "id", id.toString())
         );
-        List<InventoryDto> stock = inventoryApiClient.getInventoriesByProductId(id, token);
-        SubCategoryDto subCategoryDto = categoryApiClient.getSubCategoryById(product.getSubCategoryId(), token);
-        CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategory().getId(), token);
+        return getProductResponseDto(product);
+    }
+
+    private ProductResponseDto getProductResponseDto(Product product) {
+        List<InventoryDto> stock = inventoryApiClient.getInventoriesByProductId(product.getId());
+        SubCategoryDto subCategoryDto = categoryApiClient.getSubCategoryById(product.getSubCategoryId());
+        CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategory().getId());
         ProductResponseDto productResponseDto = ProductMapper.INSTANCE.productToProductResponseDto(product);
+
         productResponseDto.setStock(stock);
         productResponseDto.setSubCategoryName(subCategoryDto.getName());
         productResponseDto.setCategoryName(categoryDto.getName());
@@ -93,29 +82,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto createProduct(String productJson, List<MultipartFile> images, String token) {
         try {
-            // Convert json to ProductRequestDto
-            ObjectMapper mapper = new ObjectMapper();
-            ProductRequestDto productDto = mapper.readValue(productJson, ProductRequestDto.class);
+            ProductRequestDto productDto = getProductRequestDto(productJson);
 
             // Check if the product already exists by name
-            if(productRepository.existsByName(productDto.getName())) {
-                throw new RuntimeException("Product already exists with name: " + productDto.getName());
-            }
-
-            //TODO: Check if the category exists
-
-            // Check if subcategory exists
-            if(!categoryApiClient.subCategoryExistsById(productDto.getSubCategoryId(), token)) {
-                throw new ResourceNotFoundException("SubCategory", "id", productDto.getSubCategoryId().toString());
-            }
-
-            // Check if sizes exist and belongs to the product category
-            productDto.getStock()
-                    .forEach(stock -> {
-                        if(!categoryApiClient.sizeExistsByLibelleAndCategoryId(stock.getSize(), productDto.getCategoryId(), token)) {
-                            throw new ResourceNotFoundException("Size", "name", stock.getSize());
-                        }
-                    });
+            validateProductName(productDto.getName());
+            validateProductCategoryDetails(productDto);
 
             Product product = ProductMapper.INSTANCE.productRequestDtoToProduct(productDto);
             Tva tva = tvaRepository.findById(productDto.getTva().getId()).orElseThrow(
@@ -123,15 +94,7 @@ public class ProductServiceImpl implements ProductService {
             );
             product.setTva(tva);
 
-            List<Media> medias = new ArrayList<>();
-            for (MultipartFile image : images) {
-                String fileName = fileStorageService.saveImage(image);
-                Media media = new Media();
-                media.setUrl(fileName);
-                media.setAltText(product.getName());
-                media.setProduct(product);
-                medias.add(media);
-            }
+            List<Media> medias = saveProductImages(images, product);
             product.setMedias(medias);
 
             Product savedProduct = productRepository.save(product);
@@ -153,31 +116,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto updateProduct(Long id, String productJson, List<MultipartFile> newImages, String deletedImages, String token) {
         try {
-            // Convert json to ProductRequestDto
-            ObjectMapper mapper = new ObjectMapper();
-            ProductRequestDto productDto = mapper.readValue(productJson, ProductRequestDto.class);
+            ProductRequestDto productDto = getProductRequestDto(productJson);
 
             Product productToUpdate = productRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("Product", "id", id.toString())
             );
 
             // Check if the product already exists by name
-            if(!productToUpdate.getName().equals(productDto.getName()) && productRepository.existsByName(productDto.getName())) {
-                throw new RuntimeException("Product already exists with name: " + productDto.getName());
+            if(!productToUpdate.getName().equals(productDto.getName())) {
+                validateProductName(productDto.getName());
             }
-
-            // Check if subcategory exists
-            if(!categoryApiClient.subCategoryExistsById(productDto.getSubCategoryId(), token)) {
-                throw new ResourceNotFoundException("SubCategory", "id", productDto.getSubCategoryId().toString());
-            }
-
-            // Check if sizes exist and belongs to the product category
-            productDto.getStock()
-                    .forEach(stock -> {
-                        if(!categoryApiClient.sizeExistsByLibelleAndCategoryId(stock.getSize(), productDto.getCategoryId(), token)) {
-                            throw new ResourceNotFoundException("Size", "name", stock.getSize());
-                        }
-                    });
+            validateProductCategoryDetails(productDto);
 
             Tva tva = tvaRepository.findById(productDto.getTva().getId()).orElseThrow(
                     () -> new ResourceNotFoundException("Tva", "id", productDto.getTva().getId().toString())
@@ -191,14 +140,8 @@ public class ProductServiceImpl implements ProductService {
             // Save new images
             product.setMedias(productToUpdate.getMedias());
             if(newImages != null) {
-                for (MultipartFile image : newImages) {
-                    String fileName = fileStorageService.saveImage(image);
-                    Media media = new Media();
-                    media.setUrl(fileName);
-                    media.setAltText(product.getName());
-                    media.setProduct(product);
-                    product.getMedias().add(media);
-                }
+                List<Media> medias = saveProductImages(newImages, product);
+                product.getMedias().addAll(medias);
             }
 
             // Delete images
@@ -225,6 +168,51 @@ public class ProductServiceImpl implements ProductService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static ProductRequestDto getProductRequestDto(String productJson) throws JsonProcessingException {
+        // Convert json to ProductRequestDto
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(productJson, ProductRequestDto.class);
+    }
+
+    private void validateProductName(String productName) {
+        if(productRepository.existsByName(productName)) {
+            throw new ProductNameAlreadyExistsException("Le nom du produit existe déjà :  " + productName);
+        }
+    }
+
+    private void validateProductCategoryDetails(ProductRequestDto productDto) {
+        // Check if category exists
+        if(!categoryApiClient.categoryExistsById(productDto.getCategoryId())) {
+            throw new ResourceNotFoundException("Category", "id", productDto.getCategoryId().toString());
+        }
+
+        // Check if subcategory exists
+        if(!categoryApiClient.subCategoryExistsById(productDto.getSubCategoryId())) {
+            throw new ResourceNotFoundException("SubCategory", "id", productDto.getSubCategoryId().toString());
+        }
+
+        // Check if sizes exist and belongs to the product category
+        productDto.getStock()
+                .forEach(stock -> {
+                    if(!categoryApiClient.sizeExistsByLibelleAndCategoryId(stock.getSize(), productDto.getCategoryId())) {
+                        throw new ResourceNotFoundException("Size", "name", stock.getSize());
+                    }
+                });
+    }
+
+    private List<Media> saveProductImages(List<MultipartFile> images, Product product) {
+        List<Media> medias = new ArrayList<>();
+        for (MultipartFile image : images) {
+            String fileName = fileStorageService.saveImage(image);
+            Media media = new Media();
+            media.setUrl(fileName);
+            media.setAltText(product.getName());
+            media.setProduct(product);
+            medias.add(media);
+        }
+        return medias;
     }
 
     @Override
