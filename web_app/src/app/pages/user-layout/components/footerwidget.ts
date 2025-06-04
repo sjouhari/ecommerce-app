@@ -1,68 +1,93 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
     selector: 'footer-widget',
-    imports: [RouterModule, InputTextModule, ButtonModule],
+    standalone: true,
+    imports: [RouterModule, FormsModule, InputTextModule, ButtonModule],
     template: `
-        <div class="col-span-12 p-2 md:p-20" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #efe1af 0%, #c3dcfa 100%)">
-            <div class="flex flex-col justify-center items-center text-center px-4 py-4 md:py-0">
-                <div class="text-gray-900 mb-2 text-3xl font-semibold">S'abboner à notre newsletter</div>
-                <span class="text-gray-600 text-2xl">Recevoir des conseils et des nouveautés sur nos produits et services.</span>
-                <div class="w-6 mb-3">
-                    <input pInputText type="text" class="my-4 text-center" placeholder="Entrez votre adresse email" fluid />
-                    <p-button label="S'abonner" class="mt-4" severity="contrast"></p-button>
+        <!-- Newsletter Subscription Section -->
+        <div class="col-span-12 p-6 md:p-20 bg-gradient-to-b from-white/70 via-yellow-100 to-yellow-100">
+            <div class="flex flex-col justify-center items-center text-center">
+                <div class="text-gray-900 mb-2 text-3xl font-bold">Abonnez-vous à notre newsletter</div>
+                <span class="text-gray-600 text-xl mb-4">Recevez les meilleures offres et nouveautés produit directement dans votre boîte mail.</span>
+                <div class="w-full max-w-md">
+                    <input [(ngModel)]="email" pInputText type="email" class="w-full text-center mb-4" placeholder="Votre adresse email" />
+                    <p-button label="S'abonner" class="w-full" severity="primary" (onClick)="subscribe()"></p-button>
                 </div>
             </div>
         </div>
-        <div class="py-12 px-12 mx-0 lg:mx-20" style="background: linear-gradient(0deg, rgba(255, 255, 200, 0.6), rgba(200, 255, 255, 0.6)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #efe1af 0%, #c3dcfa 100%)">
-            <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-12 md:col-span-2 flex align-items-center">
-                    <a (click)="router.navigate(['/pages/landing'], { fragment: 'home' })" class="flex flex-wrap items-center justify-center md:justify-start md:mb-0 mb-6 cursor-pointer">
-                        <img src="assets/logo/app-logo.png" class="h-4rem" alt="APP LOGO" />
+
+        <!-- Main Footer Section -->
+        <div class="py-12 px-6 md:px-20 bg-gradient-to-b from-yellow-100 via-blue-100 to-white">
+            <div class="grid grid-cols-12 gap-6 text-center md:text-left">
+                <!-- Logo -->
+                <div class="col-span-12 md:col-span-3 flex justify-center md:justify-start items-center mb-6 md:mb-0">
+                    <a (click)="router.navigate(['/pages/landing'], { fragment: 'home' })" class="cursor-pointer">
+                        <img src="assets/logo/app-logo.png" alt="App Logo" class="h-12" />
                     </a>
                 </div>
 
-                <div class="col-span-12 md:col-span-10">
-                    <div class="grid grid-cols-12 gap-8 text-center md:text-left">
-                        <div class="col-span-12 md:col-span-3">
-                            <h4 class="font-medium text-2xl leading-normal mb-6 text-surface-900 dark:text-surface-0">Company</h4>
-                            <a class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">About Us</a>
-                            <a class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">News</a>
-                            <a class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Investor Relations</a>
-                            <a class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Careers</a>
-                            <a class="leading-normal text-xl block cursor-pointer text-surface-700 dark:text-surface-100">Media Kit</a>
-                        </div>
+                <!-- Company Links -->
+                <div class="col-span-12 sm:col-span-6 md:col-span-2">
+                    <h4 class="font-semibold text-lg mb-4 text-gray-800">Entreprise</h4>
+                    <a class="block text-gray-600 mb-2 cursor-pointer">À propos</a>
+                    <a class="block text-gray-600 mb-2 cursor-pointer">Blog</a>
+                    <a class="block text-gray-600 mb-2 cursor-pointer">Carrières</a>
+                    <a class="block text-gray-600 cursor-pointer">Presse</a>
+                </div>
 
-                        <div class="col-span-12 md:col-span-3">
-                            <h4 class="font-medium text-2xl leading-normal mb-6 text-surface-900 dark:text-surface-0">Resources</h4>
-                            <a class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Get Started</a>
-                            <a class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Learn</a>
-                            <a class="leading-normal text-xl block cursor-pointer text-surface-700 dark:text-surface-100">Case Studies</a>
-                        </div>
+                <!-- Support Links -->
+                <div class="col-span-12 sm:col-span-6 md:col-span-2">
+                    <h4 class="font-semibold text-lg mb-4 text-gray-800">Support</h4>
+                    <a class="block text-gray-600 mb-2 cursor-pointer">Contact</a>
+                    <a class="block text-gray-600 mb-2 cursor-pointer">FAQ</a>
+                    <a class="block text-gray-600 mb-2 cursor-pointer">Suivi de commande</a>
+                    <a class="block text-gray-600 cursor-pointer">Retour produit</a>
+                </div>
 
-                        <div class="col-span-12 md:col-span-3">
-                            <h4 class="font-medium text-2xl leading-normal mb-6 text-surface-900 dark:text-surface-0">Community</h4>
-                            <a class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Discord</a>
-                            <a class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Events<img src="https://primefaces.org/cdn/templates/sakai/landing/new-badge.svg" alt="badge" class="ml-2" /></a>
-                            <a class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">FAQ</a>
-                            <a class="leading-normal text-xl block cursor-pointer text-surface-700 dark:text-surface-100">Blog</a>
-                        </div>
+                <!-- Legal Links -->
+                <div class="col-span-12 sm:col-span-6 md:col-span-2">
+                    <h4 class="font-semibold text-lg mb-4 text-gray-800">Légal</h4>
+                    <a class="block text-gray-600 mb-2 cursor-pointer">CGU</a>
+                    <a class="block text-gray-600 mb-2 cursor-pointer">Politique de confidentialité</a>
+                    <a class="block text-gray-600 cursor-pointer">Cookies</a>
+                </div>
 
-                        <div class="col-span-12 md:col-span-3">
-                            <h4 class="font-medium text-2xl leading-normal mb-6 text-surface-900 dark:text-surface-0">Legal</h4>
-                            <a class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Brand Policy</a>
-                            <a class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Privacy Policy</a>
-                            <a class="leading-normal text-xl block cursor-pointer text-surface-700 dark:text-surface-100">Terms of Service</a>
-                        </div>
-                    </div>
+                <!-- Mobile Apps -->
+                <div class="col-span-12 sm:col-span-6 md:col-span-3">
+                    <h4 class="font-semibold text-lg mb-4 text-gray-800">Télécharger notre application mobile</h4>
+                    <a href="https://play.google.com/store/apps/details?id=com.example" target="_blank" class="flex items-center mb-3 cursor-pointer hover:opacity-80">
+                        <img src="assets/logo/google-play-store.png" alt="Google Play" class="h-5rem w-18rem" />
+                    </a>
+                    <a href="https://apps.apple.com/app/example" target="_blank" class="flex items-center cursor-pointer hover:opacity-80">
+                        <img src="assets/logo/app-store-logo.png" alt="App Store" class="h-5rem w-18rem" />
+                    </a>
                 </div>
             </div>
+
+            <!-- Bottom Text -->
+            <div class="text-center mt-12 text-sm text-gray-500">© {{ currentYear }} VotreEntreprise. Tous droits réservés.</div>
         </div>
     `
 })
 export class FooterWidget {
+    email: string = '';
+    currentYear = new Date().getFullYear();
+
     constructor(public router: Router) {}
+
+    subscribe() {
+        if (!this.email || !this.email.includes('@')) {
+            alert('Veuillez entrer une adresse email valide.');
+            return;
+        }
+
+        // Simulate a newsletter subscription
+        alert(`Merci pour votre abonnement, ${this.email} !`);
+        this.email = '';
+    }
 }
