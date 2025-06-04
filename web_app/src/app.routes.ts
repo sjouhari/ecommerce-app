@@ -39,6 +39,7 @@ export const appRoutes: Routes = [
 
             // Produits
             { path: 'products', component: ProductsComponent },
+            { path: 'products/:id', component: ProductDetailsComponent },
             { path: 'inventory', component: ProductsComponent },
 
             // Categories

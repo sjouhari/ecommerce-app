@@ -1,36 +1,39 @@
 import { $t } from '@primeng/themes';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../services/product.service';
 import { Product } from '../../../models/product/product.model';
+import { OrderService } from '../../../services/order.service';
+import { OrderItem } from '../../../models/order/order-item.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
     standalone: true,
     selector: 'app-recent-sales-widget',
-    imports: [CommonModule, TableModule, ButtonModule, RippleModule],
+    imports: [CommonModule, TableModule, ButtonModule, RippleModule, RouterLink],
     template: `<div class="card !mb-8">
-        <div class="font-semibold text-xl mb-4">Recent Sales</div>
+        <div class="font-semibold text-xl mb-4">Ventes récentes</div>
         <p-table [value]="products" [paginator]="true" [rows]="5" responsiveLayout="scroll">
             <ng-template #header>
                 <tr>
                     <th>Image</th>
-                    <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-                    <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
-                    <th>View</th>
+                    <th pSortableColumn="name">Nom <p-sortIcon field="name"></p-sortIcon></th>
+                    <th pSortableColumn="price">Prix <p-sortIcon field="price"></p-sortIcon></th>
+                    <th>Voir</th>
                 </tr>
             </ng-template>
             <ng-template #body let-product>
                 <tr>
                     <td style="width: 15%; min-width: 5rem;">
-                        <img src="https://primefaces.org/cdn/primevue/images/product/{{ product.image }}" class="shadow-lg" alt="{{ product.name }}" width="50" />
+                        <img [src]="'http://localhost:8080/api/products/images/' + product.productImage" class="shadow-lg" alt="{{ product.name }}" width="50" />
                     </td>
-                    <td style="width: 35%; min-width: 7rem;">{{ product.name }}</td>
+                    <td style="width: 35%; min-width: 7rem;">{{ product.productName }}</td>
                     <td style="width: 35%; min-width: 8rem;">{{ product.price | currency: 'USD' }}</td>
                     <td style="width: 15%;">
-                        <button pButton pRipple type="button" icon="pi pi-search" class="p-button p-component p-button-text p-button-icon-only"></button>
+                        <a [routerLink]="'/home/list-products/' + product.productId"><i class="pi pi-eye"></i></a>
                     </td>
                 </tr>
             </ng-template>
@@ -39,9 +42,26 @@ import { Product } from '../../../models/product/product.model';
     providers: [ProductService]
 })
 export class RecentSalesWidget {
-    products: Product[] = [];
+    products: OrderItem[] = [];
 
-    constructor(private productService: ProductService) {}
+    orderService = inject(OrderService);
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.orderService.getOrders().subscribe({
+            next: (orders) => {
+                this.products = Array.from(
+                    new Set(
+                        orders
+                            .map((order) => order.orderItems)
+                            .flat()
+                            .map((item) => item.productId)
+                            .map((id) => orders.flatMap((order) => order.orderItems).find((item) => item.productId === id)!)
+                    )
+                );
+            },
+            error: (error) => {
+                console.error(error);
+            }
+        });
+    }
 }

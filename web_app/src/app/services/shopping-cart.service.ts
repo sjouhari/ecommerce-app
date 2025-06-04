@@ -9,6 +9,8 @@ import { AuthService } from './auth.service';
     providedIn: 'root'
 })
 export class ShoppingCartService {
+    baseUrl = 'http://localhost:8080/api/shopping-cart';
+
     http = inject(HttpClient);
     authService = inject(AuthService);
 
@@ -25,8 +27,6 @@ export class ShoppingCartService {
     setShoppingCart(cart: ShoppingCart) {
         this.shoppingCart.set(cart);
     }
-
-    baseUrl = 'http://localhost:8080/api/shopping-cart';
 
     getShoppingCart(userId: number): Observable<ShoppingCart> {
         return this.http.get<ShoppingCart>(`${this.baseUrl}/${userId}`);
