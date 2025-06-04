@@ -45,4 +45,9 @@ public class CategoryController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/existsById/{id}")
+    public ResponseEntity<Boolean> categoryExistsById(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.categoryExistsById(id));
+    }
+
 }
