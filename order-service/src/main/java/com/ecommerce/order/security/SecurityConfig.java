@@ -1,6 +1,5 @@
 package com.ecommerce.order.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,13 +16,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-	@Autowired
-	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-	@Autowired
-	private JwtAuthenticationFilter jwtAuthenticationFilter;
+    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
 
-	@Bean
+    @Bean
 	AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 		return configuration.getAuthenticationManager();
 	}
@@ -33,8 +34,8 @@ public class SecurityConfig {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
 						.requestMatchers(HttpMethod.GET).hasAuthority("ORDER_READ")
-						.requestMatchers(HttpMethod.POST).hasAuthority("PLACE_ORDER")
-						.requestMatchers(HttpMethod.PUT).hasAuthority("UPDATE_ORDER")
+						.requestMatchers(HttpMethod.POST).hasAuthority("ORDER_CREATE")
+						.requestMatchers(HttpMethod.PUT).hasAuthority("ORDER_UPDATE")
 						.requestMatchers(HttpMethod.DELETE).hasAuthority("ORDER_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
