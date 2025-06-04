@@ -1,18 +1,18 @@
-<div id="new-products" class="p-6">
-    <div class="grid grid-cols-12 gap-4 justify-center">
-        <div class="col-span-12 text-center">
-            <div class="text-surface-900 dark:text-surface-0 font-normal mb-2 text-4xl">Nouveau arrivage</div>
-        </div>
-
-        <div class="col-span-12 flex gap-4">
-            <p-carousel class="mx-auto" [value]="products" [circular]="true" [autoplayInterval]="3000" [numVisible]="5" [numScroll]="3" [circular]="false" [responsiveOptions]="carouselResponsiveOptions">
-                <ng-template let-product #item>
-                    <app-product-card [product]="product"></app-product-card>
-                </ng-template>
-            </p-carousel>
-        </div>
+<div id="new-products" class="py-12 px-4 md:px-10">
+    <div class="text-center mb-8">
+        <h2 class="text-4xl font-semibold text-surface-900 dark:text-surface-0">Nouveau arrivage</h2>
+        <p class="text-surface-600 dark:text-surface-300 text-lg mt-2">Découvrez nos dernières nouveautés</p>
     </div>
-    <div class="col-span-12 text-center">
-        <a class="text-blue-500 hover:text-blue-700" routerLink="/home/list-products">Voir tous les produits</a>
+
+    <div class="w-full">
+        <p-carousel [value]="products" [autoplayInterval]="4000" [numVisible]="4" [numScroll]="2" [circular]="true" [responsiveOptions]="carouselResponsiveOptions" styleClass="mx-auto">
+            <ng-template let-product #item>
+                <app-product-card [product]="product"></app-product-card>
+            </ng-template>
+        </p-carousel>
+    </div>
+
+    <div class="text-center mt-2">
+        <a routerLink="/home/list-products" class="inline-block px-6 py-2 text-base font-medium text-primary-600 hover:text-primary-800 transition-colors"> Voir tous les produits </a>
     </div>
 </div>
