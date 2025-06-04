@@ -30,6 +30,14 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    emailController.text = "admin@gmail.com";
+    passwordController.text = "Admin123@@";
+  }
+
+  @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
 
@@ -60,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                     AppInput(
                       label: "Adresse email",
                       controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
                       autofillHints: [AutofillHints.email],
                       validator: (email) {
                         if (email == null || email.isEmpty) {

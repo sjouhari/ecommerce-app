@@ -40,6 +40,7 @@ dependencies:
   animated_splash_screen: ^1.3.0
   page_transition: ^2.2.1
   email_validator: ^3.0.0
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/logo/
+    - assets/images/products/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

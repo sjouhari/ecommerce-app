@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile_app/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,9 +15,7 @@ class AuthProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
 
-    _token = token;
-
-    notifyListeners();
+    verifyToken(token);
   }
 
   Future<void> logout() async {
@@ -30,8 +29,29 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
+    print("AAAA");
     if (!prefs.containsKey('token')) return;
-    _token = prefs.getString('token');
+    print("BBBB");
+    verifyToken(prefs.getString('token')!);
+  }
+
+  Future<bool> verifyToken(String token) async {
+    // Vérifie si expiré
+    bool isExpired = JwtDecoder.isExpired(token);
+
+    if (isExpired) {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.remove('token');
+      _token = null;
+      notifyListeners();
+      return false;
+    }
+
+    // Décoder les claims
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+    _currentUser = UserModel.fromJson(decodedToken['user']);
+    _token = token;
     notifyListeners();
+    return true;
   }
 }

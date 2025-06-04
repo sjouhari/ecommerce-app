@@ -39,7 +39,6 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(30),
             child: Column(
               children: [
-                AppText(text: "Hello World", color: Colors.black, fontSize: 23),
                 SizedBox(height: 20),
                 AppButton(
                   label: "Logout",
