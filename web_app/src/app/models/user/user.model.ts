@@ -7,4 +7,6 @@ export interface User {
     email: string;
     enabled?: boolean;
     profils?: Profil[];
+    createdAt?: Date;
+    updatedAt?: Date;
 }

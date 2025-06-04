@@ -9,6 +9,7 @@ import { RevenueStreamWidget } from './components/revenuestreamwidget';
     imports: [StatsWidget, RecentSalesWidget, BestSellingWidget, RevenueStreamWidget],
     template: `
         <div class="grid grid-cols-12 gap-4">
+            <h1 class="col-span-12 text-3xl font-bold text-surface-900 dark:text-surface-0 mb-1">Tableau de bord</h1>
             <app-stats-widget class="contents" />
             <div class="col-span-12 xl:col-span-6">
                 <app-recent-sales-widget />

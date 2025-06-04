@@ -34,9 +34,6 @@ public class SecurityConfig {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
 						.requestMatchers(HttpMethod.GET).permitAll()
-						.requestMatchers(HttpMethod.POST).hasAuthority("COMMENT_CREATE")
-						.requestMatchers(HttpMethod.PUT).hasAuthority("COMMENT_UPDATE")
-						.requestMatchers(HttpMethod.DELETE).hasAuthority("COMMENT_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)

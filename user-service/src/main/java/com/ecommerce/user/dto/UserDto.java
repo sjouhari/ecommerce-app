@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -33,5 +34,13 @@ public class UserDto {
 
     @NotNull(message = "Profils are required")
     private List<ProfilDto> profils;
+
+    private boolean seller;
+
+    private String storeName;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
 }
