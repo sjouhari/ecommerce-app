@@ -1,8 +1,6 @@
 package com.ecommerce.order.controller;
 
-import com.ecommerce.order.dto.OrderRequestDto;
-import com.ecommerce.order.dto.OrderResponseDto;
-import com.ecommerce.order.dto.UpdateOrderStatusRequestDto;
+import com.ecommerce.order.dto.*;
 import com.ecommerce.order.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,4 +48,10 @@ public class OrderController {
     public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.deleteOrder(id));
     }
+
+    @GetMapping("/stats/best-selling-products")
+    public ResponseEntity<List<BestSellingProductProjection>> getBestSellingProducts() {
+        return ResponseEntity.ok(orderService.getBestSellingProducts());
+    }
+
 }

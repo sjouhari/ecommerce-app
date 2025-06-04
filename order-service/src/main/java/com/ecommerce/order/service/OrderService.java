@@ -1,8 +1,6 @@
 package com.ecommerce.order.service;
 
-import com.ecommerce.order.dto.OrderRequestDto;
-import com.ecommerce.order.dto.OrderResponseDto;
-import com.ecommerce.order.dto.UpdateOrderStatusRequestDto;
+import com.ecommerce.order.dto.*;
 
 import java.util.List;
 
@@ -19,5 +17,7 @@ public interface OrderService {
     OrderResponseDto updateOrderStatus(Long orderId, UpdateOrderStatusRequestDto updateOrderStatusRequestDto, String token);
 
     String deleteOrder(Long orderId);
+
+    List<BestSellingProductProjection> getBestSellingProducts();
 
 }

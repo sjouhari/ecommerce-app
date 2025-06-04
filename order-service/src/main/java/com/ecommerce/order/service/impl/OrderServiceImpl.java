@@ -1,9 +1,6 @@
 package com.ecommerce.order.service.impl;
 
-import com.ecommerce.order.dto.OrderRequestDto;
-import com.ecommerce.order.dto.OrderResponseDto;
-import com.ecommerce.order.dto.UpdateOrderStatusRequestDto;
-import com.ecommerce.order.dto.UserDto;
+import com.ecommerce.order.dto.*;
 import com.ecommerce.order.entity.*;
 import com.ecommerce.order.enums.OrderStatus;
 import com.ecommerce.order.enums.PaymentMethods;
@@ -164,6 +161,11 @@ public class OrderServiceImpl implements OrderService {
         );
         orderRepository.deleteById(orderId);
         return "Order deleted successfully";
+    }
+
+    @Override
+    public List<BestSellingProductProjection> getBestSellingProducts() {
+        return orderItemRepository.findBestSellingProducts();
     }
 
     private double calculateTotalPrice(List<OrderItem> orderItems) {

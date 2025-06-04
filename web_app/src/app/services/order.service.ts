@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Order } from '../models/order/order.model';
 import { OrderRequest } from '../models/order/order-request.model';
+import { BestSellingProduct } from '../models/order/best-selling-product.model';
 
 @Injectable({
     providedIn: 'root'
@@ -30,5 +31,9 @@ export class OrderService {
 
     deleteOrder(id: number): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    }
+
+    getBestSellingProducts(): Observable<BestSellingProduct[]> {
+        return this.http.get<BestSellingProduct[]>(`${this.baseUrl}/stats/best-selling-products`);
     }
 }
