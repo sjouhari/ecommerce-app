@@ -46,14 +46,14 @@ public class ProfilController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/add-features")
+    @PutMapping("/add-features")
     public ResponseEntity<ProfilDto> addFeaturesToProfil(@RequestBody @Valid ProfilFeaturesDto profilFeaturesDto) {
-        return new ResponseEntity<>(profilService.addFeaturesToProfil(profilFeaturesDto), HttpStatus.CREATED);
+        return ResponseEntity.ok(profilService.addFeaturesToProfil(profilFeaturesDto));
     }
 
-    @PostMapping("/remove-features")
+    @PutMapping("/remove-features")
     public ResponseEntity<ProfilDto> removeFeaturesFromProfil(@RequestBody @Valid ProfilFeaturesDto profilFeaturesDto) {
-        return new ResponseEntity<>(profilService.removeFeaturesFromProfil(profilFeaturesDto), HttpStatus.CREATED);
+        return ResponseEntity.ok(profilService.removeFeaturesFromProfil(profilFeaturesDto));
     }
 
 }
