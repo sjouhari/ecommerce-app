@@ -5,6 +5,8 @@ import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.ecommerce.user.dto.*;
 import com.ecommerce.user.entity.Profil;
 import com.ecommerce.user.entity.User;
+import com.ecommerce.user.exception.EmailAlreadyExistsException;
+import com.ecommerce.user.exception.LoginFailedException;
 import com.ecommerce.user.kafka.KafkaUserProducer;
 import com.ecommerce.user.mapper.UserMapper;
 import com.ecommerce.user.repository.ProfilRepository;
@@ -50,6 +52,8 @@ public class AuthServiceImpl implements AuthService {
 	@Value("${kafka.topic.user.confirmation.name}")
 	private String userConfirmationTopicName;
 
+	private final Random random = new Random();
+
 	@Override
 	public JWTAuthResponse login(LoginDto loginDTO) {
 		try {
@@ -64,11 +68,11 @@ public class AuthServiceImpl implements AuthService {
 			);
 
 			if(!currentUser.isVerified()) {
-				throw new RuntimeException("Votre compte n'a pas encore été verifié. Veuillez verifier votre boite mail.");
+				throw new LoginFailedException("Votre compte n'a pas encore été verifié. Veuillez verifier votre boite mail.");
 			}
 
 			if(!currentUser.isEnabled()) {
-				throw new RuntimeException("Votre compte a été désactivé. Veuillez contactez l'administrateur.");
+				throw new LoginFailedException("Votre compte a été désactivé. Veuillez contactez l'administrateur.");
 			}
 
 			CurrentUserDto currentUserDto = UserMapper.INSTANCE.userToCurrentUserDto(currentUser);
@@ -79,16 +83,16 @@ public class AuthServiceImpl implements AuthService {
 
             return new JWTAuthResponse(generatedToken);
 		} catch (BadCredentialsException badCredentialsException) {
-			throw new RuntimeException("Adresse email ou mot de passe incorrect");
+			throw new LoginFailedException("Adresse email ou mot de passe incorrect");
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			throw new LoginFailedException(e.getMessage());
 		}
 	}
 
 	@Override
 	public MessageResponseDto register(RegisterDto registerDTO) {
 		if(userRepository.existsByEmail(registerDTO.getEmail())) {
-			throw new RuntimeException("Adresse email deja utilisé par un autre utilisateur.");
+			throw new EmailAlreadyExistsException("Adresse email deja utilisé par un autre utilisateur.");
 		}
 
 		List<Profil> profils = new ArrayList<>();
@@ -107,8 +111,7 @@ public class AuthServiceImpl implements AuthService {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setProfils(profils);
 
-		Random randomCode = new Random();
-		int verificationCode = randomCode.nextInt(900000) + 100000;
+		int verificationCode = random.nextInt(900000) + 100000;
 		UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), verificationCode);
 		kafkaUserConfirmationProducer.sendMessage(userEvent, userConfirmationTopicName);
 
