@@ -1,22 +1,33 @@
-<a [routerLink]="'/home/list-products/' + product().id" class="border block border-surface rounded-border mx-3 p-2 w-16rem">
-    <div class="mb-4">
-        <div class="relative mx-auto">
-            <img src="http://localhost:8080/api/products/images/{{ product().medias[0].url }}" [alt]="product().name" class="rounded-border h-15rem w-full" />
-            <div class="absolute bg-black/70 rounded-border" [ngStyle]="{ 'left.px': 2, 'top.px': 2 }">
-                <p-tag [value]="product().status" [severity]="getSeverity(product().status)" />
-            </div>
+<a [routerLink]="'/home/list-products/' + product().id" class="block border rounded-2xl shadow-sm p-4 w-full hover:shadow-md hover:scale-[1.01] transition-all duration-300 bg-white dark:bg-surface-800">
+    <!-- Image + Badge -->
+    <div class="relative mb-4">
+        <img [src]="'http://localhost:8080/api/products/images/' + product().medias[0].url" [alt]="product().name" class="rounded-xl h-[15rem] w-full object-cover" />
+        <div class="absolute top-2 left-2">
+            <p-tag [value]="product().status" [severity]="getSeverity(product().status)" class="text-xs py-1 px-2 rounded-full" />
         </div>
     </div>
-    <div class="mb-2 font-medium">{{ product().name }}</div>
-    <div class="mb-2 text-sm">{{ product().description }}</div>
-    <div class="flex justify-between items-center">
-        <div class="mb-2 text-sm font-medium">{{ product().categoryName }}</div>
-        <div class="mb-2 text-sm font-medium">{{ getQuantity() }}</div>
+
+    <!-- Nom -->
+    <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0 line-clamp-1 mb-1">
+        {{ product().name }}
+    </h3>
+
+    <!-- Description -->
+    <p class="text-sm text-surface-600 dark:text-surface-300 line-clamp-2 mb-2">
+        {{ product().description }}
+    </p>
+
+    <!-- Catégorie + Quantité -->
+    <div class="flex justify-between text-sm text-surface-500 dark:text-surface-400 mb-2">
+        <span>{{ product().categoryName }}</span>
+        <span>{{ getQuantity() }}</span>
     </div>
+
+    <!-- Prix + Panier -->
     <div class="flex justify-between items-center">
-        <div class="mt-0 font-semibold text-xl">{{ getPrice() }}</div>
-        <span>
-            <p-button icon="pi pi-shopping-cart" styleClass="ml-2" />
-        </span>
+        <div class="text-lg font-bold text-primary-500">
+            {{ getPrice() }}
+        </div>
+        <p-button icon="pi pi-shopping-cart" styleClass="p-button-sm p-button-rounded p-button-outlined" />
     </div>
 </a>

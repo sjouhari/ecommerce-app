@@ -30,18 +30,18 @@
             </p-iconfield>
         </div>
     </ng-template>
-    @if(products().length > 0) {
+    @if (products().length > 0) {
         <ng-template #header>
             <tr>
                 <th style="width: 3rem">
                     <p-tableHeaderCheckbox />
                 </th>
                 <th>Image</th>
-                <th pSortableColumn="name" style="min-width:16rem">
+                <th pSortableColumn="name" style="min-width: 16rem">
                     Nom
                     <p-sortIcon field="name" />
                 </th>
-                <th pSortableColumn="description" style="min-width:16rem">
+                <th pSortableColumn="description" style="min-width: 16rem">
                     Description
                     <p-sortIcon field="description" />
                 </th>
@@ -49,7 +49,7 @@
                     TVA
                     <p-sortIcon field="tva" />
                 </th>
-                <th pSortableColumn="subCategoryName" style="min-width:11rem">
+                <th pSortableColumn="subCategoryName" style="min-width: 11rem">
                     Sous Catégorie
                     <p-sortIcon field="subCategoryName" />
                 </th>
@@ -59,7 +59,7 @@
                 </th>
                 <th style="min-width: 8rem"></th>
             </tr>
-        </ng-template>       
+        </ng-template>
     }
     <ng-template #body let-product>
         <tr>
@@ -99,10 +99,10 @@
                         <div>Drag and drop files to here to upload.</div>
                     </ng-template>
                 </p-fileupload>
-                @if(productImages().length > 0) {
+                @if (productImages().length > 0) {
                     <label for="name" class="block font-bold my-2">Images actuelles du produit</label>
                     <div class="flex flex-wrap gap-4 my-3">
-                        @for(image of productImages(); track image) {
+                        @for (image of productImages(); track image) {
                             <div class="card m-0 px-12 flex flex-col border border-surface items-center gap-4">
                                 <div>
                                     <img role="presentation" [alt]="image.altText" [src]="'http://localhost:8080/api/products/images/' + image.url" width="100" height="50" />
@@ -119,19 +119,19 @@
                         <input pInputText id="name" type="text" formControlName="name" class="w-full" />
                         <label for="name">Nom</label>
                     </p-floatlabel>
-                    @if(formControls['name'].errors && formControls['name'].touched) {
-                        @if(formControls['name'].errors['required']) {
+                    @if (formControls['name'].errors && formControls['name'].touched) {
+                        @if (formControls['name'].errors['required']) {
                             <small class="text-red-500">Le nom du produit est obligatoire.</small>
                         }
                     }
                 </div>
                 <div class="col-span-6">
-                    <p-iftalabel  variant="in">
+                    <p-iftalabel variant="in">
                         <p-select id="status" [options]="statuses" formControlName="status" optionLabel="label" optionValue="value" placeholder="Sélectionner un statut" fluid />
                         <label for="status">Statut</label>
                     </p-iftalabel>
-                    @if(formControls['status'].errors && formControls['status'].touched) {
-                        @if(formControls['status'].errors['required']) {
+                    @if (formControls['status'].errors && formControls['status'].touched) {
+                        @if (formControls['status'].errors['required']) {
                             <small class="text-red-500">Le statut du produit est obligatoire.</small>
                         }
                     }
@@ -142,8 +142,8 @@
                     <textarea id="description" pTextarea formControlName="description" rows="3" fluid></textarea>
                     <label for="description">Description</label>
                 </p-floatlabel>
-                @if(formControls['description'].errors && formControls['description'].touched) {
-                    @if(formControls['description'].errors['required']) {
+                @if (formControls['description'].errors && formControls['description'].touched) {
+                    @if (formControls['description'].errors['required']) {
                         <small class="text-red-500">La description du produit est obligatoire.</small>
                     }
                 }
@@ -151,25 +151,25 @@
 
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
-                    <p-iftalabel  variant="in">
+                    <p-iftalabel variant="in">
                         <p-select inputId="categoryId" [options]="categories()" formControlName="categoryId" optionLabel="name" optionValue="id" placeholder="Sélectionner une catégorie" (onChange)="onSelectCategory($event.value)" fluid></p-select>
                         <label for="categoryId">Catégorie</label>
                     </p-iftalabel>
-                    @if(formControls['categoryId'].errors && formControls['categoryId'].touched) {
-                        @if(formControls['categoryId'].errors['required']) {
+                    @if (formControls['categoryId'].errors && formControls['categoryId'].touched) {
+                        @if (formControls['categoryId'].errors['required']) {
                             <small class="text-red-500">La catégorie du produit est obligatoire.</small>
                         }
                     }
                 </div>
 
-                @if(selectedCategory) {
+                @if (selectedCategory) {
                     <div class="col-span-6">
                         <p-iftalabel variant="in">
                             <p-select inputId="subCategoryId" [options]="subCategories()" formControlName="subCategoryId" optionLabel="name" optionValue="id" placeholder="Sélectionner une sous catégorie" fluid></p-select>
                             <label for="subCategoryId">Sous Catégorie</label>
                         </p-iftalabel>
-                        @if(formControls['subCategoryId'].errors && formControls['subCategoryId'].touched) {
-                            @if(formControls['subCategoryId'].errors['required']) {
+                        @if (formControls['subCategoryId'].errors && formControls['subCategoryId'].touched) {
+                            @if (formControls['subCategoryId'].errors['required']) {
                                 <small class="text-red-500">La sous catégorie du produit est obligatoire.</small>
                             }
                         }
@@ -177,20 +177,19 @@
                 }
             </div>
 
-            @if(sizes.length > 0) {
+            @if (sizes.length > 0) {
                 <div>
                     <label class="block font-bold mb-3">Stock</label>
                     <div formArrayName="stock">
-                        @for(stock of stockFormArray.controls; let i = $index; track i) {
+                        @for (stock of stockFormArray.controls; let i = $index; track i) {
                             <div [formGroupName]="i" class="grid grid-cols-12 gap-2 border p-2 rounded-md">
-
                                 <!-- Taille -->
                                 <div class="col-span-3">
                                     <p-iftalabel variant="in">
-                                        <p-select inputId="size{{i}}" [options]="sizes" formControlName="size" optionLabel="libelle" optionValue="libelle" placeholder="Sélectionner une taille" fluid></p-select>
-                                        <label for="size{{i}}">Taille</label>
-                                    </p-iftalabel>                           
-                                    @if(stockFormArray.at(i).get('size')?.hasError('required') && stockFormArray.at(i).get('size')?.touched) {
+                                        <p-select inputId="size{{ i }}" [options]="sizes" formControlName="size" optionLabel="libelle" optionValue="libelle" placeholder="Sélectionner une taille" fluid></p-select>
+                                        <label for="size{{ i }}">Taille</label>
+                                    </p-iftalabel>
+                                    @if (stockFormArray.at(i).get('size')?.hasError('required') && stockFormArray.at(i).get('size')?.touched) {
                                         <small class="text-red-500">La taille est obligatoire.</small>
                                     }
                                 </div>
@@ -198,10 +197,10 @@
                                 <!-- Couleur -->
                                 <div class="col-span-3">
                                     <p-iftalabel variant="in">
-                                        <p-select inputId="color{{i}}" [options]="colors" formControlName="color" optionLabel="value" optionValue="key" placeholder="Sélectionner une taille" fluid></p-select>
-                                        <label for="color{{i}}">Taille</label>
-                                    </p-iftalabel> 
-                                    @if(stockFormArray.at(i).get('color')?.hasError('required') && stockFormArray.at(i).get('color')?.touched) {
+                                        <p-select inputId="color{{ i }}" [options]="colors" formControlName="color" optionLabel="key" optionValue="key" placeholder="Sélectionner une taille" fluid></p-select>
+                                        <label for="color{{ i }}">Couleur</label>
+                                    </p-iftalabel>
+                                    @if (stockFormArray.at(i).get('color')?.hasError('required') && stockFormArray.at(i).get('color')?.touched) {
                                         <small class="text-red-500">La couleur est obligatoire.</small>
                                     }
                                 </div>
@@ -209,27 +208,23 @@
                                 <!-- Quantité -->
                                 <div class="col-span-3">
                                     <p-floatlabel variant="in">
-                                        <p-inputnumber id="quantity-{{i}}" formControlName="quantity" fluid />
-                                        <label for="quantity-{{i}}">Quantité</label>
+                                        <p-inputnumber id="quantity-{{ i }}" formControlName="quantity" fluid />
+                                        <label for="quantity-{{ i }}">Quantité</label>
                                     </p-floatlabel>
                                 </div>
 
                                 <!-- Prix -->
                                 <div class="col-span-3">
                                     <p-floatlabel variant="in">
-                                        <p-inputnumber id="price-{{i}}" formControlName="price" fluid />
-                                        <label for="price-{{i}}">Prix</label>
+                                        <p-inputnumber id="price-{{ i }}" formControlName="price" fluid />
+                                        <label for="price-{{ i }}">Prix</label>
                                     </p-floatlabel>
                                 </div>
                             </div>
                         }
                     </div>
                     <div class="flex items-end w-full">
-                        <p-button
-                            label="Ajouter une ligne"
-                            icon="pi pi-plus"
-                            (click)="addStockEntry()"
-                        />
+                        <p-button label="Ajouter une ligne" icon="pi pi-plus" (click)="addStockEntry()" />
                     </div>
                 </div>
             }
@@ -243,4 +238,3 @@
 </p-dialog>
 
 <p-confirmdialog [style]="{ width: '600px' }" />
-
