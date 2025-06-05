@@ -1,5 +1,5 @@
 <p-toast></p-toast>
-@if(product()) {
+@if (product()) {
     <div class="grid grid-cols-12 m-0 bg-transparent">
         <!-- <div class="col-span-4">
             <p-galleria [value]="images" [responsiveOptions]="responsiveOptions"  [thumbnailsPosition]="'left'" [containerStyle]="{ 'height': '60vh' }" [numVisible]="4" [(activeIndex)]="activeIndex">
@@ -24,12 +24,12 @@
             </p-galleria>
         </div> -->
         <div class="card col-span-4">
-            <p-galleria [value]="images" [responsiveOptions]="responsiveOptions" [containerStyle]="{ 'height': '65vh' }" [numVisible]="7" [circular]="true">
+            <p-galleria [value]="images" [responsiveOptions]="responsiveOptions" [containerStyle]="{ height: '65vh' }" [numVisible]="7" [circular]="true">
                 <ng-template #item let-item>
-                    <img [src]="'http://localhost:8080/api/products/images/' + item.url" style="height:50vh; display: block;"/>
+                    <img [src]="'http://localhost:8080/api/products/images/' + item.url" style="height: 50vh; display: block" />
                 </ng-template>
                 <ng-template #thumbnail let-item>
-                    <img [src]="'http://localhost:8080/api/products/images/' + item.url" style="height: 5rem; width: 5rem; display: block;" />
+                    <img [src]="'http://localhost:8080/api/products/images/' + item.url" style="height: 5rem; width: 5rem; display: block" />
                 </ng-template>
             </p-galleria>
         </div>
@@ -38,20 +38,25 @@
             <div class="space-y-1">
                 <h5 class="text-xl font-semibold mb-1">{{ product()!.name }}</h5>
                 <p class="text-gray-700">{{ product()!.description }}</p>
-                <p class="text-gray-700 mb-3">
-                    {{ product()!.categoryName }} - {{ product()!.subCategoryName }}
-                </p>
-                <p class="text-2xl mb-4 font-medium text-green-500">{{totalPrice() + " MAD"}}</p>
+                <p class="text-gray-700 mb-3">{{ product()!.categoryName }} - {{ product()!.subCategoryName }}</p>
+                <p class="text-2xl mb-4 font-medium text-green-500">{{ totalPrice() + ' MAD' }}</p>
 
                 <!-- Taille -->
                 <div class="mb-4">
                     <label class="block font-bold mb-2">Taille</label>
-                    <div class="flex flex-wrap gap-4">
-                        @for(size of sizes; track size) {
-                            <div class="flex items-center">
-                                <p-radiobutton [value]="size" [inputId]="size" [(ngModel)]="selectedSize" (onClick)="onSizeChange()" />
-                                <label [for]="size" class="ml-2">{{ size }}</label>
-                            </div>
+                    <div class="flex flex-wrap">
+                        @for (size of sizes; track size) {
+                            <p-radiobutton [(ngModel)]="selectedSize" [inputId]="size" [value]="size" (onClick)="onSizeChange()" styleClass="hidden" />
+                            <label
+                                [for]="size"
+                                class="px-3 py-2 mr-2 border rounded-md cursor-pointer font-medium text-sm transition-all"
+                                [ngClass]="{
+                                    'bg-primary-100 border-primary-500 text-primary-800': selectedSize === size,
+                                    'bg-white border-gray-300 text-gray-700': selectedSize !== size
+                                }"
+                            >
+                                {{ size }}
+                            </label>
                         }
                     </div>
                 </div>
@@ -59,20 +64,30 @@
                 <!-- Couleur -->
                 <div class="mb-4">
                     <label class="block font-bold mb-2">Couleur</label>
-                    <div class="flex flex-wrap gap-4">
-                        @for(color of colors; track color) {
-                            <div class="flex items-center">
-                                <p-radiobutton [(ngModel)]="selectedColor" [value]="color" [inputId]="color" (onClick)="onColorChange()" />
-                                <label [for]="color" class="ml-2">{{ color }}</label>
-                            </div>
+                    <div class="flex flex-wrap gap-2">
+                        @for (color of colors; track color) {
+                            <div
+                                class="w-2rem h-2rem rounded-full border-2 cursor-pointer"
+                                [ngStyle]="{
+                                    'background-color': color.value,
+                                    'border-color': selectedColor == color.key ? '#000' : '#ccc'
+                                }"
+                                (click)="onColorChange(color.key)"
+                                [attr.title]="color.key"
+                            ></div>
                         }
                     </div>
                 </div>
 
                 <!-- Quantité + Bouton -->
-                <div class="mb-4">
-                    <label class="block font-bold mb-2">Quantité ({{quantityInStock()}} available)</label>
-                    <div class="mb-3 flex gap-4">
+                <div class="mb-6">
+                    <label class="block font-bold mb-2 text-base">
+                        Quantité
+                        <span class="text-sm text-gray-500">({{ quantityInStock() }} en stock)</span>
+                    </label>
+
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                        <!-- Sélecteur de quantité -->
                         <p-inputnumber
                             inputId="quantity"
                             [(ngModel)]="selectedQuantity"
@@ -81,7 +96,7 @@
                             buttonLayout="horizontal"
                             [min]="1"
                             [max]="quantityInStock()"
-                            [inputStyle]="{ width: '4rem', 'text-align': 'center' }"
+                            [inputStyle]="{ width: '4rem', textAlign: 'center' }"
                         >
                             <ng-template #incrementbuttonicon>
                                 <span class="pi pi-plus"></span>
@@ -90,54 +105,38 @@
                                 <span class="pi pi-minus"></span>
                             </ng-template>
                         </p-inputnumber>
-                        <button
-                            pButton
-                            label="Ajouter au panier"
-                            icon="pi pi-shopping-cart"
-                            size="large"
-                            severity="success"
-                            (click)="addToCart()"
-                        ></button>
-                        <button
-                            pButton
-                            label="Acheter maintenant"
-                            icon="pi pi-check"
-                            size="large"
-                            severity="contrast"
-                            (click)="addToCart()"
-                        ></button>
+
+                        <!-- Boutons d'action -->
+                        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                            <button pButton label="Ajouter au panier" icon="pi pi-shopping-cart" size="large" severity="success" (click)="addToCart()" class="w-full sm:w-auto"></button>
+                        </div>
                     </div>
                 </div>
 
-                <button
-                    (click)="goBack()"
-                    class="flex items-center text-blue-500 hover:underline mt-4"
-                >
+                <button (click)="goBack()" class="flex items-center text-blue-500 hover:underline mt-4">
                     <i class="pi pi-arrow-left mr-2"></i>
                     Retourner aux produits
                 </button>
             </div>
         </div>
-        <section class="card ml-0 col-span-3 border-1 border-gray-200 p-3">
-            <h2 class="text-xl font-bold m-0">Commentaires</h2>
-            <div class="flex flex-col gap-3 mt-3 overflow-auto" style="height: 70vh;">
-                @for(comment of comments(); track comment.id) {
-                    <div class="bg-gray-100 p-2 rounded">
-                        <p class="font-bold m-0">{{ comment.username }}</p>
-                        <p class="mb-1">{{ comment.content }}</p>
-                        <p class="text-sm text-gray-500 m-0">{{ comment.createdAt  | date: 'dd/MM/yyyy à HH:mm' }}</p>
-                    </div>   
-                } @empty {
-                    <div>
-                        <p>Aucun commentaire pour le moment, Soyez le premier a commenter.</p>
+        <section class="card col-span-3 border border-gray-200 p-4">
+            <h2 class="text-xl font-bold mb-2">Commentaires</h2>
+
+            <div class="flex flex-col gap-3 mt-2 overflow-y-auto" style="max-height: 60vh">
+                @for (comment of comments(); track comment.id) {
+                    <div class="bg-gray-100 p-3 rounded-lg shadow-sm">
+                        <p class="font-semibold mb-1">{{ comment.username }}</p>
+                        <p class="text-sm mb-2">{{ comment.content }}</p>
+                        <p class="text-xs text-gray-500">{{ comment.createdAt | date: 'dd/MM/yyyy à HH:mm' }}</p>
                     </div>
+                } @empty {
+                    <p class="text-gray-500">Aucun commentaire pour le moment.</p>
                 }
             </div>
-            <div class="flex justify-between pt-3 border-top-1 border-surface gap-2">
-                <textarea id="new-comment" pTextarea [(ngModel)]="comment" placeholder="Ajouter un commentaire" class="w-full" rows="1" fluid></textarea>
-                <div class="flex items-end">
-                    <button pButton (click)="addComment()" icon="pi pi-send"></button>
-                </div>
+
+            <div class="flex gap-2 mt-4 items-end">
+                <textarea pTextarea [(ngModel)]="comment" placeholder="Ajouter un commentaire..." rows="2" class="flex-1"></textarea>
+                <button pButton icon="pi pi-send" (click)="addComment()" class="p-button-sm p-button-rounded p-button-primary"></button>
             </div>
         </section>
     </div>

@@ -48,7 +48,7 @@ export class ListProductsComponent implements OnInit {
     searchTerm = '';
     selectedCategories = signal<Category[]>([]);
     selectedSubCategories = signal<SubCategory[]>([]);
-    selectedSizes = signal<Size[]>([]);
+    selectedSizes: Size[] = [];
     selectedColors = signal<string[]>([]);
     selectedPrice = signal<number[]>([0, 100000]);
 
@@ -83,6 +83,8 @@ export class ListProductsComponent implements OnInit {
     appliquerFilters(): void {
         let result = [...this.products()];
 
+        console.log(this.selectedSizes);
+
         // Search
         if (this.searchTerm) {
             const term = this.searchTerm.toLowerCase();
@@ -98,7 +100,7 @@ export class ListProductsComponent implements OnInit {
             this.subCategories.set([]);
             this.sizes.set([]);
             this.selectedSubCategories.set([]);
-            this.selectedSizes.set([]);
+            this.selectedSizes = [];
         }
 
         // Subcategories
@@ -107,8 +109,8 @@ export class ListProductsComponent implements OnInit {
         }
 
         // Sizes
-        if (this.selectedSizes().length > 0) {
-            result = result.filter((product) => this.selectedSizes().some((size) => product.stock?.some((s) => s.size === size.libelle)));
+        if (this.selectedSizes.length > 0) {
+            result = result.filter((product) => this.selectedSizes.some((size) => product.stock?.some((s) => s.size === size.libelle)));
         }
 
         // Colors
@@ -140,6 +142,10 @@ export class ListProductsComponent implements OnInit {
         this.filteredProducts.set(result);
     }
 
+    isSizeSelected(sizeId: number): boolean {
+        return this.selectedSizes.some((s) => s.id === sizeId);
+    }
+
     toggleColor(colorKey: string) {
         const current = this.selectedColors();
         if (current.includes(colorKey)) {
@@ -159,7 +165,7 @@ export class ListProductsComponent implements OnInit {
         this.searchTerm = '';
         this.selectedCategories.set([]);
         this.selectedSubCategories.set([]);
-        this.selectedSizes.set([]);
+        this.selectedSizes = [];
         this.selectedColors.set([]);
         this.selectedPrice.set([0, 100000]);
         this.selectedSort = null;

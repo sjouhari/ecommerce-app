@@ -6,7 +6,7 @@ export interface OrderItem {
     productName: string;
     productImage: string;
     size: string;
-    color: ProductColor;
+    color: string;
     quantity: number;
     price: number;
     selected?: boolean;

@@ -35,12 +35,13 @@ export class ProductDetailsComponent implements OnInit {
     commentService = inject(CommentService);
 
     images: Media[] = [];
-    colors: ProductColor[] = [];
+    allColors = Object.entries(ProductColor).map(([key, value]) => ({ key, value }));
+    colors: { key: string; value: string }[] = [];
     sizes: string[] | undefined = [];
     comment: string = '';
     comments = signal<CommentModel[]>([]);
 
-    selectedColor: ProductColor | null = null;
+    selectedColor: string | null = null;
     selectedSize: string | null = null;
     selectedQuantity: number = 1;
     totalPrice = signal<number>(0);
@@ -92,13 +93,14 @@ export class ProductDetailsComponent implements OnInit {
     }
 
     getSizeColors() {
-        this.colors = [];
+        const productColors: string[] = [];
         this.product()?.stock?.forEach((stock) => {
             if (stock.size === this.selectedSize) {
-                this.colors.push(stock.color);
+                productColors.push(stock.color);
             }
         });
-        this.selectedColor = this.colors[0];
+        this.colors = this.allColors.filter((color) => productColors.includes(color.key));
+        this.selectedColor = this.colors[0].key;
     }
 
     getColorQuantity() {
@@ -169,7 +171,8 @@ export class ProductDetailsComponent implements OnInit {
         this.onQuantityChange();
     }
 
-    onColorChange() {
+    onColorChange(color: string) {
+        this.selectedColor = color;
         this.getColorQuantity();
         this.onQuantityChange();
     }
