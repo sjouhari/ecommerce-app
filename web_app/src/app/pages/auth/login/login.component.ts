@@ -55,6 +55,8 @@ export class LoginComponent implements OnInit {
                     },
                     error: () => {
                         this.authService.setCurrentUser(null);
+                        this.errorMessage.set('Une erreur est survenue lors de la connexion');
+                        this.loading.set(false);
                     }
                 });
             },

@@ -48,19 +48,21 @@ public class SecurityConfig {
 								"/api/users/forgot-password",
 								"/api/users/reset-password").permitAll()
 
+						.requestMatchers(HttpMethod.GET, "/api/auth/current-user").authenticated()
+
 						.requestMatchers(HttpMethod.GET, "/api/stores/**").permitAll()
 
-						.requestMatchers(HttpMethod.GET).hasAuthority("PROFIL_READ")
+						.requestMatchers(HttpMethod.GET, "/api/profils/**").hasAuthority("PROFIL_READ")
 						.requestMatchers(HttpMethod.POST).hasAuthority("PROFIL_CREATE")
 						.requestMatchers(HttpMethod.PUT).hasAuthority("PROFIL_UPDATE")
 						.requestMatchers(HttpMethod.DELETE).hasAuthority("PROFIL_DELETE")
 
-						.requestMatchers(HttpMethod.GET).hasAuthority("FEATURE_READ")
+						.requestMatchers(HttpMethod.GET, "/api/features/**").hasAuthority("FEATURE_READ")
 						.requestMatchers(HttpMethod.POST).hasAuthority("FEATURE_CREATE")
 						.requestMatchers(HttpMethod.PUT).hasAuthority("FEATURE_UPDATE")
 						.requestMatchers(HttpMethod.DELETE).hasAuthority("FEATURE_DELETE")
 
-						.requestMatchers(HttpMethod.GET).hasAuthority("USER_READ")
+						.requestMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("USER_READ")
 						.requestMatchers(HttpMethod.POST).hasAuthority("USER_CREATE")
 						.requestMatchers(HttpMethod.PUT).hasAuthority("USER_UPDATE")
 						.requestMatchers(HttpMethod.DELETE).hasAuthority("USER_DELETE")
