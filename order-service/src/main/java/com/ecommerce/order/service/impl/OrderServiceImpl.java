@@ -94,6 +94,7 @@ public class OrderServiceImpl implements OrderService {
         // Create new Order
         Order order = new Order();
         order.setUserId(orderRequestDto.getUserId());
+        order.setUserName(orderRequestDto.getUserName());
         order.setStatus(OrderStatus.PENDING);
         order.setOrderItems(orderItems);
 
@@ -152,6 +153,16 @@ public class OrderServiceImpl implements OrderService {
         orderEvent.setStatus(savedOrder.getStatus().toString());
         orderPlacedProducer.sendMessage(orderEvent, orderStatusTopic);
         return OrderMapper.INSTANCE.orderToOrderResponseDto(savedOrder);
+    }
+
+    @Override
+    public void confirmOrderPayement(Long paymentMethodId) {
+        PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodId).orElseThrow(
+                () -> new ResourceNotFoundException("Payment Method", "id", paymentMethodId.toString())
+        );
+
+        paymentMethod.setStatus(PaymentMethodStatus.PAID);
+        paymentMethodRepository.save(paymentMethod);
     }
 
     @Override

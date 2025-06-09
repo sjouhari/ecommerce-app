@@ -29,7 +29,6 @@ export class AuthService {
                 this.getCurrentUser().subscribe({
                     next: (user) => {
                         this.setCurrentUser(user);
-                        console.log(this.currentUser());
                         resolve();
                     },
                     error: () => {

@@ -9,25 +9,41 @@ import { ToastModule } from 'primeng/toast';
 import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order/order.model';
+import { DialogModule } from 'primeng/dialog';
+import { IftaLabelModule } from 'primeng/iftalabel';
+import { Select } from 'primeng/select';
+import { OrderStatus } from '../../models/order/order-status';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-orders',
-    imports: [TableModule, TagModule, ToastModule, RatingModule, ButtonModule, CommonModule],
+    imports: [TableModule, FormsModule, TagModule, ToastModule, RatingModule, ButtonModule, CommonModule, DialogModule, IftaLabelModule, Select],
     templateUrl: './orders.component.html',
     providers: [MessageService]
 })
 export class OrdersComponent {
     orderService = inject(OrderService);
     messageService = inject(MessageService);
-    orders!: Order[];
+    orders: Order[] = [];
+
+    orderStatusDialog = false;
 
     expandedRows = {};
 
+    selectedStatus: string = '';
+
+    selectedOrderId: number = 0;
+
+    statuses = Object.entries(OrderStatus).map(([key, value]) => ({ label: value, value: key }));
+
     ngOnInit() {
+        this.getOrders();
+    }
+
+    getOrders() {
         this.orderService.getOrders().subscribe({
             next: (orders) => {
                 this.orders = orders;
-                console.log(this.orders);
             },
             error: (error) => {
                 console.log(error); //TODO: handle error
@@ -75,11 +91,40 @@ export class OrdersComponent {
         }
     }
 
-    onRowExpand(event: TableRowExpandEvent) {
-        this.messageService.add({ severity: 'info', summary: 'Product Expanded', detail: event.data.name, life: 3000 });
+    updateOrderStatus() {
+        this.orderService.updateOrderStatus(this.selectedOrderId, this.selectedStatus).subscribe({
+            next: (order) => {
+                this.getOrders();
+                this.hideDialog();
+                this.messageService.add({ severity: 'success', summary: 'Statut mis à jour', detail: '', life: 3000 });
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
     }
 
-    onRowCollapse(event: TableRowCollapseEvent) {
-        this.messageService.add({ severity: 'success', summary: 'Product Collapsed', detail: event.data.name, life: 3000 });
+    confirmOrderPayment(id: number) {
+        this.orderService.confirmOrderPayment(id).subscribe({
+            next: (order) => {
+                this.getOrders();
+                this.messageService.add({ severity: 'success', summary: 'Le paiement a été confirmé', detail: '', life: 3000 });
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
+    }
+
+    showStatusDialog(order: Order) {
+        this.selectedOrderId = order.id!;
+        this.selectedStatus = order.status!;
+        this.orderStatusDialog = true;
+    }
+
+    hideDialog() {
+        this.selectedStatus = '';
+        this.selectedOrderId = 0;
+        this.orderStatusDialog = false;
     }
 }

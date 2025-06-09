@@ -44,6 +44,12 @@ public class OrderController {
         return ResponseEntity.ok(orderService.updateOrderStatus(id, updateOrderStatusRequestDto, token));
     }
 
+    @PutMapping("/payment/{paymentMethodId}")
+    public ResponseEntity<Void> confirmOrderPayement(@PathVariable Long paymentMethodId) {
+        orderService.confirmOrderPayement(paymentMethodId);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.deleteOrder(id));

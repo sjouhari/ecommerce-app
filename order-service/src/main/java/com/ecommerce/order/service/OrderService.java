@@ -16,6 +16,8 @@ public interface OrderService {
 
     OrderResponseDto updateOrderStatus(Long orderId, UpdateOrderStatusRequestDto updateOrderStatusRequestDto, String token);
 
+    void confirmOrderPayement(Long paymentMethodId);
+
     String deleteOrder(Long orderId);
 
     List<BestSellingProductProjection> getBestSellingProducts();

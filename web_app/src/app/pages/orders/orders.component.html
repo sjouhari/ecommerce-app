@@ -1,6 +1,6 @@
 <div class="card">
     <p-toast />
-    <p-table [value]="orders" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }" [expandedRowKeys]="expandedRows" (onRowExpand)="onRowExpand($event)" (onRowCollapse)="onRowCollapse($event)">
+    <p-table [value]="orders" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }" [expandedRowKeys]="expandedRows">
         <ng-template #caption>
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-bold m-0">Liste des commandes</h1>
@@ -10,7 +10,7 @@
                 </div>
             </div>
         </ng-template>
-        @if(orders.length > 0) {
+        @if (orders.length > 0) {
             <ng-template #header>
                 <tr>
                     <th style="width: 5rem"></th>
@@ -20,6 +20,7 @@
                     <th pSortableColumn="invoice.paymentMethod.type">Mode du paiement <p-sortIcon field="invoice.paymentMethod.type" /></th>
                     <th pSortableColumn="invoice.paymentMethod.status">Statut du paiement <p-sortIcon field="invoice.paymentMethod.status" /></th>
                     <th pSortableColumn="status">Statut de la commande <p-sortIcon field="status" /></th>
+                    <th></th>
                 </tr>
             </ng-template>
         }
@@ -34,14 +35,20 @@
                     <p-button type="button" pRipple [pRowToggler]="order" [text]="true" [rounded]="true" [plain]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
                 </td>
                 <td>{{ order.userName }}</td>
-                <td>{{ order.createdAt | date : 'dd/MM/yyyy HH:mm' }}</td>
-                <td>{{ order.invoice.totalPrice | currency : 'MAD ' }}</td>
+                <td>{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ order.invoice.totalPrice | currency: 'MAD ' }}</td>
                 <td>{{ order.invoice.paymentMethod.type }}</td>
                 <td>
                     <p-tag [value]="order.invoice.paymentMethod.status" [severity]="getSeverity(order.invoice.paymentMethod.status)" />
+                    @if (order.invoice.paymentMethod.type === 'CHEQUE' && order.invoice.paymentMethod.status === 'PENDING') {
+                        <p-button icon="pi pi-check" class="mr-3" [rounded]="true" [outlined]="true" (click)="confirmOrderPayment(order.invoice.paymentMethod.id)" />
+                    }
                 </td>
                 <td>
                     <p-tag [value]="order.status" [severity]="getSeverity(order.status)" />
+                </td>
+                <td>
+                    <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="showStatusDialog(order)" />
                 </td>
             </tr>
         </ng-template>
@@ -51,7 +58,7 @@
                     <div class="p-4">
                         <h5>Liste des produits de la commande</h5>
                         <p-table [value]="order.orderItems" dataKey="id">
-                            @if(order.orderItems.length > 0) {
+                            @if (order.orderItems.length > 0) {
                                 <ng-template #header>
                                     <tr>
                                         <th pSortableColumn="id">Id <p-sortIcon field="price" /></th>
@@ -87,3 +94,16 @@
         </ng-template>
     </p-table>
 </div>
+
+<p-dialog [(visible)]="orderStatusDialog" [style]="{ width: '600px', minHeight: '40vh' }" header="Statut de la commande" [modal]="true">
+    <ng-template #content>
+        <p-iftalabel variant="in">
+            <p-select scrollHeight="20vh" id="status" [options]="statuses" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value" placeholder="Sélectionner un statut" fluid />
+            <label for="status">Statut</label>
+        </p-iftalabel>
+        <div class="flex justify-end gap-3 mt-5">
+            <p-button type="button" label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
+            <p-button type="submit" label="Enregistrer" icon="pi pi-check" (click)="updateOrderStatus()" />
+        </div>
+    </ng-template>
+</p-dialog>

@@ -76,28 +76,6 @@ export class AppMenu {
                             { label: 'Fonctionnalités', icon: 'pi pi-fw pi-th-large', routerLink: ['/features'] }
                         ]
                     },
-                    // {
-                    //     label: 'Promotions',
-                    //     icon: 'pi pi-fw pi-star',
-                    //     items: [
-                    //         { label: 'Coupons', icon: 'pi pi-fw pi-ticket', routerLink: ['/coupons'] },
-                    //         { label: 'Réductions', icon: 'pi pi-fw pi-percentage', routerLink: ['/discounts'] }
-                    //     ]
-                    // },
-                    // {
-                    //     label: 'Rapports',
-                    //     icon: 'pi pi-fw pi-chart-bar',
-                    //     items: [
-                    //         { label: 'Ventes', icon: 'pi pi-fw pi-dollar', routerLink: ['/reports/sales'] },
-                    //         { label: 'Produits', icon: 'pi pi-fw pi-tags', routerLink: ['/reports/products'] },
-                    //         { label: 'Clients', icon: 'pi pi-fw pi-users', routerLink: ['/reports/customers'] }
-                    //     ]
-                    // },
-                    {
-                        label: 'Paramètres',
-                        icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/settings']
-                    },
                     {
                         label: 'Déconnexion',
                         icon: 'pi pi-fw pi-sign-out',

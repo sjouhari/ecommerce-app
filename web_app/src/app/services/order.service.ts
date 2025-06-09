@@ -29,6 +29,14 @@ export class OrderService {
         return this.http.post<Order>(this.baseUrl, order);
     }
 
+    updateOrderStatus(id: number, status: string): Observable<Order> {
+        return this.http.put<Order>(`${this.baseUrl}/${id}`, { status });
+    }
+
+    confirmOrderPayment(id: number): Observable<Order> {
+        return this.http.put<Order>(`${this.baseUrl}/payment/${id}`, {});
+    }
+
     deleteOrder(id: number): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/${id}`);
     }
