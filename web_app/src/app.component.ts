@@ -1,6 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { AuthService } from './app/services/auth.service';
+import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-root',
@@ -8,10 +7,4 @@ import { AuthService } from './app/services/auth.service';
     imports: [RouterModule],
     template: `<router-outlet></router-outlet>`
 })
-export class AppComponent {
-    router = inject(Router);
-
-    constructor(private authService: AuthService) {
-        this.router.navigate(['/initialization']);
-    }
-}
+export class AppComponent {}

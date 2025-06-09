@@ -23,11 +23,9 @@ import { UserLayoutComponent } from './app/pages/user-layout/user-layout.compone
 import { HomeComponent } from './app/pages/user-layout/components/home/home.component';
 import { adminProfileGuard } from './app/guards/admin-profile.guard';
 import { sellerProfileGuard } from './app/guards/seller-profile.guard';
-import { InitializerComponent } from './app/pages/initializer/initializer.component';
 import { StoresComponent } from './app/pages/stores/stores.component';
 
 export const appRoutes: Routes = [
-    { path: 'initialization', component: InitializerComponent },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     { path: 'forgot-password', component: ForgotPasswordComponent },
@@ -63,10 +61,7 @@ export const appRoutes: Routes = [
             // Permissions et rôles
             { path: 'roles', component: ProfilesComponent },
             { path: 'features', component: FeaturesComponent },
-            { path: 'profile', component: UserProfileComponent },
-
-            // Paramètres
-            { path: 'settings', component: ProductsComponent }
+            { path: 'profile', component: UserProfileComponent }
         ]
     },
     {

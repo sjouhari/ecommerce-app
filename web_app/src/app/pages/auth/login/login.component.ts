@@ -22,11 +22,36 @@ export class LoginComponent implements OnInit {
     errorMessage = signal('');
     loading = signal(false);
 
+    isUserAlreadyLoggedIn = signal(true);
+
     ngOnInit(): void {
+        this.autoLogin();
         this.loginFormGroup = this.formBuilder.group({
             email: new FormControl('', [Validators.required, Validators.email]),
             password: new FormControl('', [Validators.required, Validators.minLength(8)])
         });
+    }
+
+    autoLogin() {
+        if (!this.authService.isTokenExpired()) {
+            this.authService.getCurrentUser().subscribe({
+                next: (user) => {
+                    if (user.profils?.some((p) => p.name === 'ROLE_ADMIN' || p.name === 'ROLE_SELLER')) {
+                        this.authService.setCurrentUser(user);
+                        this.router.navigate(['/']);
+                    } else {
+                        this.router.navigate(['/home']);
+                    }
+                },
+                error: () => {
+                    this.authService.setCurrentUser(null);
+                    this.authService.removeToken();
+                    this.isUserAlreadyLoggedIn.set(false);
+                }
+            });
+        } else {
+            this.isUserAlreadyLoggedIn.set(false);
+        }
     }
 
     get formControls() {
@@ -46,7 +71,11 @@ export class LoginComponent implements OnInit {
                 this.authService.getCurrentUser().subscribe({
                     next: (user) => {
                         this.authService.setCurrentUser(user);
-                        this.router.navigate(['/initialization']);
+                        if (user.profils?.some((p) => p.name === 'ROLE_ADMIN' || p.name === 'ROLE_SELLER')) {
+                            this.router.navigate(['/']);
+                        } else {
+                            this.router.navigate(['/home']);
+                        }
                         this.loading.set(false);
                     },
                     error: () => {

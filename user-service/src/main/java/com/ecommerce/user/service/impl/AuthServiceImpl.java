@@ -13,7 +13,6 @@ import com.ecommerce.user.repository.ProfilRepository;
 import com.ecommerce.user.repository.UserRepository;
 import com.ecommerce.user.security.JwtTokenProvider;
 import com.ecommerce.user.service.AuthService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
