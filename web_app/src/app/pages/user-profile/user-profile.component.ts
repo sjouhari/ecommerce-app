@@ -7,7 +7,6 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
-import { last } from 'rxjs';
 import { Address } from '../../models/order/address.model';
 import { AuthService } from '../../services/auth.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -49,11 +48,13 @@ export class UserProfileComponent implements OnInit {
     addresses = signal<Address[]>([]);
     orders = signal<Order[]>([]);
 
+    currentUser = signal(this.authService.currentUser());
+
     ngOnInit(): void {
         this.userInfosFormGroup = this.formBuilder.group({
-            firstName: new FormControl(this.authService.currentUser()?.firstName, [Validators.required]),
-            lastName: new FormControl(this.authService.currentUser()?.lastName, [Validators.required]),
-            email: new FormControl(this.authService.currentUser()?.email)
+            firstName: new FormControl(this.currentUser()?.firstName, [Validators.required]),
+            lastName: new FormControl(this.currentUser()?.lastName, [Validators.required]),
+            email: new FormControl(this.currentUser()?.email)
         });
 
         this.changePasswordFormGroup = this.formBuilder.group({
@@ -62,7 +63,7 @@ export class UserProfileComponent implements OnInit {
             confirmNewPassword: new FormControl('', [Validators.required, Validators.minLength(8)])
         });
 
-        this.addressService.getUserAddresses(this.authService.currentUser()?.id!).subscribe({
+        this.addressService.getUserAddresses(this.currentUser()?.id!).subscribe({
             next: (addresses) => {
                 this.addresses.set(addresses);
             },
@@ -73,7 +74,7 @@ export class UserProfileComponent implements OnInit {
 
         this.initAddressFormGroup();
 
-        this.orderService.getUserOrders(this.authService.currentUser()?.id!).subscribe({
+        this.orderService.getUserOrders(this.currentUser()?.id!).subscribe({
             next: (orders) => {
                 this.orders.set(orders);
             },
@@ -86,7 +87,7 @@ export class UserProfileComponent implements OnInit {
     initAddressFormGroup(address?: Address) {
         this.addressFormGroup = this.formBuilder.group({
             id: new FormControl(address?.id || ''),
-            userId: new FormControl(this.authService.currentUser()?.id),
+            userId: new FormControl(this.currentUser()?.id),
             firstName: new FormControl(address?.firstName || '', [Validators.required]),
             lastName: new FormControl(address?.lastName || '', [Validators.required]),
             phone: new FormControl(address?.phone || '', [Validators.required]),
@@ -110,7 +111,7 @@ export class UserProfileComponent implements OnInit {
     }
 
     getFullName() {
-        return `${this.authService.currentUser()?.firstName} ${this.authService.currentUser()?.lastName}`;
+        return `${this.currentUser()?.firstName} ${this.currentUser()?.lastName}`;
     }
 
     logout() {
@@ -140,7 +141,7 @@ export class UserProfileComponent implements OnInit {
         }
 
         this.saveBtnLoading.set(true);
-        this.userService.updateUser(this.authService.currentUser()?.id!, this.userInfosFormGroup.value).subscribe({
+        this.userService.updateUser(this.currentUser()?.id!, this.userInfosFormGroup.value).subscribe({
             next: (response) => {
                 this.saveBtnLoading.set(false);
                 this.messageService.add({
@@ -167,7 +168,7 @@ export class UserProfileComponent implements OnInit {
         }
 
         this.changePasswordBtnLoading.set(true);
-        this.userService.changePassword(this.authService.currentUser()?.id!, this.changePasswordFormGroup.value.currentPassword!, this.changePasswordFormGroup.value.newPassword!).subscribe({
+        this.userService.changePassword(this.currentUser()?.id!, this.changePasswordFormGroup.value.currentPassword!, this.changePasswordFormGroup.value.newPassword!).subscribe({
             next: (response) => {
                 this.changePasswordBtnLoading.set(false);
                 this.messageService.add({
@@ -240,4 +241,6 @@ export class UserProfileComponent implements OnInit {
             });
         }
     }
+
+    showStoreDialog() {}
 }

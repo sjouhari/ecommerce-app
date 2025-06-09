@@ -30,7 +30,7 @@ import { AuthService } from '../../services/auth.service';
 
             <div class="layout-topbar-menu hidden lg:block">
                 <div class="layout-topbar-menu-content">
-                    <a routerLink="/home/profile"><p-chip [label]="getUserFullName()" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" styleClass="px-3 py-2"></p-chip></a>
+                    <a routerLink="profile"><p-chip [label]="getUserFullName()" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" styleClass="px-3 py-2"></p-chip></a>
                 </div>
             </div>
         </div>

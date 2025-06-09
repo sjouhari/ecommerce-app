@@ -23,7 +23,7 @@ export class AuthService {
     loadAuthState(): Promise<void> {
         return new Promise<void>((resolve) => {
             if (this.isTokenExpired()) {
-                this.logout();
+                this.removeToken();
                 resolve();
             } else {
                 this.getCurrentUser().subscribe({

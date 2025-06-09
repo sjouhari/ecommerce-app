@@ -1,14 +1,22 @@
 <p-toast></p-toast>
 
-<div class="mx-8 my-3">
+<div>
     <div class="grid grid-cols-12 gap-3">
-        <div class="col-span-2 flex flex-col items-center">
-            <img src="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" alt="avatar" width="100" height="100" />
-            <p class="font-bold mt-2 mb-0">{{ getFullName() }}</p>
-            <p class="text-gray-500">{{ userInfosFormGroup.get('email')?.value }}</p>
-            <button pButton label="Déconnexion" icon="pi pi-sign-out" class="mt-2" (click)="logout()"></button>
+        <div class="col-span-12 flex justify-between">
+            <div class="flex gap-3">
+                <img class="w-5rem rounded" src="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" [alt]="getFullName()" />
+                <div class="flex flex-col">
+                    <h3 class="mt-2 mb-0">
+                        Bienvenue <span class="font-semibold">{{ getFullName() }}</span>
+                    </h3>
+                    <p class="text-gray-500">{{ userInfosFormGroup.get('email')?.value }}</p>
+                </div>
+            </div>
+            <div>
+                <button pButton label="Déconnexion" icon="pi pi-sign-out" class="mt-2" (click)="logout()"></button>
+            </div>
         </div>
-        <p-card header="Modifier mes informations" class="col-span-3">
+        <p-card header="Modifier mes informations" class="col-span-6">
             <form class="flex flex-col gap-3" [formGroup]="userInfosFormGroup" (ngSubmit)="saveChanges()">
                 <div>
                     <label class="block mb-2" for="lastName">Nom</label>
@@ -27,7 +35,7 @@
                 </div>
             </form>
         </p-card>
-        <p-card header="Changer mon mot de passe" class="col-span-3">
+        <p-card header="Changer mon mot de passe" class="col-span-6">
             <form class="flex flex-col gap-3" [formGroup]="changePasswordFormGroup" (ngSubmit)="changePassword()">
                 <div>
                     <label class="block mb-2" for="currentPassword">Mot de passe actuel</label>
@@ -70,8 +78,8 @@
                 </div>
             </form>
         </p-card>
-        <p-card header="Gérer mes adresses de livraison" class="col-span-4">
-            <div class="overflow-auto" style="height: 30vh">
+        <p-card header="Gérer mes adresses de livraison" class="col-span-6">
+            <div class="overflow-auto" style="max-height: 30vh">
                 @for (address of addresses(); track address.id) {
                     <div class="flex justify-between gap-1 mb-3 border-1 border-surface rounded p-2">
                         <div class="flex flex-col gap-2">
@@ -86,19 +94,47 @@
                     </div>
                 }
             </div>
-            <p-button icon="pi pi-plus" [rounded]="true" [outlined]="true" (click)="showAddressDialog()"></p-button>
+            <p-button icon="pi pi-plus" label="Ajouter une adresse" [rounded]="true" [outlined]="true" (click)="showAddressDialog()"></p-button>
         </p-card>
-
+        @if (currentUser()?.store) {
+            <p-card header="Mon magasin" class="col-span-6">
+                <div>
+                    <div class="my-2">
+                        <p class="font-semibold m-0">Nom du magasin</p>
+                        <p>{{ currentUser()?.store?.name }}</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="font-semibold m-0">Adresse</p>
+                        <p>{{ currentUser()?.store?.address }}</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="font-semibold m-0">Email</p>
+                        <p>{{ currentUser()?.store?.email }}</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="font-semibold m-0">Téléphone</p>
+                        <p>{{ currentUser()?.store?.phoneNumber }}</p>
+                    </div>
+                </div>
+            </p-card>
+        } @else {
+            <p-card header="Devenir vendeur" class="col-span-6">
+                <p class="text-lg">Vous n'avez pas encore de magasin, vous pouvez en créer un maintenant.</p>
+                <p-button label="Créer mon magasin" icon="pi pi-plus" [rounded]="true" [outlined]="true" (click)="showStoreDialog()"></p-button>
+            </p-card>
+        }
         <p-panel header="Historique des commandes" class="col-span-12">
             <p-table [value]="orders()" [responsiveLayout]="'scroll'">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th>ID Commande</th>
-                        <th>Date</th>
-                        <th>Prix totale</th>
-                        <th>Statut</th>
-                    </tr>
-                </ng-template>
+                @if (orders().length > 0) {
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>ID Commande</th>
+                            <th>Date</th>
+                            <th>Prix totale</th>
+                            <th>Statut</th>
+                        </tr>
+                    </ng-template>
+                }
                 <ng-template pTemplate="body" let-order>
                     <tr>
                         <td>{{ order.id }}</td>
@@ -107,6 +143,11 @@
                         <td>
                             <span class="order-status" [ngClass]="'status-' + order.status.toLowerCase()">{{ order.status }}</span>
                         </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="4">Aucune commande pour le moment</td>
                     </tr>
                 </ng-template>
             </p-table>
