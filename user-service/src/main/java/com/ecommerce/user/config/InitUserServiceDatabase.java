@@ -2,6 +2,7 @@ package com.ecommerce.user.config;
 
 import com.ecommerce.user.entity.Feature;
 import com.ecommerce.user.entity.Profil;
+import com.ecommerce.user.entity.Store;
 import com.ecommerce.user.entity.User;
 import com.ecommerce.user.repository.FeatureRepository;
 import com.ecommerce.user.repository.ProfilRepository;
@@ -85,7 +86,10 @@ public class InitUserServiceDatabase {
            }
 
            if(userRepository.count() == 0) {
-               userRepository.save(new User(null, "Admin", "Admin", "admin@gmail.com", passwordEncoder.encode(ADMIN_PASSWORD), true, true, 0, LocalDateTime.now(), true, "AdminStore", new ArrayList<>(profilRepository.findAll()), LocalDateTime.now(), null));
+               User admin = new User(null, "Admin", "Admin", "admin@gmail.com", passwordEncoder.encode(ADMIN_PASSWORD), true, true, 0, LocalDateTime.now(), null, new ArrayList<>(profilRepository.findAll()), LocalDateTime.now(), null);
+               Store store = new Store(null, admin, "AdminStore", "Casablanca", "0608100760", "admin@gmail.com");
+               admin.setStore(store);
+               userRepository.save(admin);
            }
         };
     }

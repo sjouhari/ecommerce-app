@@ -1,28 +1,6 @@
 <p-toast></p-toast>
 @if (product()) {
     <div class="grid grid-cols-12 m-0 bg-transparent">
-        <!-- <div class="col-span-4">
-            <p-galleria [value]="images" [responsiveOptions]="responsiveOptions"  [thumbnailsPosition]="'left'" [containerStyle]="{ 'height': '60vh' }" [numVisible]="4" [(activeIndex)]="activeIndex">
-                <ng-template #item let-item>
-                    <div class="w-30rem h-30rem">
-                      <img
-                        [src]="'http://localhost:8080/api/products/images/' + item.url"
-                        class="w-full h-full object-cover"
-                        [alt]="item.name || 'image produit'"
-                        loading="lazy"
-                      />
-                    </div>
-                  </ng-template>
-                  
-                <ng-template #thumbnail let-item>
-                    <img
-                      [src]="'http://localhost:8080/api/products/images/' + item.url"
-                      style="width: 6rem; height: 4rem;"
-                      loading="lazy"
-                    />
-                  </ng-template>
-            </p-galleria>
-        </div> -->
         <div class="card col-span-4">
             <p-galleria [value]="images" [responsiveOptions]="responsiveOptions" [containerStyle]="{ height: '65vh' }" [numVisible]="7" [circular]="true">
                 <ng-template #item let-item>
@@ -34,6 +12,10 @@
             </p-galleria>
         </div>
         <div class="card ml-0 col-offset-1 col-span-5">
+            <div class="p-3 mb-3 rounded text-white text-2xl font-semibold bg-gray-900 flex justify-between">
+                <span class="font-bold">Vendu par</span>
+                <a [routerLink]="'/home/stores/' + product()!.store?.id" class="hover:underline">{{ product()!.store?.name }}</a>
+            </div>
             <!-- Détails produit + Formulaire -->
             <div class="space-y-1">
                 <h5 class="text-xl font-semibold mb-1">{{ product()!.name }}</h5>

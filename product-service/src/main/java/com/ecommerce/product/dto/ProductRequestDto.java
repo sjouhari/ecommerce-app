@@ -23,8 +23,6 @@ public class ProductRequestDto {
 
     private String description;
 
-    private String type = "product";
-
     @NotNull(message = "Reduction percentage is required")
     @Min(value = 0, message = "Reduction percentage must be between 0 and 100")
     @Max(value = 100, message = "Reduction percentage must be between 0 and 100")
@@ -40,7 +38,7 @@ public class ProductRequestDto {
     private Long subCategoryId;
 
     @NotNull(message = "Seller id is required")
-    private Long sellerId;
+    private Long storeId;
 
     @NotNull(message = "Tva id is required")
     private TvaDto tva;

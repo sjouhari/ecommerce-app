@@ -26,11 +26,9 @@ public class Product extends BaseEntity {
 
     private String description;
 
-    private String type;
-
     private double reductionPercentage;
 
-    private Long sellerId;
+    private Long storeId;
 
     @Enumerated(EnumType.STRING)
     private ProductStatus status;

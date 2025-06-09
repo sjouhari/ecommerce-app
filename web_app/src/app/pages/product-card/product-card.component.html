@@ -1,4 +1,4 @@
-<a [routerLink]="'/home/list-products/' + product().id" class="block border rounded-2xl shadow-sm p-4 w-full hover:shadow-md hover:scale-[1.01] transition-all duration-300 bg-white dark:bg-surface-800">
+<a [routerLink]="'/home/list-products/' + product().id" class="block border rounded-2xl shadow-sm p-4 w-18rem hover:shadow-md hover:scale-[1.01] transition-all duration-300 bg-white dark:bg-surface-800">
     <!-- Image + Badge -->
     <div class="relative mb-4">
         <img [src]="'http://localhost:8080/api/products/images/' + product().medias[0].url" [alt]="product().name" class="rounded-xl h-[15rem] w-full object-cover" />

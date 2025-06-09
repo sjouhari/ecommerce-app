@@ -1,5 +1,6 @@
 package com.ecommerce.user.dto;
 
+import com.ecommerce.shared.dto.StoreDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,5 @@ public class CurrentUserDto {
     private String email;
     private boolean enabled;
     private Set<ProfilDto> profils;
-    private boolean seller;
-    private String storeName;
+    private StoreDto store;
 }

@@ -1,3 +1,5 @@
+import { Store } from '../user/store.model';
+import { CommentModel } from './comment.model';
 import { Media } from './media.model';
 import { Stock } from './stock.model';
 
@@ -13,4 +15,6 @@ export interface Product {
     medias: Media[];
     rating: number;
     stock: Stock[];
+    comments?: CommentModel[];
+    store?: Store;
 }

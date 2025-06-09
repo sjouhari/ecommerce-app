@@ -31,8 +31,8 @@ public class User {
     private int verificationCode;
     private LocalDateTime verificationCodeExpireAt;
 
-    private boolean seller;
-    private String storeName;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Store store;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_profil",

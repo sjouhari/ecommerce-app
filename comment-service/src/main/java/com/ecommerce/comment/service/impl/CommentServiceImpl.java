@@ -1,6 +1,6 @@
 package com.ecommerce.comment.service.impl;
 
-import com.ecommerce.comment.dto.CommentDto;
+import com.ecommerce.shared.dto.CommentDto;
 import com.ecommerce.comment.entity.Comment;
 import com.ecommerce.comment.mapper.CommentMapper;
 import com.ecommerce.comment.repository.CommentRepository;

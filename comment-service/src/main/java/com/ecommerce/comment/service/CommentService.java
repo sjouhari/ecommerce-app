@@ -1,7 +1,6 @@
 package com.ecommerce.comment.service;
 
-import com.ecommerce.comment.dto.CommentDto;
-import org.springframework.web.bind.annotation.RequestHeader;
+import com.ecommerce.shared.dto.CommentDto;
 
 import java.util.List;
 

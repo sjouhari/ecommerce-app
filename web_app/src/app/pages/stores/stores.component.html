@@ -1,0 +1,28 @@
+<div class="bg-gray-900 text-white text-lg p-3 rounded font-semibold flex justify-between">
+    <div>
+        <p class="font-bold m-0 text-3xl">{{ store?.name }}</p>
+        <span>Adresse : {{ store?.address }}</span>
+    </div>
+    <div>
+        <p class="font-bold m-0 mb-2">Contactez-nous</p>
+        <span class="block">{{ store?.email }}</span>
+        <span>{{ store?.phoneNumber }}</span>
+    </div>
+</div>
+<!-- Products Section -->
+<div class="col-span-12 md:col-span-9 lg:col-span-10 p-10">
+    @if (products.length > 0) {
+        <!-- Product Grid -->
+        <h3 class="text-gray-500 mb-4">Nos produits</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
+            @for (product of products; track product.id) {
+                <app-product-card [product]="product" />
+            }
+        </div>
+    } @else {
+        <!-- Empty State -->
+        <ng-template #noProducts>
+            <div class="text-center text-surface-500 text-lg mt-12">Aucun produit ne correspond aux critères.</div>
+        </ng-template>
+    }
+</div>

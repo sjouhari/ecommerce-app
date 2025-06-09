@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 <div class="grid grid-cols-12 gap-2 mt-3 mx-8">
-    <div class="col-span-7">
+    <div [ngClass]="shoppingCartService.shoppingCart()?.orderItems?.length == 0 ? 'col-span-12' : 'col-span-7'">
         <h1 class="text-xl text-center font-bold m-0 mb-3">Votre panier</h1>
         @if (shoppingCartService.shoppingCart()?.orderItems?.length == 0) {
             <p class="text-center">Votre panier est vide.</p>
@@ -45,80 +45,82 @@
         }
     </div>
 
-    <div class="col-span-5 p-3 border-1 border-surface rounded">
-        <h3 class="text-xl font-bold mb-3">Résumé</h3>
-        <div class="flex justify-between items-center mb-3">
-            <span class="font-bold">Prix totale du panier</span>
-            <span class="font-medium ml-2">{{ totalPrice() + ' MAD' }}</span>
-        </div>
-        <div class="flex justify-between items-center mb-3">
-            <span class="font-bold">Frais de livraison</span>
-            <span class="font-medium ml-2">0 MAD</span>
-        </div>
-        <div class="flex justify-between items-center pt-3 border-top-1 border-surface">
-            <span class="font-bold text-xl">Prix totale</span>
-            <span class="font-medium ml-2">{{ totalPrice() + ' MAD' }}</span>
-        </div>
+    @if (shoppingCartService.shoppingCart()?.orderItems?.length != 0) {
+        <div class="col-span-5 p-3 border-1 border-surface rounded">
+            <h3 class="text-xl font-bold mb-3">Résumé</h3>
+            <div class="flex justify-between items-center mb-3">
+                <span class="font-bold">Prix totale du panier</span>
+                <span class="font-medium ml-2">{{ totalPrice() + ' MAD' }}</span>
+            </div>
+            <div class="flex justify-between items-center mb-3">
+                <span class="font-bold">Frais de livraison</span>
+                <span class="font-medium ml-2">0 MAD</span>
+            </div>
+            <div class="flex justify-between items-center pt-3 border-top-1 border-surface">
+                <span class="font-bold text-xl">Prix totale</span>
+                <span class="font-medium ml-2">{{ totalPrice() + ' MAD' }}</span>
+            </div>
 
-        @if (checkout()) {
-            <div class="my-3">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-xl font-bold m-0">Adresse de livraison</h3>
-                    <p-button icon="pi pi-plus" class="mr-3" [rounded]="true" [outlined]="true" (click)="showAddressDialog()" />
-                </div>
-                @for (address of addresses(); track address.id) {
-                    <div class="flex justify-between gap-1 mb-3 border-1 border-surface rounded p-2">
-                        <div class="flex flex-col gap-2">
-                            <span class="font-medium">{{ address.lastName }} {{ address.firstName }}, {{ address.phone }}</span>
-                            <span class="font-medium">{{ address.deliveryAddress }}</span>
-                            <span class="font-medium">{{ address.postalCode }}, {{ address.city }}, {{ address.country }}</span>
-                        </div>
-                        <div class="flex flex-col justify-between items-center">
-                            <p-radiobutton name="address" size="large" [value]="address" [(ngModel)]="selectedAddress" [inputId]="address.id + ''" />
-                            <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="showAddressDialog(address)" />
-                        </div>
+            @if (checkout()) {
+                <div class="my-3">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xl font-bold m-0">Adresse de livraison</h3>
+                        <p-button icon="pi pi-plus" class="mr-3" [rounded]="true" [outlined]="true" (click)="showAddressDialog()" />
                     </div>
-                }
+                    @for (address of addresses(); track address.id) {
+                        <div class="flex justify-between gap-1 mb-3 border-1 border-surface rounded p-2">
+                            <div class="flex flex-col gap-2">
+                                <span class="font-medium">{{ address.lastName }} {{ address.firstName }}, {{ address.phone }}</span>
+                                <span class="font-medium">{{ address.deliveryAddress }}</span>
+                                <span class="font-medium">{{ address.postalCode }}, {{ address.city }}, {{ address.country }}</span>
+                            </div>
+                            <div class="flex flex-col justify-between items-center">
+                                <p-radiobutton name="address" size="large" [value]="address" [(ngModel)]="selectedAddress" [inputId]="address.id + ''" />
+                                <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="showAddressDialog(address)" />
+                            </div>
+                        </div>
+                    }
 
-                <div class="flex flex-col gap-3">
-                    <span class="font-bold">Mode de payement</span>
-                    <div class="flex flex-col gap-2">
-                        @for (item of paymentMethods; track item.key) {
-                            <div class="flex items-center">
-                                <p-radiobutton name="payement" [value]="item.key" [(ngModel)]="selectedPaymentMethod" [inputId]="item.key" />
-                                <label [for]="item.key" class="ml-2">{{ item.value }}</label>
+                    <div class="flex flex-col gap-3">
+                        <span class="font-bold">Mode de payement</span>
+                        <div class="flex flex-col gap-2">
+                            @for (item of paymentMethods; track item.key) {
+                                <div class="flex items-center">
+                                    <p-radiobutton name="payement" [value]="item.key" [(ngModel)]="selectedPaymentMethod" [inputId]="item.key" />
+                                    <label [for]="item.key" class="ml-2">{{ item.value }}</label>
+                                </div>
+                            }
+                        </div>
+
+                        @if (selectedPaymentMethod?.toString() === 'CHEQUE') {
+                            <span class="font-bold mb-2">Informations du chèque :</span>
+                            <div class="grid grid-cols-12 gap-3">
+                                <p-floatlabel class="col-span-6" variant="on">
+                                    <input pInputText id="numeroCheque" type="text" [value]="chequeNumber" [(ngModel)]="chequeNumber" class="w-full" />
+                                    <label for="numeroCheque">Numéro du chèque</label>
+                                </p-floatlabel>
+                                <p-floatlabel class="col-span-6" variant="on">
+                                    <input pInputText id="bankName" type="text" [value]="bankName" [(ngModel)]="bankName" class="w-full" />
+                                    <label for="bankName">Nom de la banque</label>
+                                </p-floatlabel>
                             </div>
                         }
                     </div>
-
-                    @if (selectedPaymentMethod?.toString() === 'CHEQUE') {
-                        <span class="font-bold mb-2">Informations du chèque :</span>
-                        <div class="grid grid-cols-12 gap-3">
-                            <p-floatlabel class="col-span-6" variant="on">
-                                <input pInputText id="numeroCheque" type="text" [value]="chequeNumber" [(ngModel)]="chequeNumber" class="w-full" />
-                                <label for="numeroCheque">Numéro du chèque</label>
-                            </p-floatlabel>
-                            <p-floatlabel class="col-span-6" variant="on">
-                                <input pInputText id="bankName" type="text" [value]="bankName" [(ngModel)]="bankName" class="w-full" />
-                                <label for="bankName">Nom de la banque</label>
-                            </p-floatlabel>
-                        </div>
-                    }
                 </div>
-            </div>
-        }
+            }
 
-        <button
-            pButton
-            [label]="checkout() ? 'Commander' : 'Valider ma commande'"
-            class="w-full mt-3"
-            severity="contrast"
-            icon="pi pi-check"
-            [loading]="loading()"
-            [disabled]="disabled()"
-            (click)="checkout() ? placeOrder() : toggleCheckout()"
-        ></button>
-    </div>
+            <button
+                pButton
+                [label]="checkout() ? 'Commander' : 'Valider ma commande'"
+                class="w-full mt-3"
+                severity="contrast"
+                icon="pi pi-check"
+                [loading]="loading()"
+                [disabled]="disabled()"
+                (click)="checkout() ? placeOrder() : toggleCheckout()"
+            ></button>
+        </div>
+    }
 </div>
 
 <p-dialog [(visible)]="addressDialog" [style]="{ width: '70%', padding: '1.5rem' }" header="Adresse de livraison" [modal]="true">

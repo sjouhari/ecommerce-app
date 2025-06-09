@@ -1,6 +1,6 @@
 package com.ecommerce.comment.mapper;
 
-import com.ecommerce.comment.dto.CommentDto;
+import com.ecommerce.shared.dto.CommentDto;
 import com.ecommerce.comment.entity.Comment;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

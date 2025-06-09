@@ -1,6 +1,6 @@
 import { MessageService } from 'primeng/api';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Product } from '../../models/product/product.model';
 import { ProductService } from '../../services/product.service';
 import { GalleriaModule } from 'primeng/galleria';
@@ -21,7 +21,7 @@ import { CommentService } from '../../services/comment.service';
 
 @Component({
     selector: 'app-product-details',
-    imports: [GalleriaModule, ButtonModule, RadioButtonModule, InputNumber, FormsModule, ToastModule, FloatLabelModule, TextareaModule],
+    imports: [GalleriaModule, ButtonModule, RadioButtonModule, InputNumber, FormsModule, ToastModule, FloatLabelModule, TextareaModule, RouterLink],
     templateUrl: './product-details.component.html',
     providers: [MessageService]
 })

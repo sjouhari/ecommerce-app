@@ -1,6 +1,6 @@
 package com.ecommerce.comment.controller;
 
-import com.ecommerce.comment.dto.CommentDto;
+import com.ecommerce.shared.dto.CommentDto;
 import com.ecommerce.comment.service.CommentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

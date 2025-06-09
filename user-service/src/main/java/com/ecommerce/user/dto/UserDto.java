@@ -1,6 +1,7 @@
 package com.ecommerce.user.dto;
 
 
+import com.ecommerce.shared.dto.StoreDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,9 +36,7 @@ public class UserDto {
     @NotNull(message = "Profils are required")
     private List<ProfilDto> profils;
 
-    private boolean seller;
-
-    private String storeName;
+    private StoreDto store;
 
     private LocalDateTime createdAt;
 

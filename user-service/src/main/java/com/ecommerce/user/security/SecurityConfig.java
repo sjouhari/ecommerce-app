@@ -48,6 +48,8 @@ public class SecurityConfig {
 								"/api/users/forgot-password",
 								"/api/users/reset-password").permitAll()
 
+						.requestMatchers(HttpMethod.GET, "/api/stores/**").permitAll()
+
 						.requestMatchers(HttpMethod.GET).hasAuthority("PROFIL_READ")
 						.requestMatchers(HttpMethod.POST).hasAuthority("PROFIL_CREATE")
 						.requestMatchers(HttpMethod.PUT).hasAuthority("PROFIL_UPDATE")

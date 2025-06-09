@@ -1,8 +1,6 @@
 package com.ecommerce.product.service;
 
-import com.ecommerce.product.dto.ProductRequestDto;
 import com.ecommerce.product.dto.ProductResponseDto;
-import com.ecommerce.product.enums.ProductStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -11,11 +9,9 @@ public interface ProductService {
 
     List<ProductResponseDto> getAllProducts();
 
-//    List<ProductResponseDto> getProductsBySellerId(Long sellerId);
-//
-//    List<ProductResponseDto> getProductsBySubCategoryId(Long subCategoryId);
-//
-//    List<ProductResponseDto> getProductsByStatus(ProductStatus status);
+    List<ProductResponseDto> getProductsByStoreId(Long storeId);
+
+    List<ProductResponseDto> getProductsBySubCategoryId(Long subCategoryId);
 
     List<ProductResponseDto> getNewProducts();
 

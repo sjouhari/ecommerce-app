@@ -24,6 +24,7 @@ import { HomeComponent } from './app/pages/user-layout/components/home/home.comp
 import { adminProfileGuard } from './app/guards/admin-profile.guard';
 import { sellerProfileGuard } from './app/guards/seller-profile.guard';
 import { InitializerComponent } from './app/pages/initializer/initializer.component';
+import { StoresComponent } from './app/pages/stores/stores.component';
 
 export const appRoutes: Routes = [
     { path: 'initialization', component: InitializerComponent },
@@ -75,6 +76,7 @@ export const appRoutes: Routes = [
             { path: '', component: HomeComponent },
             { path: 'list-products', component: ListProductsComponent },
             { path: 'list-products/:id', component: ProductDetailsComponent },
+            { path: 'stores/:id', component: StoresComponent },
             { path: 'shopping-cart', component: ShoppingCartComponent },
             { path: 'order-summary/:id', component: OrderSummaryComponent },
             { path: 'profile', component: UserProfileComponent }

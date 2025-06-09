@@ -40,6 +40,16 @@ public class ProductController {
         return ResponseEntity.ok(productService.getNewProducts());
     }
 
+    @GetMapping("/store/{id}")
+    public ResponseEntity<List<ProductResponseDto>> getProductsByStoreId(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductsByStoreId(id));
+    }
+
+    @GetMapping("/subcategory/{id}")
+    public ResponseEntity<List<ProductResponseDto>> getProductsBySubCategoryId(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductsBySubCategoryId(id));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));

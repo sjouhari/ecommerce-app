@@ -124,6 +124,15 @@ export class UserProfileComponent implements OnInit {
         });
     }
 
+    confirmDeleteAddress(address: Address) {
+        this.confirmationService.confirm({
+            message: 'Êtes-vous sûr de vouloir supprimer cette adresse ?',
+            header: 'Suppression',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {}
+        });
+    }
+
     saveChanges() {
         if (this.userInfosFormGroup.invalid) {
             this.userInfosFormGroup.markAllAsTouched();

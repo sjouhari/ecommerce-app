@@ -1,4 +1,4 @@
-package com.ecommerce.comment.dto;
+package com.ecommerce.shared.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

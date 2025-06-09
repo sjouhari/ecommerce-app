@@ -10,8 +10,10 @@ import com.ecommerce.product.repository.MediaRepository;
 import com.ecommerce.product.repository.ProductRepository;
 import com.ecommerce.product.repository.TvaRepository;
 import com.ecommerce.product.service.ProductService;
+import com.ecommerce.shared.dto.CommentDto;
 import com.ecommerce.shared.dto.InventoryDto;
 import com.ecommerce.shared.dto.CategoryDto;
+import com.ecommerce.shared.dto.StoreDto;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +40,12 @@ public class ProductServiceImpl implements ProductService {
     private InventoryApiClient inventoryApiClient;
 
     @Autowired
+    private UserApiClient userApiClient;
+
+    @Autowired
+    private CommentApiClient commentApiClient;
+
+    @Autowired
     private FileStorageService fileStorageService;
 
     @Autowired
@@ -46,6 +54,22 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponseDto> getAllProducts() {
         List<Product> products = productRepository.findAll();
+        return products.stream().map(
+                this::getProductResponseDto
+        ).toList();
+    }
+
+    @Override
+    public List<ProductResponseDto> getProductsByStoreId(Long storeId) {
+        List<Product> products = productRepository.findAllByStoreId(storeId);
+        return products.stream().map(
+                this::getProductResponseDto
+        ).toList();
+    }
+
+    @Override
+    public List<ProductResponseDto> getProductsBySubCategoryId(Long subCategoryId) {
+        List<Product> products = productRepository.findAllBySubCategoryId(subCategoryId);
         return products.stream().map(
                 this::getProductResponseDto
         ).toList();
@@ -71,11 +95,14 @@ public class ProductServiceImpl implements ProductService {
         List<InventoryDto> stock = inventoryApiClient.getInventoriesByProductId(product.getId());
         SubCategoryDto subCategoryDto = categoryApiClient.getSubCategoryById(product.getSubCategoryId());
         CategoryDto categoryDto = categoryApiClient.getCategoryById(subCategoryDto.getCategory().getId());
+        StoreDto store = userApiClient.getStore(product.getStoreId());
+
         ProductResponseDto productResponseDto = ProductMapper.INSTANCE.productToProductResponseDto(product);
 
         productResponseDto.setStock(stock);
         productResponseDto.setSubCategoryName(subCategoryDto.getName());
         productResponseDto.setCategoryName(categoryDto.getName());
+        productResponseDto.setStore(store);
         return productResponseDto;
     }
 

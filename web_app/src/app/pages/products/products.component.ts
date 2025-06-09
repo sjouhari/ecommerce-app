@@ -145,7 +145,7 @@ export class ProductsComponent implements OnInit {
 
         this.productFormGroup = this.formBuilder.group({
             id: new FormControl(product?.id || null),
-            sellerId: new FormControl(product?.sellerId || this.authService.currentUser()?.id),
+            storeId: new FormControl(product?.store?.id || this.authService.currentUser()?.store?.id || null),
             tva: new FormControl(this.tva),
             name: new FormControl(product?.name || '', [Validators.required]),
             description: new FormControl(product?.description || '', [Validators.required]),
