@@ -20,6 +20,27 @@ export class AuthService {
 
     currentUser = signal<User | null>(null);
 
+    loadAuthState(): Promise<void> {
+        return new Promise<void>((resolve) => {
+            if (this.isTokenExpired()) {
+                this.logout();
+                resolve();
+            } else {
+                this.getCurrentUser().subscribe({
+                    next: (user) => {
+                        this.setCurrentUser(user);
+                        console.log(this.currentUser());
+                        resolve();
+                    },
+                    error: () => {
+                        this.removeToken();
+                        resolve();
+                    }
+                });
+            }
+        });
+    }
+
     login(loginRequest: LoginRequest): Observable<LoginResponse> {
         return this.httpClient.post<LoginResponse>(`${this.baseUrl}/auth/login`, loginRequest);
     }
@@ -29,7 +50,7 @@ export class AuthService {
     }
 
     logout(): void {
-        localStorage.removeItem(this.tokenKey);
+        this.removeToken();
         this.router.navigate(['/login']);
     }
 
