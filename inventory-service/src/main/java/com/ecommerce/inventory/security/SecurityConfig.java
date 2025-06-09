@@ -34,8 +34,8 @@ public class SecurityConfig {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
 						.requestMatchers(HttpMethod.GET).permitAll()
-						.requestMatchers(HttpMethod.POST).hasAuthority("PRODUCT_CREATE")
-						.requestMatchers(HttpMethod.PUT).hasAuthority("PRODUCT_UPDATE")
+						.requestMatchers(HttpMethod.POST).hasAnyAuthority("PRODUCT_CREATE", "PRODUCT_UPDATE", "ORDER_CREATE", "ORDER_UPDATE")
+						.requestMatchers(HttpMethod.PUT).hasAnyAuthority("PRODUCT_UPDATE", "ORDER_UPDATE")
 						.requestMatchers(HttpMethod.DELETE).hasAuthority("PRODUCT_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
