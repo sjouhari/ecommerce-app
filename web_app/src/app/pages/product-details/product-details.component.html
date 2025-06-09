@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 @if (product()) {
-    <div class="grid grid-cols-12 m-0 bg-transparent">
+    <div class="grid grid-cols-12 mx-10 bg-transparent">
         <div class="card col-span-4">
             <p-galleria [value]="images" [responsiveOptions]="responsiveOptions" [containerStyle]="{ height: '65vh' }" [numVisible]="7" [circular]="true">
                 <ng-template #item let-item>
@@ -11,7 +11,7 @@
                 </ng-template>
             </p-galleria>
         </div>
-        <div class="card ml-0 col-offset-1 col-span-5">
+        <div class="card ml-0 col-offset-1 col-span-8">
             <div class="p-3 mb-3 rounded text-white text-2xl font-semibold bg-gray-900 flex justify-between">
                 <span class="font-bold">Vendu par</span>
                 <a [routerLink]="'/home/stores/' + product()!.store?.id" class="hover:underline">{{ product()!.store?.name }}</a>
@@ -94,14 +94,9 @@
                         </div>
                     </div>
                 </div>
-
-                <button (click)="goBack()" class="flex items-center text-blue-500 hover:underline mt-4">
-                    <i class="pi pi-arrow-left mr-2"></i>
-                    Retourner aux produits
-                </button>
             </div>
         </div>
-        <section class="card col-span-3 border border-gray-200 p-4">
+        <section class="card col-span-12 border border-gray-200 p-4">
             <h2 class="text-xl font-bold mb-2">Commentaires</h2>
 
             <div class="flex flex-col gap-3 mt-2 overflow-y-auto" style="max-height: 60vh">
@@ -118,8 +113,26 @@
 
             <div class="flex gap-2 mt-4 items-end">
                 <textarea pTextarea [(ngModel)]="comment" placeholder="Ajouter un commentaire..." rows="2" class="flex-1"></textarea>
-                <button pButton icon="pi pi-send" (click)="addComment()" class="p-button-sm p-button-rounded p-button-primary"></button>
+                <button pButton icon="pi pi-send" (click)="addComment()" class="p-button-rounded p-button-primary"></button>
             </div>
         </section>
+
+        <!-- Products Section -->
+        <div class="col-span-12 md:col-span-9 lg:col-span-10 p-10">
+            @if (relatedProducts().length > 0) {
+                <!-- Product Grid -->
+                <h3 class="text-gray-500 mb-4">Produits similaires</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
+                    @for (product of relatedProducts(); track product.id) {
+                        <app-product-card [product]="product" />
+                    }
+                </div>
+            } @else {
+                <!-- Empty State -->
+                <ng-template #noProducts>
+                    <div class="text-center text-surface-500 text-lg mt-12">Aucun produit ne correspond aux critères.</div>
+                </ng-template>
+            }
+        </div>
     </div>
 }

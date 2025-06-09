@@ -19,6 +19,10 @@ export class ProductService {
         return this.http.get<Product[]>(`${this.baseUrl}/store/${storeId}`);
     }
 
+    getProductsBySubCategory(subCategoryId: number): Observable<Product[]> {
+        return this.http.get<Product[]>(`${this.baseUrl}/subcategory/${subCategoryId}`);
+    }
+
     getProduct(id: string): Observable<Product> {
         return this.http.get<Product>(`${this.baseUrl}/${id}`);
     }

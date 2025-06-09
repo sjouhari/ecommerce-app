@@ -10,7 +10,6 @@ import { FormsModule } from '@angular/forms';
 import { ProductColor } from '../../models/product/product-color';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumber } from 'primeng/inputnumber';
-import { Location } from '@angular/common';
 import { ShoppingCartService } from '../../services/shopping-cart.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastModule } from 'primeng/toast';
@@ -18,10 +17,11 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { TextareaModule } from 'primeng/textarea';
 import { CommentModel } from '../../models/product/comment.model';
 import { CommentService } from '../../services/comment.service';
+import { ProductCardComponent } from '../product-card/product-card.component';
 
 @Component({
     selector: 'app-product-details',
-    imports: [GalleriaModule, ButtonModule, RadioButtonModule, InputNumber, FormsModule, ToastModule, FloatLabelModule, TextareaModule, RouterLink],
+    imports: [GalleriaModule, ButtonModule, RadioButtonModule, InputNumber, FormsModule, ToastModule, FloatLabelModule, TextareaModule, RouterLink, ProductCardComponent],
     templateUrl: './product-details.component.html',
     providers: [MessageService]
 })
@@ -31,7 +31,6 @@ export class ProductDetailsComponent implements OnInit {
     shoppingCartService = inject(ShoppingCartService);
     authService = inject(AuthService);
     messageService = inject(MessageService);
-    location = inject(Location);
     commentService = inject(CommentService);
 
     images: Media[] = [];
@@ -40,6 +39,8 @@ export class ProductDetailsComponent implements OnInit {
     sizes: string[] | undefined = [];
     comment: string = '';
     comments = signal<CommentModel[]>([]);
+    relatedProducts = signal<Product[]>([]);
+    loading = signal<boolean>(false);
 
     selectedColor: string | null = null;
     selectedSize: string | null = null;
@@ -73,6 +74,7 @@ export class ProductDetailsComponent implements OnInit {
                     this.getSizeColors();
                     this.getColorQuantity();
                     this.getProductComments(+id);
+                    this.getRelatedProducts(product.subCategoryId);
                 },
                 error: (error) => {
                     console.log(error); //TODO: handle error
@@ -85,6 +87,17 @@ export class ProductDetailsComponent implements OnInit {
         this.commentService.getProductComments(productId).subscribe({
             next: (comments) => {
                 this.comments.set(comments);
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
+    }
+
+    getRelatedProducts(subCategoryId: number) {
+        this.productService.getProductsBySubCategory(subCategoryId).subscribe({
+            next: (products) => {
+                this.relatedProducts.set(products.filter((product) => product.id !== this.product()?.id));
             },
             error: (error) => {
                 console.log(error); //TODO: handle error
@@ -112,10 +125,6 @@ export class ProductDetailsComponent implements OnInit {
                 }
             }
         });
-    }
-
-    goBack() {
-        this.location.back();
     }
 
     responsiveOptions: any[] = [
