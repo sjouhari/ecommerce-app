@@ -126,7 +126,7 @@ export class SubCategoriesComponent implements OnInit {
 
     deleteSelectedSubCategories() {
         this.confirmationService.confirm({
-            message: 'Êtes-vous sûr de vouloir supprimer les sous catégories sélectionnées ? Toutes les tailles seront supprimées. Cette action est irréversible.',
+            message: 'Êtes-vous sûr de vouloir supprimer les sous catégories sélectionnées ? Toutes les produits liés à cette catégorie seront supprimées. Cette action est irréversible.',
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {

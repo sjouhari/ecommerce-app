@@ -133,7 +133,7 @@ export class CategoriesComponent implements OnInit {
 
     deleteCategory(category: Category) {
         this.confirmationService.confirm({
-            message: 'Êtes-vous sûr de vouloir supprimer la catégorie ' + category.name + ' ? Toutes les sous catégories et leurs tailles seront supprimées. Cette action est irréversible.',
+            message: 'Êtes-vous sûr de vouloir supprimer la catégorie ' + category.name + ' ? Toutes les sous catégories et leurs produits et les tailles de cette catégorie seront supprimées. Cette action est irréversible.',
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
