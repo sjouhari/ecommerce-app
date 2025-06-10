@@ -36,7 +36,7 @@
                 <th style="width: 3rem">
                     <p-tableHeaderCheckbox />
                 </th>
-                <th pSortableColumn="libelle" style="min-width: 16rem">
+                <th pSortableColumn="libelle">
                     Libellé
                     <p-sortIcon field="libelle" />
                 </th>
@@ -53,8 +53,8 @@
             <td style="width: 3rem">
                 <p-tableCheckbox [value]="size" />
             </td>
-            <td style="min-width: 16rem">{{ size.libelle }}</td>
-            <td style="min-width: 16rem">{{ size.category.name }}</td>
+            <td>{{ size.libelle }}</td>
+            <td>{{ size.category.name }}</td>
             <td>
                 <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editSize(size)" />
                 <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteSize(size)" />

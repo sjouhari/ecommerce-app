@@ -29,17 +29,17 @@
             </p-iconfield>
         </div>
     </ng-template>
-    @if(subCategories().length > 0) {
+    @if (subCategories().length > 0) {
         <ng-template #header>
             <tr>
                 <th style="width: 3rem">
                     <p-tableHeaderCheckbox />
                 </th>
-                <th pSortableColumn="name" style="min-width:16rem">
+                <th pSortableColumn="name">
                     Nom
                     <p-sortIcon field="name" />
                 </th>
-                <th pSortableColumn="description" style="min-width:16rem">
+                <th pSortableColumn="description">
                     Description
                     <p-sortIcon field="description" />
                 </th>
@@ -56,9 +56,9 @@
             <td style="width: 3rem">
                 <p-tableCheckbox [value]="category" />
             </td>
-            <td style="min-width: 16rem">{{ category.name }}</td>
-            <td style="min-width: 16rem">{{ category.description }}</td>
-            <td style="min-width: 16rem">{{ category.category.name }}</td>
+            <td>{{ category.name }}</td>
+            <td>{{ category.description }}</td>
+            <td>{{ category.category.name }}</td>
             <td>
                 <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="addEditSubCategory(category)" />
                 <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteSubCategory(category)" />
@@ -77,14 +77,14 @@
         <form [formGroup]="subCategoryFormGroup" (ngSubmit)="saveSubCategory()" class="flex flex-col gap-3 mt-4">
             <label for="name" class="block font-bold mb-2">Category</label>
             <div>
-                @for(category of categories(); track category.id) {
+                @for (category of categories(); track category.id) {
                     <div class="flex items-center mb-3">
                         <p-radiobutton formControlName="categoryId" [value]="category.id" [inputId]="category.name + '-' + category.id" />
                         <label [for]="category.name + '-' + category.id" class="ml-2">{{ category.name }}</label>
                     </div>
                 }
-                @if(formControls['categoryId'].errors && formControls['categoryId'].touched) {
-                    @if(formControls['categoryId'].errors['required']) {
+                @if (formControls['categoryId'].errors && formControls['categoryId'].touched) {
+                    @if (formControls['categoryId'].errors['required']) {
                         <small class="text-red-500">La description de la catégorie est obligatoire.</small>
                     }
                 }
@@ -94,8 +94,8 @@
                     <input pInputText id="name" type="text" formControlName="name" class="w-full" />
                     <label for="name">Nom</label>
                 </p-floatlabel>
-                @if(formControls['name'].errors && formControls['name'].touched) {
-                    @if(formControls['name'].errors['required']) {
+                @if (formControls['name'].errors && formControls['name'].touched) {
+                    @if (formControls['name'].errors['required']) {
                         <small class="text-red-500">Le nom de la sous catégorie est obligatoire.</small>
                     }
                 }
@@ -105,15 +105,15 @@
                     <textarea pTextarea id="description" type="text" formControlName="description" class="w-full"></textarea>
                     <label for="description">Description</label>
                 </p-floatlabel>
-                @if(formControls['description'].errors && formControls['description'].touched) {
-                    @if(formControls['description'].errors['required']) {
+                @if (formControls['description'].errors && formControls['description'].touched) {
+                    @if (formControls['description'].errors['required']) {
                         <small class="text-red-500">La description de la sous catégorie est obligatoire.</small>
                     }
                 }
             </div>
             <div class="flex justify-end gap-3">
-                <p-button type="button" label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
-                <p-button type="submit" label="Save" icon="pi pi-check" [loading]="loading()" [disabled]="!subCategoryFormGroup.valid || loading()" />
+                <p-button type="button" label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
+                <p-button type="submit" label="Enristrer" icon="pi pi-check" [loading]="loading()" [disabled]="!subCategoryFormGroup.valid || loading()" />
             </div>
         </form>
     </ng-template>

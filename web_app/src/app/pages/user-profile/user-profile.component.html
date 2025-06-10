@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 
-<div>
+<div class="m-10">
     <div class="grid grid-cols-12 gap-3">
         <div class="col-span-12 flex justify-between">
             <div class="flex gap-3">
@@ -238,8 +238,8 @@
     </ng-template>
 
     <ng-template #footer>
-        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
-        <p-button label="Save" icon="pi pi-check" (click)="saveAddress()" [loading]="addressBtnLoading()" [disabled]="addressFormGroup.invalid || addressBtnLoading()" />
+        <p-button label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Enregistrer" icon="pi pi-check" (click)="saveAddress()" [loading]="addressBtnLoading()" [disabled]="addressFormGroup.invalid || addressBtnLoading()" />
     </ng-template>
 </p-dialog>
 

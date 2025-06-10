@@ -29,17 +29,17 @@
             </p-iconfield>
         </div>
     </ng-template>
-    @if(categories().length > 0) {
+    @if (categories().length > 0) {
         <ng-template #header>
             <tr>
                 <th style="width: 3rem">
                     <p-tableHeaderCheckbox />
                 </th>
-                <th pSortableColumn="name" style="min-width:16rem">
+                <th pSortableColumn="name">
                     Nom
                     <p-sortIcon field="name" />
                 </th>
-                <th pSortableColumn="description" style="min-width:16rem">
+                <th pSortableColumn="description">
                     Description
                     <p-sortIcon field="description" />
                 </th>
@@ -52,8 +52,8 @@
             <td style="width: 3rem">
                 <p-tableCheckbox [value]="category" />
             </td>
-            <td style="min-width: 16rem">{{ category.name }}</td>
-            <td style="min-width: 16rem">{{ category.description }}</td>
+            <td>{{ category.name }}</td>
+            <td>{{ category.description }}</td>
             <td class="flex justify-content-center">
                 <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editCategory(category)" />
                 <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteCategory(category)" />
@@ -75,8 +75,8 @@
                     <input pInputText id="name" type="text" formControlName="name" class="w-full" />
                     <label for="name">Nom</label>
                 </p-floatlabel>
-                @if(formControls['name'].errors && formControls['name'].touched) {
-                    @if(formControls['name'].errors['required']) {
+                @if (formControls['name'].errors && formControls['name'].touched) {
+                    @if (formControls['name'].errors['required']) {
                         <small class="text-red-500">Le nom de la catégorie est obligatoire.</small>
                     }
                 }
@@ -86,15 +86,15 @@
                     <textarea pTextarea id="description" type="text" formControlName="description" class="w-full"></textarea>
                     <label for="description">Description</label>
                 </p-floatlabel>
-                @if(formControls['description'].errors && formControls['description'].touched) {
-                    @if(formControls['description'].errors['required']) {
+                @if (formControls['description'].errors && formControls['description'].touched) {
+                    @if (formControls['description'].errors['required']) {
                         <small class="text-red-500">La description de la catégorie est obligatoire.</small>
                     }
                 }
             </div>
             <div class="flex justify-end gap-3">
-                <p-button type="button" label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
-                <p-button type="submit" label="Save" icon="pi pi-check" [loading]="loading()" [disabled]="!categoryFormGroup.valid || loading()" />
+                <p-button type="button" label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
+                <p-button type="submit" label="Enregistrer" icon="pi pi-check" [loading]="loading()" [disabled]="!categoryFormGroup.valid || loading()" />
             </div>
         </form>
     </ng-template>

@@ -119,6 +119,8 @@ export class UserProfileComponent implements OnInit {
             message: 'Êtes-vous sûr de vouloir vous deconnecter ?',
             header: 'Déconnexion',
             icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Déconnexion',
+            rejectLabel: 'Annuler',
             accept: () => {
                 this.authService.logout();
             }
