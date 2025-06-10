@@ -41,8 +41,10 @@ public class StoreServiceImpl implements StoreService {
         }
 
         store.setUser(user);
+        user.setStore(store);
+        userRepository.save(user);
 
-        return StoreMapper.INSTANCE.storeToStoreDto(storeRepository.save(store));
+        return StoreMapper.INSTANCE.storeToStoreDto(user.getStore());
     }
 
     @Override

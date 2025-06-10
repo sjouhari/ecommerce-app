@@ -53,19 +53,19 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/api/stores/**").permitAll()
 
 						.requestMatchers(HttpMethod.GET, "/api/profils/**").hasAuthority("PROFIL_READ")
-						.requestMatchers(HttpMethod.POST).hasAuthority("PROFIL_CREATE")
-						.requestMatchers(HttpMethod.PUT).hasAuthority("PROFIL_UPDATE")
-						.requestMatchers(HttpMethod.DELETE).hasAuthority("PROFIL_DELETE")
+						.requestMatchers(HttpMethod.POST, "/api/profils/**").hasAuthority("PROFIL_CREATE")
+						.requestMatchers(HttpMethod.PUT, "/api/profils/**").hasAuthority("PROFIL_UPDATE")
+						.requestMatchers(HttpMethod.DELETE, "/api/profils/**").hasAuthority("PROFIL_DELETE")
 
 						.requestMatchers(HttpMethod.GET, "/api/features/**").hasAuthority("FEATURE_READ")
-						.requestMatchers(HttpMethod.POST).hasAuthority("FEATURE_CREATE")
-						.requestMatchers(HttpMethod.PUT).hasAuthority("FEATURE_UPDATE")
-						.requestMatchers(HttpMethod.DELETE).hasAuthority("FEATURE_DELETE")
+						.requestMatchers(HttpMethod.POST, "/api/features/**").hasAuthority("FEATURE_CREATE")
+						.requestMatchers(HttpMethod.PUT, "/api/features/**").hasAuthority("FEATURE_UPDATE")
+						.requestMatchers(HttpMethod.DELETE, "/api/features/**").hasAuthority("FEATURE_DELETE")
 
 						.requestMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("USER_READ")
-						.requestMatchers(HttpMethod.POST).hasAuthority("USER_CREATE")
-						.requestMatchers(HttpMethod.PUT).hasAuthority("USER_UPDATE")
-						.requestMatchers(HttpMethod.DELETE).hasAuthority("USER_DELETE")
+						.requestMatchers(HttpMethod.POST, "/api/users/**").hasAuthority("USER_CREATE")
+						.requestMatchers(HttpMethod.PUT, "/api/users/**").hasAuthority("USER_UPDATE")
+						.requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority("USER_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)

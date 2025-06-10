@@ -19,6 +19,8 @@ import { Order } from '../../models/order/order.model';
 import { ToastModule } from 'primeng/toast';
 import { UserService } from '../../services/user.service';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { Store } from '../../models/user/store.model';
+import { StoreService } from '../../services/store.service';
 
 @Component({
     selector: 'app-user-profile',
@@ -30,10 +32,12 @@ export class UserProfileComponent implements OnInit {
     userInfosFormGroup!: FormGroup;
     changePasswordFormGroup!: FormGroup;
     addressFormGroup!: FormGroup;
+    storeFormGroup!: FormGroup;
 
     saveBtnLoading = signal(false);
     changePasswordBtnLoading = signal(false);
     addressBtnLoading = signal(false);
+    storeBtnLoading = signal(false);
 
     formBuilder = inject(FormBuilder);
     authService = inject(AuthService);
@@ -41,9 +45,11 @@ export class UserProfileComponent implements OnInit {
     addressService = inject(AddressService);
     orderService = inject(OrderService);
     userService = inject(UserService);
+    storeService = inject(StoreService);
     confirmationService = inject(ConfirmationService);
 
     addressDialog = signal(false);
+    storeDialog = signal(false);
 
     addresses = signal<Address[]>([]);
     orders = signal<Order[]>([]);
@@ -73,6 +79,7 @@ export class UserProfileComponent implements OnInit {
         });
 
         this.initAddressFormGroup();
+        this.initStoreFormGroup();
 
         this.orderService.getUserOrders(this.currentUser()?.id!).subscribe({
             next: (orders) => {
@@ -98,6 +105,17 @@ export class UserProfileComponent implements OnInit {
         });
     }
 
+    initStoreFormGroup() {
+        this.storeFormGroup = this.formBuilder.group({
+            id: new FormControl(this.currentUser()?.store?.id || ''),
+            userId: new FormControl(this.currentUser()?.id),
+            name: new FormControl(this.currentUser()?.store?.name || '', [Validators.required]),
+            email: new FormControl(this.currentUser()?.store?.email || '', [Validators.required, Validators.email]),
+            phoneNumber: new FormControl(this.currentUser()?.store?.phoneNumber || '', [Validators.required]),
+            address: new FormControl(this.currentUser()?.store?.address || '', [Validators.required])
+        });
+    }
+
     get userFormControls() {
         return this.userInfosFormGroup.controls;
     }
@@ -108,6 +126,10 @@ export class UserProfileComponent implements OnInit {
 
     get addressFormControls() {
         return this.addressFormGroup.controls;
+    }
+
+    get storeFormControls() {
+        return this.storeFormGroup.controls;
     }
 
     getFullName() {
@@ -190,13 +212,21 @@ export class UserProfileComponent implements OnInit {
         });
     }
 
-    hideDialog() {
+    hideAddressDialog() {
         this.addressDialog.set(false);
+    }
+
+    hideStoreDialog() {
+        this.storeDialog.set(false);
     }
 
     showAddressDialog(address?: Address) {
         this.initAddressFormGroup(address);
         this.addressDialog.set(true);
+    }
+
+    showStoreDialog(store?: Store) {
+        this.storeDialog.set(true);
     }
 
     saveAddress() {
@@ -213,11 +243,11 @@ export class UserProfileComponent implements OnInit {
                     this.addresses.update((addressess) => addressess.map((add) => (add.id === address.id ? address : add)));
                     this.messageService.add({
                         severity: 'success',
-                        summary: 'Création',
-                        detail: 'Adresse créée avec succès'
+                        summary: 'Modification',
+                        detail: 'Adresse modifiée avec succès'
                     });
                     this.addressBtnLoading.set(false);
-                    this.hideDialog();
+                    this.hideAddressDialog();
                 },
                 error: (error) => {
                     this.addressBtnLoading.set(false);
@@ -234,7 +264,7 @@ export class UserProfileComponent implements OnInit {
                         detail: 'Adresse créée avec succès'
                     });
                     this.addressBtnLoading.set(false);
-                    this.hideDialog();
+                    this.hideAddressDialog();
                 },
                 error: (error) => {
                     this.addressBtnLoading.set(false);
@@ -244,5 +274,64 @@ export class UserProfileComponent implements OnInit {
         }
     }
 
-    showStoreDialog() {}
+    saveStore() {
+        if (this.storeFormGroup.invalid) {
+            this.storeFormGroup.markAllAsTouched();
+            return;
+        }
+        const store = this.storeFormGroup.value;
+        this.storeBtnLoading.set(true);
+
+        if (store.id) {
+            this.storeService.updateStore(store).subscribe({
+                next: (store) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Modification',
+                        detail: 'Magasin modifié avec succès'
+                    });
+                    this.storeBtnLoading.set(false);
+                    this.authService.getCurrentUser().subscribe({
+                        next: (user) => {
+                            this.authService.setCurrentUser(user);
+                        },
+                        error: (error) => {
+                            this.authService.setCurrentUser(null);
+                            console.log(error); //TODO: handle error
+                        }
+                    });
+                    this.hideStoreDialog();
+                },
+                error: (error) => {
+                    this.storeBtnLoading.set(false);
+                    console.log(error);
+                }
+            });
+        } else {
+            this.storeService.createStore(store).subscribe({
+                next: (address) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Création',
+                        detail: 'Votre mafasin a été créé avec succès'
+                    });
+                    this.storeBtnLoading.set(false);
+                    this.authService.getCurrentUser().subscribe({
+                        next: (user) => {
+                            this.authService.setCurrentUser(user);
+                        },
+                        error: (error) => {
+                            this.authService.setCurrentUser(null);
+                            console.log(error); //TODO: handle error
+                        }
+                    });
+                    this.hideStoreDialog();
+                },
+                error: (error) => {
+                    this.storeBtnLoading.set(false);
+                    console.log(error);
+                }
+            });
+        }
+    }
 }

@@ -238,8 +238,67 @@
     </ng-template>
 
     <ng-template #footer>
-        <p-button label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Annuler" icon="pi pi-times" text (click)="hideAddressDialog()" />
         <p-button label="Enregistrer" icon="pi pi-check" (click)="saveAddress()" [loading]="addressBtnLoading()" [disabled]="addressFormGroup.invalid || addressBtnLoading()" />
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="storeDialog" [style]="{ width: '70%', padding: '1.5rem' }" header="Magasin" [modal]="true">
+    <ng-template #content>
+        <form [formGroup]="storeFormGroup" class="grid grid-cols-12 gap-3 border p-3 rounded">
+            <div class="col-span-12">
+                <h3 class="text-lg font-bold m-0">Informations de mon magasin</h3>
+            </div>
+            <div class="col-span-6">
+                <p-floatlabel variant="in">
+                    <input pInputText id="name" type="text" formControlName="name" class="w-full" />
+                    <label for="name">Nom</label>
+                </p-floatlabel>
+                @if (storeFormControls['name'].errors && storeFormControls['name'].touched && storeFormControls['name'].errors['required']) {
+                    <small class="text-red-500">Nom de magasin obligatoire.</small>
+                }
+            </div>
+
+            <div class="col-span-6">
+                <p-floatlabel variant="in">
+                    <input pInputText id="email" type="text" formControlName="email" class="w-full" />
+                    <label for="email">Adresse email</label>
+                </p-floatlabel>
+                @if (storeFormControls['email'].errors && storeFormControls['email'].touched) {
+                    @if (storeFormControls['email'].errors['required']) {
+                        <small class="text-red-500">Adresse email obligatoire.</small>
+                    }
+                    @if (storeFormControls['email'].errors['email']) {
+                        <small class="text-red-500">Adresse email invalide.</small>
+                    }
+                }
+            </div>
+
+            <div class="col-span-6">
+                <p-floatlabel variant="in">
+                    <input pInputText id="phoneNumber" type="text" formControlName="phoneNumber" class="w-full" />
+                    <label for="phoneNumber">N° Téléphone</label>
+                </p-floatlabel>
+                @if (storeFormControls['phoneNumber'].errors && storeFormControls['phoneNumber'].touched && storeFormControls['phoneNumber'].errors['required']) {
+                    <small class="text-red-500">N° Téléphone obligatoire.</small>
+                }
+            </div>
+
+            <div class="col-span-6">
+                <p-floatlabel variant="in">
+                    <input pInputText id="address" type="text" formControlName="address" class="w-full" />
+                    <label for="address">Adresse</label>
+                </p-floatlabel>
+                @if (storeFormControls['address'].errors && storeFormControls['address'].touched && storeFormControls['address'].errors['required']) {
+                    <small class="text-red-500">Adresse obligatoire.</small>
+                }
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Annuler" icon="pi pi-times" text (click)="hideStoreDialog()" />
+        <p-button label="Enregistrer" icon="pi pi-check" (click)="saveStore()" [loading]="storeBtnLoading()" [disabled]="storeFormGroup.invalid || storeBtnLoading()" />
     </ng-template>
 </p-dialog>
 
