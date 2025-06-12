@@ -19,6 +19,7 @@ import { AuthService } from '../../services/auth.service';
             <a class="flex items-center mr-6" routerLink="/">
                 <img src="assets/logo/app-logo.png" class="h-2rem" alt="APP LOGO" />
             </a>
+            <a routerLink="/home" class="flex items-center mr-6">Espace Utilisateur</a>
         </div>
 
         <div class="layout-topbar-actions">

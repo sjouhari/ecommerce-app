@@ -40,6 +40,11 @@ export class AppMenu {
                         routerLink: ['/products']
                     },
                     {
+                        label: 'Gestion des magasins',
+                        icon: 'pi pi-fw pi-shop',
+                        routerLink: ['/stores']
+                    },
+                    {
                         label: 'Gestion des catégories',
                         icon: 'pi pi-fw pi-tags',
                         items: [
@@ -81,7 +86,7 @@ export class AppMenu {
                         icon: 'pi pi-fw pi-sign-out',
                         command: () => {
                             this.confirmationService.confirm({
-                                message: 'Êtes-vous sûr de vouloir vous deconnecter ?',
+                                message: 'Êtes-vous sûr de vouloir vous déconnecter ?',
                                 header: 'Déconnexion',
                                 icon: 'pi pi-exclamation-triangle',
                                 accept: () => {

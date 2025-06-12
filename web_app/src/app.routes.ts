@@ -1,3 +1,4 @@
+import { Store } from './app/models/user/store.model';
 import { Routes } from '@angular/router';
 import { AppLayout } from './app/layout/component/app.layout';
 import { Dashboard } from './app/pages/dashboard/dashboard';
@@ -24,6 +25,7 @@ import { HomeComponent } from './app/pages/user-layout/components/home/home.comp
 import { adminProfileGuard } from './app/guards/admin-profile.guard';
 import { sellerProfileGuard } from './app/guards/seller-profile.guard';
 import { StoresComponent } from './app/pages/stores/stores.component';
+import { StoreProductsComponent } from './app/pages/store-products/store-products.component';
 
 export const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -32,7 +34,7 @@ export const appRoutes: Routes = [
     {
         path: '',
         component: AppLayout,
-        canActivate: [authGuard, adminProfileGuard, sellerProfileGuard],
+        canActivate: [authGuard, sellerProfileGuard],
         children: [
             { path: '', component: Dashboard },
 
@@ -40,6 +42,8 @@ export const appRoutes: Routes = [
             { path: 'products', component: ProductsComponent },
             { path: 'products/:id', component: ProductDetailsComponent },
             { path: 'inventory', component: ProductsComponent },
+
+            { path: 'stores', component: StoresComponent },
 
             // Categories
             { path: 'categories', component: CategoriesComponent },
@@ -71,10 +75,12 @@ export const appRoutes: Routes = [
             { path: '', component: HomeComponent },
             { path: 'list-products', component: ListProductsComponent },
             { path: 'list-products/:id', component: ProductDetailsComponent },
-            { path: 'stores/:id', component: StoresComponent },
+            { path: 'stores/:id', component: StoreProductsComponent },
             { path: 'shopping-cart', component: ShoppingCartComponent },
             { path: 'order-summary/:id', component: OrderSummaryComponent },
-            { path: 'profile', component: UserProfileComponent }
+            { path: 'profile', component: UserProfileComponent },
+            { path: 'products', component: ProductsComponent },
+            { path: 'orders', component: OrdersComponent }
         ]
     },
     { path: 'notfound', component: Notfound },

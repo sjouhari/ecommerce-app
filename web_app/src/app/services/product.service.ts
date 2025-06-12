@@ -15,6 +15,10 @@ export class ProductService {
         return this.http.get<Product[]>(this.baseUrl);
     }
 
+    getApprovedProducts(): Observable<Product[]> {
+        return this.http.get<Product[]>(`${this.baseUrl}/approved`);
+    }
+
     getProductsByStoreId(storeId: number): Observable<Product[]> {
         return this.http.get<Product[]>(`${this.baseUrl}/store/${storeId}`);
     }

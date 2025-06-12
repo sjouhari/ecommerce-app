@@ -26,4 +26,7 @@ public class Store {
     private String phoneNumber;
     private String email;
 
+    private boolean approved;
+    private boolean rejected;
+
 }

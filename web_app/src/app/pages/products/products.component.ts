@@ -120,14 +120,25 @@ export class ProductsComponent implements OnInit {
     }
 
     getProducts() {
-        this.productService.getProducts().subscribe({
-            next: (products) => {
-                this.products.set(products);
-            },
-            error: (error) => {
-                console.log(error); //TODO: handle error
-            }
-        });
+        if (this.authService.isAdmin()) {
+            this.productService.getProducts().subscribe({
+                next: (products) => {
+                    this.products.set(products);
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
+                }
+            });
+        } else {
+            this.productService.getProductsByStoreId(this.authService.currentUser()?.store?.id!).subscribe({
+                next: (products) => {
+                    this.products.set(products);
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
+                }
+            });
+        }
     }
 
     initProductFormGroup(product?: Product) {

@@ -66,7 +66,7 @@ export class ListProductsComponent implements OnInit {
     selectedSort: string | null = null;
 
     ngOnInit(): void {
-        this.productService.getProducts().subscribe({
+        this.productService.getApprovedProducts().subscribe({
             next: (products) => {
                 this.products.set(products);
                 this.filteredProducts.set(products);

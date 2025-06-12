@@ -125,16 +125,14 @@
         }
         <p-panel header="Historique des commandes" class="col-span-12">
             <p-table [value]="orders()" [responsiveLayout]="'scroll'">
-                @if (orders().length > 0) {
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>ID Commande</th>
-                            <th>Date</th>
-                            <th>Prix totale</th>
-                            <th>Statut</th>
-                        </tr>
-                    </ng-template>
-                }
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>ID Commande</th>
+                        <th>Date</th>
+                        <th>Prix totale</th>
+                        <th>Statut</th>
+                    </tr>
+                </ng-template>
                 <ng-template pTemplate="body" let-order>
                     <tr>
                         <td>{{ order.id }}</td>

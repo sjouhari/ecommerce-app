@@ -35,6 +35,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+    @GetMapping("/approved")
+    public ResponseEntity<List<ProductResponseDto>> getAllProductsByApprovedStores() {
+        return ResponseEntity.ok(productService.getAllProductsByApprovedStores());
+    }
+
     @GetMapping("/new")
     public ResponseEntity<List<ProductResponseDto>> getAllNewProducts() {
         return ResponseEntity.ok(productService.getNewProducts());

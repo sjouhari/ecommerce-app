@@ -6,6 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface StoreMapper {
 
@@ -15,5 +17,7 @@ public interface StoreMapper {
     StoreDto storeToStoreDto(Store store);
 
     Store storeDtoToStore(StoreDto storeDto);
+
+    List<StoreDto> storesToStoreDtos(List<Store> stores);
 
 }

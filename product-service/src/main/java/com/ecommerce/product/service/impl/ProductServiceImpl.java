@@ -60,6 +60,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductResponseDto> getAllProductsByApprovedStores() {
+        List<Long> ids = userApiClient.getAllApprovedStoresIds();
+        List<Product> products = productRepository.findAllByStoreIdIn(ids);
+        return products.stream().map(
+                this::getProductResponseDto
+        ).toList();
+    }
+
+
+    @Override
     public List<ProductResponseDto> getProductsByStoreId(Long storeId) {
         List<Product> products = productRepository.findAllByStoreId(storeId);
         return products.stream().map(
@@ -69,18 +79,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponseDto> getProductsBySubCategoryId(Long subCategoryId) {
+        List<Long> ids = userApiClient.getAllApprovedStoresIds();
         List<Product> products = productRepository.findAllBySubCategoryId(subCategoryId);
-        return products.stream().map(
-                this::getProductResponseDto
-        ).toList();
+        return  products.stream()
+                .filter(product -> ids.contains(product.getStoreId()))
+                .map(this::getProductResponseDto)
+                .toList();
     }
 
     @Override
     public List<ProductResponseDto> getNewProducts() {
+        List<Long> ids = userApiClient.getAllApprovedStoresIds();
         List<Product> products = productRepository.findAllNewProducts();
-        return products.stream().map(
-                this::getProductResponseDto
-        ).toList();
+        return products.stream()
+                .filter(product -> ids.contains(product.getStoreId()))
+                .map(this::getProductResponseDto)
+                .toList();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.ecommerce.product.service;
 
 import com.ecommerce.product.dto.ProductResponseDto;
+import com.ecommerce.product.entity.Product;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.List;
 public interface ProductService {
 
     List<ProductResponseDto> getAllProducts();
+
+    List<ProductResponseDto> getAllProductsByApprovedStores();
 
     List<ProductResponseDto> getProductsByStoreId(Long storeId);
 

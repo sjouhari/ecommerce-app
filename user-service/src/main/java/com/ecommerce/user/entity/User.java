@@ -26,8 +26,8 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private boolean enabled; // account activation
-    private boolean verified; // email verification
+    private boolean enabled;
+    private boolean verified;
     private int verificationCode;
     private LocalDateTime verificationCodeExpireAt;
 

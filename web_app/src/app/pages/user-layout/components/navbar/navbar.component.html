@@ -24,9 +24,20 @@
                 <span>Produits</span>
             </a>
         </li>
+        @if (authService.currentUser()?.store) {
+            <li class="bg-surface-900 p-2 rounded text-white">
+                <a (click)="router.navigate(['/'])" pRipple class="px-0 py-4 font-medium text-xl">
+                    @if (authService.isAdmin()) {
+                        <span>Espace Admin</span>
+                    } @else if (authService.isSeller()) {
+                        <span>Mon magasin</span>
+                    }
+                </a>
+            </li>
+        }
     </ul>
     <div class="flex border-t lg:border-t-0 border-surface py-4 lg:py-0 mt-4 lg:mt-0 gap-2">
-        @if(authService.isLoggedIn()) {
+        @if (authService.isLoggedIn()) {
             <div class="flex flex-wrap gap-2 align-items-center">
                 <p-overlaybadge class="mr-3 cursor-pointer" [value]="shoppingCartService.shoppingCart() ? shoppingCartService.shoppingCart()!.orderItems.length : 0" (click)="toggleDataTable(op2, $event)">
                     <i class="pi pi-shopping-cart text-4xl"></i>

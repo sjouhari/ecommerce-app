@@ -11,6 +11,10 @@ export class StoreService {
 
     baseUrl = 'http://localhost:8080/api/stores';
 
+    getAllStores(): Observable<Store[]> {
+        return this.http.get<Store[]>(this.baseUrl);
+    }
+
     getStore(id: number): Observable<Store> {
         return this.http.get<Store>(`${this.baseUrl}/${id}`);
     }
@@ -25,5 +29,13 @@ export class StoreService {
 
     deleteStore(id: number): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    }
+
+    approveStore(id: number): Observable<void> {
+        return this.http.put<void>(`${this.baseUrl}/${id}/approve`, {});
+    }
+
+    rejectStore(id: number): Observable<void> {
+        return this.http.put<void>(`${this.baseUrl}/${id}/reject`, {});
     }
 }

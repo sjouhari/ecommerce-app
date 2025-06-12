@@ -30,4 +30,7 @@ public class StoreDto {
     @NotNull(message = "User id is required")
     private Long userId;
 
+    private boolean approved;
+    private boolean rejected;
+
 }
