@@ -9,6 +9,7 @@ import { Product } from '../../../models/product/product.model';
 import { OrderService } from '../../../services/order.service';
 import { OrderItem } from '../../../models/order/order-item.model';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
     standalone: true,
@@ -37,6 +38,11 @@ import { RouterLink } from '@angular/router';
                     </td>
                 </tr>
             </ng-template>
+            <ng-template #emptymessage>
+                <tr>
+                    <td colspan="6">Aucune vente pour le moment</td>
+                </tr>
+            </ng-template>
         </p-table>
     </div>`,
     providers: [ProductService]
@@ -45,24 +51,43 @@ export class RecentSalesWidget {
     products: OrderItem[] = [];
 
     orderService = inject(OrderService);
+    authService = inject(AuthService);
 
     ngOnInit() {
-        this.orderService.getOrders().subscribe({
-            next: (orders) => {
-                console.log(orders);
-                this.products = Array.from(
-                    new Set(
-                        orders
-                            .map((order) => order.orderItems)
-                            .flat()
-                            .map((item) => item.productId)
-                            .map((id) => orders.flatMap((order) => order.orderItems).find((item) => item.productId === id)!)
-                    )
-                );
-            },
-            error: (error) => {
-                console.error(error);
-            }
-        });
+        if (this.authService.isAdmin()) {
+            this.orderService.getOrders().subscribe({
+                next: (orders) => {
+                    this.products = Array.from(
+                        new Set(
+                            orders
+                                .map((order) => order.orderItems)
+                                .flat()
+                                .map((item) => item.productId)
+                                .map((id) => orders.flatMap((order) => order.orderItems).find((item) => item.productId === id)!)
+                        )
+                    );
+                },
+                error: (error) => {
+                    console.error(error);
+                }
+            });
+        } else {
+            this.orderService.getOrdersByStoreId(this.authService.currentUser()?.store?.id!).subscribe({
+                next: (orders) => {
+                    this.products = Array.from(
+                        new Set(
+                            orders
+                                .map((order) => order.orderItems)
+                                .flat()
+                                .map((item) => item.productId)
+                                .map((id) => orders.flatMap((order) => order.orderItems).find((item) => item.productId === id)!)
+                        )
+                    );
+                },
+                error: (error) => {
+                    console.error(error);
+                }
+            });
+        }
     }
 }

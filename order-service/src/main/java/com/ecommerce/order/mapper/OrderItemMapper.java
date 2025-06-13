@@ -1,6 +1,7 @@
 package com.ecommerce.order.mapper;
 
 import com.ecommerce.order.dto.OrderItemRequestDto;
+import com.ecommerce.order.dto.OrderItemResponseDto;
 import com.ecommerce.order.entity.OrderItem;
 import com.ecommerce.shared.dto.InventoryDto;
 import org.mapstruct.Mapper;
@@ -14,6 +15,8 @@ public interface OrderItemMapper {
     OrderItemRequestDto orderItemToOrderItemDto(OrderItem orderItem);
 
     OrderItem orderItemDtoToOrderItem(OrderItemRequestDto orderItemRequestDto);
+
+    OrderItemResponseDto orderItemToOrderResponseDto(OrderItem orderItem);
 
     InventoryDto orderItemToInventoryDto(OrderItem orderItem);
 

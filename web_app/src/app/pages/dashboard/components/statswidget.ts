@@ -8,6 +8,7 @@ import { PaymentStatus } from '../../../models/order/payment-status';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user/user.model';
 import { CommentService } from '../../../services/comment.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
     standalone: true,
@@ -76,6 +77,7 @@ import { CommentService } from '../../../services/comment.service';
 })
 export class StatsWidget implements OnInit {
     orderService = inject(OrderService);
+    authService = inject(AuthService);
 
     totalOrders = signal<number>(0);
     totalPendingOrders = signal<number>(0);
@@ -91,18 +93,21 @@ export class StatsWidget implements OnInit {
     totalCommentsLastWeek = signal<number>(0);
 
     ngOnInit() {
-        this.orderService.getOrders().subscribe({
-            next: (orders) => {
-                this.totalOrders.set(orders.length);
-                this.totalPendingOrders.set(orders.filter((order) => order.status === OrderStatus.PENDING).length);
-                const deleveredOrders = orders.filter((order) => order.status === OrderStatus.DELIVERED || order.invoice.paymentMethod.status === PaymentStatus.PAID);
-                this.totalRevenue.set(deleveredOrders.reduce((total, order) => total + order.invoice.totalPrice, 0));
-                const lastWeekRevenu = deleveredOrders.filter((order) => new Date(order.createdAt!) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).reduce((total, order) => total + order.invoice.totalPrice, 0);
-                const totalRevenueValue = this.totalRevenue();
-                this.lastWeekRevenuePercentage.set(totalRevenueValue > 0 ? (lastWeekRevenu / totalRevenueValue) * 100 : 0);
-            },
-            error: (error) => console.error(error) //TODO: handle error
-        });
+        if (this.authService.isAdmin()) {
+            this.orderService.getOrders().subscribe({
+                next: (orders) => {
+                    this.calculateStats(orders);
+                },
+                error: (error) => console.error(error) //TODO: handle error
+            });
+        } else {
+            this.orderService.getOrdersByStoreId(this.authService.currentUser()?.store?.id!).subscribe({
+                next: (orders) => {
+                    this.calculateStats(orders);
+                },
+                error: (error) => console.error(error) //TODO: handle error
+            });
+        }
 
         this.userService.getUsers().subscribe({
             next: (users) => {
@@ -119,5 +124,15 @@ export class StatsWidget implements OnInit {
             },
             error: (error) => console.error(error) //TODO: handle error
         });
+    }
+
+    calculateStats(orders: Order[]) {
+        this.totalOrders.set(orders.length);
+        this.totalPendingOrders.set(orders.filter((order) => order.status === OrderStatus.PENDING).length);
+        const deleveredOrders = orders.filter((order) => order.status === OrderStatus.DELIVERED || order.invoice.paymentMethod.status === PaymentStatus.PAID);
+        this.totalRevenue.set(deleveredOrders.reduce((total, order) => total + order.invoice.totalPrice, 0));
+        const lastWeekRevenu = deleveredOrders.filter((order) => new Date(order.createdAt!) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).reduce((total, order) => total + order.invoice.totalPrice, 0);
+        const totalRevenueValue = this.totalRevenue();
+        this.lastWeekRevenuePercentage.set(totalRevenueValue > 0 ? (lastWeekRevenu / totalRevenueValue) * 100 : 0);
     }
 }

@@ -202,6 +202,11 @@ public class OrderServiceImpl implements OrderService {
         OrderResponseDto orderResponseDto = OrderMapper.INSTANCE.orderToOrderResponseDto(order);
         orderResponseDto.setUserName(userName);
         orderResponseDto.setStoreName(storeDto.getName());
+        orderResponseDto.getOrderItems().forEach(orderItem -> {
+            ProductDto productDto = productApiClient.getProductById(orderItem.getProductId());
+            orderItem.setProductName(productDto.getName());
+            orderItem.setProductImage(productDto.getMedias().getFirst().getUrl());
+        });
         return orderResponseDto;
     }
 
