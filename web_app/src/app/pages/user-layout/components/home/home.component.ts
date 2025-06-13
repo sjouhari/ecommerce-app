@@ -3,7 +3,7 @@ import { ButtonModule } from 'primeng/button';
 import { Carousel } from 'primeng/carousel';
 import { RippleModule } from 'primeng/ripple';
 import { NewProductsComponent } from '../new-products/new-products.component';
-import { ListCategoriesComponent } from '../categories/list-categories.component';
+import { ListCategoriesComponent } from '../list-categories/list-categories.component';
 
 @Component({
     selector: 'app-home',

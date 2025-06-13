@@ -1,162 +1,160 @@
 <p-toast></p-toast>
 
-<div class="m-10">
-    <div class="grid grid-cols-12 gap-3">
-        <div class="col-span-12 flex justify-between">
-            <div class="flex gap-3">
-                <img class="w-5rem rounded" src="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" [alt]="getFullName()" />
-                <div class="flex flex-col">
-                    <h3 class="mt-2 mb-0">
-                        Bienvenue <span class="font-semibold">{{ getFullName() }}</span>
-                    </h3>
-                    <p class="text-gray-500">{{ userInfosFormGroup.get('email')?.value }}</p>
-                </div>
-            </div>
-            <div>
-                <button pButton label="Déconnexion" icon="pi pi-sign-out" class="mt-2" (click)="logout()"></button>
+<div class="grid grid-cols-12 gap-3">
+    <div class="col-span-12 flex justify-between">
+        <div class="flex gap-3">
+            <img class="w-5rem rounded" src="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" [alt]="getFullName()" />
+            <div class="flex flex-col">
+                <h3 class="mt-2 mb-0">
+                    Bienvenue <span class="font-semibold">{{ getFullName() }}</span>
+                </h3>
+                <p class="text-gray-500">{{ userInfosFormGroup.get('email')?.value }}</p>
             </div>
         </div>
-        <p-card header="Modifier mes informations" class="col-span-6">
-            <form class="flex flex-col gap-3" [formGroup]="userInfosFormGroup" (ngSubmit)="saveChanges()">
-                <div>
-                    <label class="block mb-2" for="lastName">Nom</label>
-                    <input id="lastName" type="text" pInputText formControlName="lastName" fluid />
-                </div>
-                <div>
-                    <label class="block mb-2" for="firstName">Prénom</label>
-                    <input id="firstName" type="text" pInputText formControlName="firstName" fluid />
-                </div>
-                <div>
-                    <label class="block mb-2" for="email">Email</label>
-                    <input id="email" type="email" pInputText formControlName="email" fluid readonly />
-                </div>
-                <div class="flex justify-end">
-                    <button pButton label="Sauvegarder" icon="pi pi-check" severity="success"></button>
-                </div>
-            </form>
-        </p-card>
-        <p-card header="Changer mon mot de passe" class="col-span-6">
-            <form class="flex flex-col gap-3" [formGroup]="changePasswordFormGroup" (ngSubmit)="changePassword()">
-                <div>
-                    <label class="block mb-2" for="currentPassword">Mot de passe actuel</label>
-                    <p-password id="currentPassword" formControlName="currentPassword" [toggleMask]="true" [feedback]="false" fluid />
-                    @if (passwdFormControls['currentPassword'].errors && passwdFormControls['currentPassword'].touched) {
-                        @if (passwdFormControls['currentPassword'].errors['required']) {
-                            <small class="text-red-500">Veuillez saisir votre mot de passe actuel.</small>
-                        }
-                        @if (passwdFormControls['currentPassword'].errors['minlength']) {
-                            <small class="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>
-                        }
+        <div>
+            <button pButton label="Déconnexion" icon="pi pi-sign-out" class="mt-2" (click)="logout()"></button>
+        </div>
+    </div>
+    <p-card header="Modifier mes informations" class="col-span-6">
+        <form class="flex flex-col gap-3" [formGroup]="userInfosFormGroup" (ngSubmit)="saveChanges()">
+            <div>
+                <label class="block mb-2" for="lastName">Nom</label>
+                <input id="lastName" type="text" pInputText formControlName="lastName" fluid />
+            </div>
+            <div>
+                <label class="block mb-2" for="firstName">Prénom</label>
+                <input id="firstName" type="text" pInputText formControlName="firstName" fluid />
+            </div>
+            <div>
+                <label class="block mb-2" for="email">Email</label>
+                <input id="email" type="email" pInputText formControlName="email" fluid readonly />
+            </div>
+            <div class="flex justify-end">
+                <button pButton label="Sauvegarder" icon="pi pi-check" severity="success"></button>
+            </div>
+        </form>
+    </p-card>
+    <p-card header="Changer mon mot de passe" class="col-span-6">
+        <form class="flex flex-col gap-3" [formGroup]="changePasswordFormGroup" (ngSubmit)="changePassword()">
+            <div>
+                <label class="block mb-2" for="currentPassword">Mot de passe actuel</label>
+                <p-password id="currentPassword" formControlName="currentPassword" [toggleMask]="true" [feedback]="false" fluid />
+                @if (passwdFormControls['currentPassword'].errors && passwdFormControls['currentPassword'].touched) {
+                    @if (passwdFormControls['currentPassword'].errors['required']) {
+                        <small class="text-red-500">Veuillez saisir votre mot de passe actuel.</small>
                     }
-                </div>
-                <div>
-                    <label class="block mb-2" for="newPassword">Nouveau mot de passe</label>
-                    <p-password id="newPassword" formControlName="newPassword" [toggleMask]="true" [feedback]="false" fluid />
-                    @if (passwdFormControls['newPassword'].errors && passwdFormControls['newPassword'].touched) {
-                        @if (passwdFormControls['newPassword'].errors['required']) {
-                            <small class="text-red-500">Veuillez saisir votre mot de passe actuel.</small>
-                        }
-                        @if (passwdFormControls['newPassword'].errors['minlength']) {
-                            <small class="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>
-                        }
+                    @if (passwdFormControls['currentPassword'].errors['minlength']) {
+                        <small class="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>
                     }
-                </div>
-                <div>
-                    <label class="block mb-2" for="confirmNewPassword">Confirmer le nouveau mot de passe</label>
-                    <p-password id="confirmNewPassword" formControlName="confirmNewPassword" [toggleMask]="true" [feedback]="false" fluid />
-                    @if (passwdFormControls['confirmNewPassword'].errors && passwdFormControls['confirmNewPassword'].touched) {
-                        @if (passwdFormControls['confirmNewPassword'].errors['required']) {
-                            <small class="text-red-500">Veuillez saisir votre mot de passe actuel.</small>
-                        }
-                        @if (passwdFormControls['confirmNewPassword'].errors['minlength']) {
-                            <small class="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>
-                        }
-                    }
-                </div>
-                <div class="flex justify-end">
-                    <button pButton label="Enregistrer" icon="pi pi-check" severity="success" [loading]="changePasswordBtnLoading()" [disabled]="changePasswordBtnLoading() || changePasswordFormGroup.invalid"></button>
-                </div>
-            </form>
-        </p-card>
-        <p-card header="Gérer mes adresses de livraison" class="col-span-6">
-            <div class="overflow-auto" style="max-height: 30vh">
-                @for (address of addresses(); track address.id) {
-                    <div class="flex justify-between gap-1 mb-3 border-1 border-surface rounded p-2">
-                        <div class="flex flex-col gap-2">
-                            <span class="font-medium">{{ address.lastName }} {{ address.firstName }}, {{ address.phone }}</span>
-                            <span class="font-medium">{{ address.deliveryAddress }}</span>
-                            <span class="font-medium">{{ address.postalCode }}, {{ address.city }}, {{ address.country }}</span>
-                        </div>
-                        <div class="flex flex-col justify-between items-center gap-1">
-                            <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="showAddressDialog(address)" />
-                            <p-button icon="pi pi-trash" [rounded]="true" [outlined]="true" severity="danger" (click)="confirmDeleteAddress(address)" />
-                        </div>
-                    </div>
                 }
             </div>
-            <p-button icon="pi pi-plus" label="Ajouter une adresse" [rounded]="true" [outlined]="true" (click)="showAddressDialog()"></p-button>
-        </p-card>
-        @if (currentUser()?.store) {
-            <p-card header="Mon magasin" class="col-span-6">
-                <div>
-                    <div class="flex justify-between">
-                        <div class="my-2">
-                            <p class="font-semibold m-0">Nom du magasin</p>
-                            <p>{{ currentUser()?.store?.name }}</p>
-                        </div>
-                        <div class="mb-2">
-                            <p class="font-semibold m-0">Adresse</p>
-                            <p>{{ currentUser()?.store?.address }}</p>
-                        </div>
-                        <div class="mb-2">
-                            <p class="font-semibold m-0">Email</p>
-                            <p>{{ currentUser()?.store?.email }}</p>
-                        </div>
-                        <div class="mb-2">
-                            <p class="font-semibold m-0">Téléphone</p>
-                            <p>{{ currentUser()?.store?.phoneNumber }}</p>
-                        </div>
+            <div>
+                <label class="block mb-2" for="newPassword">Nouveau mot de passe</label>
+                <p-password id="newPassword" formControlName="newPassword" [toggleMask]="true" [feedback]="false" fluid />
+                @if (passwdFormControls['newPassword'].errors && passwdFormControls['newPassword'].touched) {
+                    @if (passwdFormControls['newPassword'].errors['required']) {
+                        <small class="text-red-500">Veuillez saisir votre mot de passe actuel.</small>
+                    }
+                    @if (passwdFormControls['newPassword'].errors['minlength']) {
+                        <small class="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>
+                    }
+                }
+            </div>
+            <div>
+                <label class="block mb-2" for="confirmNewPassword">Confirmer le nouveau mot de passe</label>
+                <p-password id="confirmNewPassword" formControlName="confirmNewPassword" [toggleMask]="true" [feedback]="false" fluid />
+                @if (passwdFormControls['confirmNewPassword'].errors && passwdFormControls['confirmNewPassword'].touched) {
+                    @if (passwdFormControls['confirmNewPassword'].errors['required']) {
+                        <small class="text-red-500">Veuillez saisir votre mot de passe actuel.</small>
+                    }
+                    @if (passwdFormControls['confirmNewPassword'].errors['minlength']) {
+                        <small class="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>
+                    }
+                }
+            </div>
+            <div class="flex justify-end">
+                <button pButton label="Enregistrer" icon="pi pi-check" severity="success" [loading]="changePasswordBtnLoading()" [disabled]="changePasswordBtnLoading() || changePasswordFormGroup.invalid"></button>
+            </div>
+        </form>
+    </p-card>
+    <p-card header="Gérer mes adresses de livraison" class="col-span-6">
+        <div class="overflow-auto" style="max-height: 30vh">
+            @for (address of addresses(); track address.id) {
+                <div class="flex justify-between gap-1 mb-3 border-1 border-surface rounded p-2">
+                    <div class="flex flex-col gap-2">
+                        <span class="font-medium">{{ address.lastName }} {{ address.firstName }}, {{ address.phone }}</span>
+                        <span class="font-medium">{{ address.deliveryAddress }}</span>
+                        <span class="font-medium">{{ address.postalCode }}, {{ address.city }}, {{ address.country }}</span>
                     </div>
-                    <div class="flex gap-2 justify-end">
-                        <p-button label="Modifier" icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="showStoreDialog()"></p-button>
-                        <p-button label="Supprimer" icon="pi pi-trash" [rounded]="true" [outlined]="true" severity="danger" (click)="confirmDeleteStore()"></p-button>
+                    <div class="flex flex-col justify-between items-center gap-1">
+                        <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="showAddressDialog(address)" />
+                        <p-button icon="pi pi-trash" [rounded]="true" [outlined]="true" severity="danger" (click)="confirmDeleteAddress(address)" />
                     </div>
                 </div>
-            </p-card>
-        } @else {
-            <p-card header="Devenir vendeur" class="col-span-6">
-                <p class="text-lg">Vous n'avez pas encore de magasin, vous pouvez en créer un maintenant.</p>
-                <p-button label="Créer mon magasin" icon="pi pi-plus" [rounded]="true" [outlined]="true" (click)="showStoreDialog()"></p-button>
-            </p-card>
-        }
-        <p-panel header="Historique des commandes" class="col-span-12">
-            <p-table [value]="orders()" [responsiveLayout]="'scroll'">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th>ID Commande</th>
-                        <th>Date</th>
-                        <th>Prix totale</th>
-                        <th>Statut</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-order>
-                    <tr>
-                        <td>{{ order.id }}</td>
-                        <td>{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
-                        <td>{{ order.invoice.totalPrice | currency: 'MAD ' }}</td>
-                        <td>
-                            <span class="order-status" [ngClass]="'status-' + order.status.toLowerCase()">{{ order.status }}</span>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="4">Aucune commande pour le moment</td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </p-panel>
-    </div>
+            }
+        </div>
+        <p-button icon="pi pi-plus" label="Ajouter une adresse" [rounded]="true" [outlined]="true" (click)="showAddressDialog()"></p-button>
+    </p-card>
+    @if (currentUser()?.store) {
+        <p-card header="Mon magasin" class="col-span-6">
+            <div>
+                <div class="flex justify-between">
+                    <div class="my-2">
+                        <p class="font-semibold m-0">Nom du magasin</p>
+                        <p>{{ currentUser()?.store?.name }}</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="font-semibold m-0">Adresse</p>
+                        <p>{{ currentUser()?.store?.address }}</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="font-semibold m-0">Email</p>
+                        <p>{{ currentUser()?.store?.email }}</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="font-semibold m-0">Téléphone</p>
+                        <p>{{ currentUser()?.store?.phoneNumber }}</p>
+                    </div>
+                </div>
+                <div class="flex gap-2 justify-end">
+                    <p-button label="Modifier" icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="showStoreDialog()"></p-button>
+                    <p-button label="Supprimer" icon="pi pi-trash" [rounded]="true" [outlined]="true" severity="danger" (click)="confirmDeleteStore()"></p-button>
+                </div>
+            </div>
+        </p-card>
+    } @else {
+        <p-card header="Devenir vendeur" class="col-span-6">
+            <p class="text-lg">Vous n'avez pas encore de magasin, vous pouvez en créer un maintenant.</p>
+            <p-button label="Créer mon magasin" icon="pi pi-plus" [rounded]="true" [outlined]="true" (click)="showStoreDialog()"></p-button>
+        </p-card>
+    }
+    <p-panel header="Historique des commandes" class="col-span-12">
+        <p-table [value]="orders()" [responsiveLayout]="'scroll'">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>ID Commande</th>
+                    <th>Date</th>
+                    <th>Prix totale</th>
+                    <th>Statut</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-order>
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                    <td>{{ order.invoice.totalPrice | currency: 'MAD ' }}</td>
+                    <td>
+                        <span class="order-status" [ngClass]="'status-' + order.status.toLowerCase()">{{ order.status }}</span>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="4">Aucune commande pour le moment</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
 </div>
 
 <p-dialog [(visible)]="addressDialog" [style]="{ width: '70%', padding: '1.5rem' }" header="Adresse de livraison" [modal]="true">

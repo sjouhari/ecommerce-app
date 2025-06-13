@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { Carousel } from 'primeng/carousel';
 import { Product } from '../../../../models/product/product.model';
 import { RouterLink } from '@angular/router';
 import { ProductService } from '../../../../services/product.service';
@@ -8,7 +7,7 @@ import { ProductCardComponent } from '../../../product-card/product-card.compone
 @Component({
     selector: 'app-new-products',
     standalone: true,
-    imports: [Carousel, RouterLink, ProductCardComponent],
+    imports: [RouterLink, ProductCardComponent],
     templateUrl: 'new-products.component.html'
 })
 export class NewProductsComponent {
