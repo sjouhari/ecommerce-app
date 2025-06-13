@@ -66,4 +66,9 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getBestSellingProducts());
     }
 
+    @GetMapping("/stats/best-selling-products/{storeId}")
+    public ResponseEntity<List<BestSellingProductDto>> getBestSellingProductsByStoreId(@PathVariable Long storeId) {
+        return ResponseEntity.ok(orderService.getBestSellingProductsByStoreId(storeId));
+    }
+
 }

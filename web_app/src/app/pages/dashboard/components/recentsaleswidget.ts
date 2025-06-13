@@ -31,7 +31,7 @@ import { RouterLink } from '@angular/router';
                         <img [src]="'http://localhost:8080/api/products/images/' + product.productImage" class="shadow-lg" alt="{{ product.name }}" width="50" />
                     </td>
                     <td style="width: 35%; min-width: 7rem;">{{ product.productName }}</td>
-                    <td style="width: 35%; min-width: 8rem;">{{ product.price | currency: 'USD' }}</td>
+                    <td style="width: 35%; min-width: 8rem;">{{ product.price | currency: 'MAD ' }}</td>
                     <td style="width: 15%;">
                         <a [routerLink]="'/home/list-products/' + product.productId"><i class="pi pi-eye"></i></a>
                     </td>
@@ -49,6 +49,7 @@ export class RecentSalesWidget {
     ngOnInit() {
         this.orderService.getOrders().subscribe({
             next: (orders) => {
+                console.log(orders);
                 this.products = Array.from(
                     new Set(
                         orders

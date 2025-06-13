@@ -17,4 +17,13 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     """)
     List<BestSellingProductProjection> findBestSellingProducts();
 
+    @Query("""
+    SELECT oi.productId AS productId, SUM(oi.quantity) AS totalSold
+    FROM OrderItem oi
+    JOIN oi.order o ON o.storeId = :storeId
+    GROUP BY oi.productId
+    ORDER BY totalSold DESC
+    """)
+    List<BestSellingProductProjection> findBestSellingProductsByStoreId(Long storeId);
+
 }

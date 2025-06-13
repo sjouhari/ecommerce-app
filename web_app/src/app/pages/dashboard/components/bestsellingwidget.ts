@@ -1,3 +1,4 @@
+import { AuthService } from './../../../services/auth.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -34,12 +35,29 @@ import { BestSellingProduct } from '../../../models/order/best-selling-product.m
 })
 export class BestSellingWidget implements OnInit {
     orderService = inject(OrderService);
+    authService = inject(AuthService);
 
     products: BestSellingProduct[] = [];
 
     ngOnInit() {
-        this.orderService.getBestSellingProducts().subscribe((products) => {
-            this.products = products;
-        });
+        if (this.authService.isAdmin()) {
+            this.orderService.getBestSellingProducts().subscribe({
+                next: (products) => {
+                    this.products = products;
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
+                }
+            });
+        } else {
+            this.orderService.getBestSellingProductsByStoreId(this.authService.currentUser()?.store?.id!).subscribe({
+                next: (products) => {
+                    this.products = products;
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
+                }
+            });
+        }
     }
 }

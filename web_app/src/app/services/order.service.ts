@@ -48,4 +48,8 @@ export class OrderService {
     getBestSellingProducts(): Observable<BestSellingProduct[]> {
         return this.http.get<BestSellingProduct[]>(`${this.baseUrl}/stats/best-selling-products`);
     }
+
+    getBestSellingProductsByStoreId(storeId: number): Observable<BestSellingProduct[]> {
+        return this.http.get<BestSellingProduct[]>(`${this.baseUrl}/stats/best-selling-products/${storeId}`);
+    }
 }

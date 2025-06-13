@@ -24,4 +24,6 @@ public interface OrderService {
 
     List<BestSellingProductDto> getBestSellingProducts();
 
+    List<BestSellingProductDto> getBestSellingProductsByStoreId(Long storeId);
+
 }
