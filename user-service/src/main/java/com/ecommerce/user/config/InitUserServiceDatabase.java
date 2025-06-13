@@ -86,7 +86,7 @@ public class InitUserServiceDatabase {
            }
 
            if(userRepository.count() == 0) {
-               User admin = new User(null, "Admin", "Admin", "admin@gmail.com", passwordEncoder.encode(ADMIN_PASSWORD), true, true, 0, LocalDateTime.now(), null, new ArrayList<>(profilRepository.findAll()), LocalDateTime.now(), null);
+               User admin = new User(null, "Admin", "Admin", "admin@gmail.com", passwordEncoder.encode(ADMIN_PASSWORD), true, true, 0, LocalDateTime.now(), null, new ArrayList<>(profilRepository.findAll()));
                Store store =    new Store(null, admin, "AdminStore", "Casablanca", "0608100760", "admin@gmail.com", true, false);
                admin.setStore(store);
                userRepository.save(admin);
