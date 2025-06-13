@@ -71,4 +71,9 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getBestSellingProductsByStoreId(storeId));
     }
 
+    @GetMapping("/stats/top-selling-stores")
+    public ResponseEntity<List<TopSellersProjection>> getTopSellers() {
+        return ResponseEntity.ok(orderService.getTopSellers());
+    }
+
 }

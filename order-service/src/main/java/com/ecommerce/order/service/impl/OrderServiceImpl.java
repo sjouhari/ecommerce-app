@@ -239,6 +239,11 @@ public class OrderServiceImpl implements OrderService {
         return getBestSellingProductDtos(orderItemRepository.findBestSellingProductsByStoreId(storeId));
     }
 
+    @Override
+    public List<TopSellersProjection> getTopSellers() {
+        return orderItemRepository.findTopSellers();
+    }
+
     private List<BestSellingProductDto> getBestSellingProductDtos(List<BestSellingProductProjection> bestSellingProductProjections) {
         return bestSellingProductProjections.stream()
                 .map(bestSellingProductProjection -> {

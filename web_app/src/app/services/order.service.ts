@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Order } from '../models/order/order.model';
 import { OrderRequest } from '../models/order/order-request.model';
 import { BestSellingProduct } from '../models/order/best-selling-product.model';
+import { TopSellingStore } from '../models/order/top-selling-store.model';
 
 @Injectable({
     providedIn: 'root'
@@ -51,5 +52,9 @@ export class OrderService {
 
     getBestSellingProductsByStoreId(storeId: number): Observable<BestSellingProduct[]> {
         return this.http.get<BestSellingProduct[]>(`${this.baseUrl}/stats/best-selling-products/${storeId}`);
+    }
+
+    getTopSellingStores(): Observable<TopSellingStore[]> {
+        return this.http.get<TopSellingStore[]>(`${this.baseUrl}/stats/top-selling-stores`);
     }
 }
