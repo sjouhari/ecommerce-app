@@ -1,8 +1,8 @@
 package com.ecommerce.product.dto;
 
 import com.ecommerce.product.enums.ProductStatus;
-import com.ecommerce.shared.dto.CommentDto;
 import com.ecommerce.shared.dto.InventoryDto;
+import com.ecommerce.shared.dto.MediaDto;
 import com.ecommerce.shared.dto.StoreDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

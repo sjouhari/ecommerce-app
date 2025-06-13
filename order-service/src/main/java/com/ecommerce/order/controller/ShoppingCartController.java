@@ -1,6 +1,6 @@
 package com.ecommerce.order.controller;
 
-import com.ecommerce.order.dto.OrderItemDto;
+import com.ecommerce.order.dto.OrderItemRequestDto;
 import com.ecommerce.order.dto.SelectOrderItemDto;
 import com.ecommerce.order.dto.ShoppingCartDto;
 import com.ecommerce.order.dto.UpdateOrderItemQauntityDto;
@@ -22,17 +22,17 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<ShoppingCartDto> addItemToShoppingCart(@PathVariable Long userId, @RequestBody OrderItemDto orderItemDto) {
-        return ResponseEntity.ok(shoppingCartService.addItemToShoppingCart(userId, orderItemDto));
+    public ResponseEntity<ShoppingCartDto> addItemToShoppingCart(@PathVariable Long userId, @RequestBody OrderItemRequestDto orderItemRequestDto) {
+        return ResponseEntity.ok(shoppingCartService.addItemToShoppingCart(userId, orderItemRequestDto));
     }
 
     @PutMapping("/quantity/{id}")
-    public ResponseEntity<OrderItemDto> updateItemQuantityInShoppingCart(@PathVariable Long id, @RequestBody UpdateOrderItemQauntityDto updateOrderItemQauntityDto) {
+    public ResponseEntity<OrderItemRequestDto> updateItemQuantityInShoppingCart(@PathVariable Long id, @RequestBody UpdateOrderItemQauntityDto updateOrderItemQauntityDto) {
         return ResponseEntity.ok(shoppingCartService.updateItemQuantity(id, updateOrderItemQauntityDto));
     }
 
     @PutMapping("/select/{id}")
-    public ResponseEntity<OrderItemDto> selectItemInShoppingCart(@PathVariable Long id, @RequestBody SelectOrderItemDto selectOrderItemDto) {
+    public ResponseEntity<OrderItemRequestDto> selectItemInShoppingCart(@PathVariable Long id, @RequestBody SelectOrderItemDto selectOrderItemDto) {
         return ResponseEntity.ok(shoppingCartService.selectOrderItem(id, selectOrderItemDto));
     }
 

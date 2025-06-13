@@ -294,9 +294,11 @@ export class UserProfileComponent implements OnInit {
                     this.authService.getCurrentUser().subscribe({
                         next: (user) => {
                             this.authService.setCurrentUser(user);
+                            this.currentUser.set(user);
                         },
                         error: (error) => {
                             this.authService.setCurrentUser(null);
+                            this.currentUser.set(null);
                             console.log(error); //TODO: handle error
                         }
                     });
@@ -319,9 +321,11 @@ export class UserProfileComponent implements OnInit {
                     this.authService.getCurrentUser().subscribe({
                         next: (user) => {
                             this.authService.setCurrentUser(user);
+                            this.currentUser.set(user);
                         },
                         error: (error) => {
                             this.authService.setCurrentUser(null);
+                            this.currentUser.set(null);
                             console.log(error); //TODO: handle error
                         }
                     });
@@ -333,5 +337,14 @@ export class UserProfileComponent implements OnInit {
                 }
             });
         }
+    }
+
+    confirmDeleteStore() {
+        this.confirmationService.confirm({
+            message: 'Êtes-vous sûr de vouloir supprimer votre magasin ?',
+            header: 'Suppression',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {}
+        });
     }
 }

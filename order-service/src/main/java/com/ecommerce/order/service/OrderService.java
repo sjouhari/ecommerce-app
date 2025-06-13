@@ -6,13 +6,15 @@ import java.util.List;
 
 public interface OrderService {
 
-    List<OrderResponseDto> getAllOrders();
+    List<OrderResponseDto> getAllOrders(String token);
 
-    List<OrderResponseDto> getOrdersByUserId(Long userId);
+    List<OrderResponseDto> getOrdersByUserId(Long userId, String token);
 
-    OrderResponseDto getOrderById(Long orderId);
+    List<OrderResponseDto> getOrdersByStoreId(Long storeId, String token);
 
-    OrderResponseDto placeOrder(OrderRequestDto orderRequestDto, String token);
+    OrderResponseDto getOrderById(Long orderId, String token);
+
+    void placeOrder(OrderRequestDto orderRequestDto, String token);
 
     OrderResponseDto updateOrderStatus(Long orderId, UpdateOrderStatusRequestDto updateOrderStatusRequestDto, String token);
 
@@ -20,6 +22,6 @@ public interface OrderService {
 
     String deleteOrder(Long orderId);
 
-    List<BestSellingProductProjection> getBestSellingProducts();
+    List<BestSellingProductDto> getBestSellingProducts();
 
 }

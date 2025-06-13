@@ -130,8 +130,8 @@ public class ProductServiceImpl implements ProductService {
             validateProductCategoryDetails(productDto);
 
             Product product = ProductMapper.INSTANCE.productRequestDtoToProduct(productDto);
-            Tva tva = tvaRepository.findById(productDto.getTva().getId()).orElseThrow(
-                    () -> new ResourceNotFoundException("Tva", "id", productDto.getTva().getId().toString())
+            Tva tva = tvaRepository.findById(productDto.getTvaId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Tva", "id", productDto.getTvaId().toString())
             );
             product.setTva(tva);
 
@@ -169,8 +169,8 @@ public class ProductServiceImpl implements ProductService {
             }
             validateProductCategoryDetails(productDto);
 
-            Tva tva = tvaRepository.findById(productDto.getTva().getId()).orElseThrow(
-                    () -> new ResourceNotFoundException("Tva", "id", productDto.getTva().getId().toString())
+            Tva tva = tvaRepository.findById(productDto.getTvaId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Tva", "id", productDto.getTvaId().toString())
             );
 
             // Update product

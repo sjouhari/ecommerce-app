@@ -21,12 +21,16 @@ export class OrderService {
         return this.http.get<Order[]>(`${this.baseUrl}/user/${userId}`);
     }
 
+    getOrdersByStoreId(storeId: number): Observable<Order[]> {
+        return this.http.get<Order[]>(`${this.baseUrl}/store/${storeId}`);
+    }
+
     getOrder(id: string): Observable<Order> {
         return this.http.get<Order>(`${this.baseUrl}/${id}`);
     }
 
-    placeOrder(order: OrderRequest): Observable<Order> {
-        return this.http.post<Order>(this.baseUrl, order);
+    placeOrder(order: OrderRequest): Observable<void> {
+        return this.http.post<void>(this.baseUrl, order);
     }
 
     updateOrderStatus(id: number, status: string): Observable<Order> {

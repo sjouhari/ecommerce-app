@@ -41,7 +41,7 @@ public class ProductRequestDto {
     private Long storeId;
 
     @NotNull(message = "Tva id is required")
-    private TvaDto tva;
+    private Long tvaId;
 
     private List<InventoryDto> stock;
 }

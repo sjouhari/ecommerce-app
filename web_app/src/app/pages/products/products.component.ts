@@ -32,6 +32,7 @@ import { TVA } from '../../models/product/tva.model';
 import { Media } from '../../models/product/media.model';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { IftaLabelModule } from 'primeng/iftalabel';
+import { TvaService } from '../../services/tva.service';
 
 @Component({
     selector: 'app-products',
@@ -75,6 +76,7 @@ export class ProductsComponent implements OnInit {
     productService = inject(ProductService);
     categoryService = inject(CategoryService);
     authService = inject(AuthService);
+    tvaService = inject(TvaService);
     messageService = inject(MessageService);
     confirmationService = inject(ConfirmationService);
     formBuilder = inject(FormBuilder);
@@ -87,6 +89,7 @@ export class ProductsComponent implements OnInit {
     categories = signal<Category[]>([]);
     subCategories = signal<SubCategory[]>([]);
     sizes: Size[] = [];
+    tvas = signal<TVA[]>([]);
     colors = Object.entries(ProductColor).map(([key, value]) => ({ key, value }));
 
     selectedProducts!: Product[] | null;
@@ -112,6 +115,15 @@ export class ProductsComponent implements OnInit {
         this.categoryService.getCategories().subscribe({
             next: (categories) => {
                 this.categories.set(categories);
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
+
+        this.tvaService.getAllTvas().subscribe({
+            next: (tvas) => {
+                this.tvas.set(tvas);
             },
             error: (error) => {
                 console.log(error); //TODO: handle error
@@ -157,7 +169,7 @@ export class ProductsComponent implements OnInit {
         this.productFormGroup = this.formBuilder.group({
             id: new FormControl(product?.id || null),
             storeId: new FormControl(product?.store?.id || this.authService.currentUser()?.store?.id || null),
-            tva: new FormControl(this.tva),
+            tvaId: new FormControl(product?.tva?.id ?? null, [Validators.required]),
             name: new FormControl(product?.name || '', [Validators.required]),
             description: new FormControl(product?.description || '', [Validators.required]),
             status: new FormControl(product?.status || '', [Validators.required]),

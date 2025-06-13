@@ -78,9 +78,7 @@ export const appRoutes: Routes = [
             { path: 'stores/:id', component: StoreProductsComponent },
             { path: 'shopping-cart', component: ShoppingCartComponent },
             { path: 'order-summary/:id', component: OrderSummaryComponent },
-            { path: 'profile', component: UserProfileComponent },
-            { path: 'products', component: ProductsComponent },
-            { path: 'orders', component: OrdersComponent }
+            { path: 'profile', component: UserProfileComponent }
         ]
     },
     { path: 'notfound', component: Notfound },

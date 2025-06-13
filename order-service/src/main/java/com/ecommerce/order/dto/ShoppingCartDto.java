@@ -1,6 +1,5 @@
 package com.ecommerce.order.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +20,7 @@ public class ShoppingCartDto {
     private Long userId;
 
     @NotNull(message = "Order items is required")
-    private List<OrderItemDto> orderItems;
+    private List<OrderItemRequestDto> orderItems;
 
 
 }

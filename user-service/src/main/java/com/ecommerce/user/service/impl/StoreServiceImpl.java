@@ -60,9 +60,8 @@ public class StoreServiceImpl implements StoreService {
         user.getProfils().add(profilRepository.findByName("ROLE_SELLER").orElseThrow(
                 () -> new ResourceNotFoundException("Profile", "name", "ROLE_SELLER")
         ));
-        userRepository.save(user);
-
-        return StoreMapper.INSTANCE.storeToStoreDto(user.getStore());
+        User savedUser = userRepository.save(user);
+        return StoreMapper.INSTANCE.storeToStoreDto(savedUser.getStore());
     }
 
     @Override
@@ -71,8 +70,14 @@ public class StoreServiceImpl implements StoreService {
             throw new ResourceNotFoundException("Store", "id", id.toString());
         }
         Store store = StoreMapper.INSTANCE.storeDtoToStore(storeDto);
+        User user = userRepository.findById(storeDto.getUserId()).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", storeDto.getUserId().toString())
+        );
         store.setId(id);
-        return StoreMapper.INSTANCE.storeToStoreDto(storeRepository.save(store));
+        store.setUser(user);
+        user.setStore(store);
+        User savedUser = userRepository.save(user);
+        return StoreMapper.INSTANCE.storeToStoreDto(savedUser.getStore());
     }
 
     @Override

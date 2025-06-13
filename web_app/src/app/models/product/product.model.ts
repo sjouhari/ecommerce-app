@@ -2,6 +2,7 @@ import { Store } from '../user/store.model';
 import { CommentModel } from './comment.model';
 import { Media } from './media.model';
 import { Stock } from './stock.model';
+import { TVA } from './tva.model';
 
 export interface Product {
     id: number;
@@ -11,7 +12,7 @@ export interface Product {
     subCategoryId: number;
     subCategoryName: string;
     categoryName: string;
-    sellerId: number;
+    tva: TVA;
     medias: Media[];
     rating: number;
     stock: Stock[];

@@ -19,9 +19,6 @@ public class OrderRequestDto {
     @NotNull(message = "User id is required")
     private Long userId;
 
-    @NotBlank(message = "User name is required")
-    private String userName;
-
     @NotNull(message = "Delivery address is required")
     private Long deliveryAddressId;
 
@@ -31,6 +28,7 @@ public class OrderRequestDto {
     @NotNull(message = "Payment Method is required")
     private PaymentMethods paymentMethod;
 
+    // if the payment method is cheque
     private String chequeNumber;
     private String bankName;
 

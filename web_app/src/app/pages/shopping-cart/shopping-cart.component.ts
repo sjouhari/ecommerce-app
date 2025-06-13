@@ -275,7 +275,6 @@ export class ShoppingCartComponent implements OnInit {
 
         const orderRequest = {
             userId: this.authService.currentUser()!.id!,
-            userName: this.authService.currentUser()!.firstName + ' ' + this.authService.currentUser()!.lastName,
             orderItemsIds: orderItems.map((item) => item.id),
             paymentMethod: this.selectedPaymentMethod,
             deliveryAddressId: this.selectedAddress()!.id,
@@ -293,7 +292,7 @@ export class ShoppingCartComponent implements OnInit {
                     life: 3000
                 });
                 this.loading.set(false);
-                this.router.navigate(['/home/order-summary', order.id]);
+                this.router.navigate(['/home/list-products']);
             },
             error: (error) => {
                 console.log(error);

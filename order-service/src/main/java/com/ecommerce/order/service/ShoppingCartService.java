@@ -1,6 +1,6 @@
 package com.ecommerce.order.service;
 
-import com.ecommerce.order.dto.OrderItemDto;
+import com.ecommerce.order.dto.OrderItemRequestDto;
 import com.ecommerce.order.dto.SelectOrderItemDto;
 import com.ecommerce.order.dto.ShoppingCartDto;
 import com.ecommerce.order.dto.UpdateOrderItemQauntityDto;
@@ -9,11 +9,11 @@ public interface ShoppingCartService {
 
     ShoppingCartDto getShoppingCartByUserId(Long userId);
 
-    ShoppingCartDto addItemToShoppingCart(Long userId, OrderItemDto orderItemDto);
+    ShoppingCartDto addItemToShoppingCart(Long userId, OrderItemRequestDto orderItemRequestDto);
 
-    OrderItemDto updateItemQuantity(Long id, UpdateOrderItemQauntityDto updateOrderItemQauntityDto);
+    OrderItemRequestDto updateItemQuantity(Long id, UpdateOrderItemQauntityDto updateOrderItemQauntityDto);
 
-    OrderItemDto selectOrderItem(Long id, SelectOrderItemDto selectOrderItemDto);
+    OrderItemRequestDto selectOrderItem(Long id, SelectOrderItemDto selectOrderItemDto);
 
     void deleteItemFromShoppingCart(Long id);
 }

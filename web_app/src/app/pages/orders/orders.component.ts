@@ -14,6 +14,7 @@ import { IftaLabelModule } from 'primeng/iftalabel';
 import { Select } from 'primeng/select';
 import { OrderStatus } from '../../models/order/order-status';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-orders',
@@ -23,6 +24,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class OrdersComponent {
     orderService = inject(OrderService);
+    authService = inject(AuthService);
     messageService = inject(MessageService);
     orders: Order[] = [];
 
@@ -41,14 +43,25 @@ export class OrdersComponent {
     }
 
     getOrders() {
-        this.orderService.getOrders().subscribe({
-            next: (orders) => {
-                this.orders = orders;
-            },
-            error: (error) => {
-                console.log(error); //TODO: handle error
-            }
-        });
+        if (this.authService.isAdmin()) {
+            this.orderService.getOrders().subscribe({
+                next: (orders) => {
+                    this.orders = orders;
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
+                }
+            });
+        } else {
+            this.orderService.getOrdersByStoreId(this.authService.currentUser()?.store?.id!).subscribe({
+                next: (orders) => {
+                    this.orders = orders;
+                },
+                error: (error) => {
+                    console.log(error); //TODO: handle error
+                }
+            });
+        }
     }
 
     expandAll() {

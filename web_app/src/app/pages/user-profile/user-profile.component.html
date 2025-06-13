@@ -99,21 +99,27 @@
         @if (currentUser()?.store) {
             <p-card header="Mon magasin" class="col-span-6">
                 <div>
-                    <div class="my-2">
-                        <p class="font-semibold m-0">Nom du magasin</p>
-                        <p>{{ currentUser()?.store?.name }}</p>
+                    <div class="flex justify-between">
+                        <div class="my-2">
+                            <p class="font-semibold m-0">Nom du magasin</p>
+                            <p>{{ currentUser()?.store?.name }}</p>
+                        </div>
+                        <div class="mb-2">
+                            <p class="font-semibold m-0">Adresse</p>
+                            <p>{{ currentUser()?.store?.address }}</p>
+                        </div>
+                        <div class="mb-2">
+                            <p class="font-semibold m-0">Email</p>
+                            <p>{{ currentUser()?.store?.email }}</p>
+                        </div>
+                        <div class="mb-2">
+                            <p class="font-semibold m-0">Téléphone</p>
+                            <p>{{ currentUser()?.store?.phoneNumber }}</p>
+                        </div>
                     </div>
-                    <div class="mb-2">
-                        <p class="font-semibold m-0">Adresse</p>
-                        <p>{{ currentUser()?.store?.address }}</p>
-                    </div>
-                    <div class="mb-2">
-                        <p class="font-semibold m-0">Email</p>
-                        <p>{{ currentUser()?.store?.email }}</p>
-                    </div>
-                    <div class="mb-2">
-                        <p class="font-semibold m-0">Téléphone</p>
-                        <p>{{ currentUser()?.store?.phoneNumber }}</p>
+                    <div class="flex gap-2 justify-end">
+                        <p-button label="Modifier" icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="showStoreDialog()"></p-button>
+                        <p-button label="Supprimer" icon="pi pi-trash" [rounded]="true" [outlined]="true" severity="danger" (click)="confirmDeleteStore()"></p-button>
                     </div>
                 </div>
             </p-card>

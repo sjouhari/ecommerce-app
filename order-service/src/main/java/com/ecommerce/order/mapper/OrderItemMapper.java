@@ -1,6 +1,6 @@
 package com.ecommerce.order.mapper;
 
-import com.ecommerce.order.dto.OrderItemDto;
+import com.ecommerce.order.dto.OrderItemRequestDto;
 import com.ecommerce.order.entity.OrderItem;
 import com.ecommerce.shared.dto.InventoryDto;
 import org.mapstruct.Mapper;
@@ -11,9 +11,9 @@ public interface OrderItemMapper {
 
     OrderItemMapper INSTANCE = Mappers.getMapper(OrderItemMapper.class);
 
-    OrderItemDto orderItemToOrderItemDto(OrderItem orderItem);
+    OrderItemRequestDto orderItemToOrderItemDto(OrderItem orderItem);
 
-    OrderItem orderItemDtoToOrderItem(OrderItemDto orderItemDto);
+    OrderItem orderItemDtoToOrderItem(OrderItemRequestDto orderItemRequestDto);
 
     InventoryDto orderItemToInventoryDto(OrderItem orderItem);
 

@@ -20,23 +20,29 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<List<OrderResponseDto>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    public ResponseEntity<List<OrderResponseDto>> getAllOrders(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(orderService.getAllOrders(token));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<OrderResponseDto> getOrderById(@PathVariable Long id) {
-        return ResponseEntity.ok(orderService.getOrderById(id));
+    public ResponseEntity<OrderResponseDto> getOrderById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(orderService.getOrderById(id, token));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<OrderResponseDto>> getOrdersByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(orderService.getOrdersByUserId(userId));
+    public ResponseEntity<List<OrderResponseDto>> getOrdersByUserId(@PathVariable Long userId, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(orderService.getOrdersByUserId(userId, token));
+    }
+
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<List<OrderResponseDto>> getOrdersByStoreId(@PathVariable Long storeId, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(orderService.getOrdersByStoreId(storeId, token));
     }
 
     @PostMapping
-    public ResponseEntity<OrderResponseDto> placeOrder(@RequestBody @Valid OrderRequestDto orderRequestDto, @RequestHeader("Authorization") String token) {
-        return new ResponseEntity<>(orderService.placeOrder(orderRequestDto, token), HttpStatus.CREATED);
+    public ResponseEntity<Void> placeOrder(@RequestBody @Valid OrderRequestDto orderRequestDto, @RequestHeader("Authorization") String token) {
+        orderService.placeOrder(orderRequestDto, token);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
@@ -56,7 +62,7 @@ public class OrderController {
     }
 
     @GetMapping("/stats/best-selling-products")
-    public ResponseEntity<List<BestSellingProductProjection>> getBestSellingProducts() {
+    public ResponseEntity<List<BestSellingProductDto>> getBestSellingProducts() {
         return ResponseEntity.ok(orderService.getBestSellingProducts());
     }
 

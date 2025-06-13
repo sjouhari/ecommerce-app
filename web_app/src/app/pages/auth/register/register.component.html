@@ -1,19 +1,19 @@
-<div class="flex justify-content-center align-items-center h-screen" style="background-color: #f3f4f6;">
+<div class="flex justify-content-center align-items-center h-screen" style="background-color: #f3f4f6">
     <form [formGroup]="registerFormGroup" (ngSubmit)="register()" class="w-6 border-1 surface-border p-5 border-round bg-white">
         <img src="assets/logo/app-logo.png" class="h-4rem mx-auto" alt="APP LOGO" />
         <h1 class="text-center text-2xl text-gray-600 mb-5">Créer un compte</h1>
 
-        @if(errorMessage()) {
+        @if (errorMessage()) {
             <div class="mb-5 bg-red-400 border-round p-3">
                 <p class="text-white m-0 text-center">{{ errorMessage() }}</p>
             </div>
         }
 
-        @if(successMessage()) {
+        @if (successMessage()) {
             <div class="mb-5 bg-green-400 border-round p-3">
                 <p class="text-white m-0 text-center">{{ successMessage() }}</p>
             </div>
-        } 
+        }
 
         <div class="flex justify-content-between gap-3 mb-3">
             <div class="w-full">
@@ -21,7 +21,7 @@
                     <input pInputText id="lastName" type="text" formControlName="lastName" fluid />
                     <label for="lastName">Nom</label>
                 </p-floatlabel>
-                @if(formControls['lastName'].errors && formControls['lastName'].touched && formControls['lastName'].errors['required']) {
+                @if (formControls['lastName'].errors && formControls['lastName'].touched && formControls['lastName'].errors['required']) {
                     <small class="text-red-500">Nom obligatoire.</small>
                 }
             </div>
@@ -30,7 +30,7 @@
                     <input pInputText id="firstName" type="text" formControlName="firstName" fluid />
                     <label for="firstName">Prénom</label>
                 </p-floatlabel>
-                @if(formControls['firstName'].errors && formControls['firstName'].touched && formControls['firstName'].errors['required']) {
+                @if (formControls['firstName'].errors && formControls['firstName'].touched && formControls['firstName'].errors['required']) {
                     <small class="text-red-500">Prénom obligatoire.</small>
                 }
             </div>
@@ -41,11 +41,11 @@
                 <input pInputText id="email" type="text" formControlName="email" class="w-full" />
                 <label for="email">Adresse Email</label>
             </p-floatlabel>
-            @if(formControls['email'].errors && formControls['email'].touched) {
-                @if(formControls['email'].errors['required']) {
+            @if (formControls['email'].errors && formControls['email'].touched) {
+                @if (formControls['email'].errors['required']) {
                     <small class="text-red-500">Addresse email obligatoire.</small>
                 }
-                @if(formControls['email'].errors['email']) {
+                @if (formControls['email'].errors['email']) {
                     <small class="text-red-500">Addresse email invalide.</small>
                 }
             }
@@ -55,16 +55,16 @@
                 <input pInputText id="password" type="password" formControlName="password" class="w-full" />
                 <label for="password">Mot de passe</label>
             </p-floatlabel>
-            @if(formControls['password'].errors && formControls['password'].touched) {
-                @if(formControls['password'].errors['required']) {
+            @if (formControls['password'].errors && formControls['password'].touched) {
+                @if (formControls['password'].errors['required']) {
                     <small class="text-red-500">Mot de passe obligatoire.</small>
                 }
-                @if(formControls['password'].errors['minlength']) {
+                @if (formControls['password'].errors['minlength']) {
                     <small class="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>
                 }
             }
         </div>
-        <button pButton [disabled]="loading() || registerFormGroup.invalid" type="submit" label="Enregister" size="large" [loading]="loading()" class="w-full"></button>
+        <button pButton [disabled]="loading() || registerFormGroup.invalid" type="submit" label="Créer mon compte" size="large" [loading]="loading()" class="w-full"></button>
         <p class="text-center mb-0 mt-5 text-gray-600 text-xl">Vous avez déja un compte ? <a routerLink="/login" class="no-underline hover:underline">Se connecter</a></p>
     </form>
 </div>

@@ -17,8 +17,10 @@ public class OrderResponseDto {
     private Long id;
     private Long userId;
     private String userName;
+    private Long storeId;
+    private String storeName;
     private OrderStatus status;
-    private List<OrderItemDto> orderItems;
+    private List<OrderItemRequestDto> orderItems;
     private InvoiceDto invoice;
     private AddressDto deliveryAddress;
     private LocalDateTime createdAt;

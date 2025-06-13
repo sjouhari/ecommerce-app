@@ -1,4 +1,4 @@
-package com.ecommerce.product.dto;
+package com.ecommerce.shared.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

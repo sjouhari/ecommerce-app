@@ -15,6 +15,7 @@ import com.ecommerce.order.repository.PaymentMethodRepository;
 import com.ecommerce.order.service.OrderService;
 import com.ecommerce.shared.dto.InventoryDto;
 import com.ecommerce.shared.dto.OrderEvent;
+import com.ecommerce.shared.dto.StoreDto;
 import com.ecommerce.shared.dto.UserEvent;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.ecommerce.shared.exception.StockInsufficientException;
@@ -22,7 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -46,6 +49,9 @@ public class OrderServiceImpl implements OrderService {
     private InventoryApiClient inventoryApiClient;
 
     @Autowired
+    private ProductApiClient productApiClient;
+
+    @Autowired
     private OrderPlacedProducer orderPlacedProducer;
 
     @Value("${kafka.topic.order.placed.name}")
@@ -55,27 +61,50 @@ public class OrderServiceImpl implements OrderService {
     private String orderStatusTopic;
 
     @Override
-    public List<OrderResponseDto> getAllOrders() {
+    public List<OrderResponseDto> getAllOrders(String token) {
         List<Order> orders = orderRepository.findAll();
-        return OrderMapper.INSTANCE.ordersToOrderResponseDtos(orders);
+
+        return orders.stream()
+                .map(order -> {
+                    UserDto userDto = userApiClient.getUserById(order.getUserId(), token);
+                    return getOrderResponseDto(order, userDto.getFirstName() + " " + userDto.getLastName());
+                })
+                .toList();
     }
 
     @Override
-    public List<OrderResponseDto> getOrdersByUserId(Long userId) {
+    public List<OrderResponseDto> getOrdersByUserId(Long userId, String token) {
         List<Order> orders = orderRepository.findAllByUserId(userId);
-        return OrderMapper.INSTANCE.ordersToOrderResponseDtos(orders);
+        return orders.stream()
+                .map(order -> {
+                    UserDto userDto = userApiClient.getUserById(order.getUserId(), token);
+                    return getOrderResponseDto(order, userDto.getFirstName() + " " + userDto.getLastName());
+                })
+                .toList();
     }
 
     @Override
-    public OrderResponseDto getOrderById(Long orderId) {
+    public List<OrderResponseDto> getOrdersByStoreId(Long storeId, String token) {
+        List<Order> orders = orderRepository.findAllByStoreId(storeId);
+        return orders.stream()
+                .map(order -> {
+                    UserDto userDto = userApiClient.getUserById(order.getUserId(), token);
+                    return getOrderResponseDto(order, userDto.getFirstName() + " " + userDto.getLastName());
+                })
+                .toList();
+    }
+
+    @Override
+    public OrderResponseDto getOrderById(Long orderId, String token) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new ResourceNotFoundException("Order", "id", orderId.toString())
         );
-        return OrderMapper.INSTANCE.orderToOrderResponseDto(order);
+        UserDto userDto = userApiClient.getUserById(order.getUserId(), token);
+        return getOrderResponseDto(order, userDto.getFirstName() + " " + userDto.getLastName());
     }
 
     @Override
-    public OrderResponseDto placeOrder(OrderRequestDto orderRequestDto, String token) {
+    public void placeOrder(OrderRequestDto orderRequestDto, String token) {
 
         // Verify user id
         UserDto userDto = userApiClient.getUserById(orderRequestDto.getUserId(), token);
@@ -91,51 +120,63 @@ public class OrderServiceImpl implements OrderService {
             }
         });
 
-        // Create new Order
-        Order order = new Order();
-        order.setUserId(orderRequestDto.getUserId());
-        order.setUserName(orderRequestDto.getUserName());
-        order.setStatus(OrderStatus.PENDING);
-        order.setOrderItems(orderItems);
+        // Group order items by store id
+        Map<Long, List<OrderItem>> orderItemsMap = new HashMap<>();
+        orderItems.forEach(orderItem -> {
+            ProductDto productDto = productApiClient.getProductById(orderItem.getProductId());
+            Long storeId = productDto.getStore().getId();
+            if(!orderItemsMap.containsKey(storeId)) {
+                orderItemsMap.put(storeId, new java.util.ArrayList<>());
+            }
+            orderItemsMap.get(storeId).add(orderItem);
+        });
 
         // Create New Payment Method
         PaymentMethod paymentMethod = getPaymentMethod(orderRequestDto);
         paymentMethod.setStatus(PaymentMethodStatus.PENDING);
 
-        // Create new Facture
-        Invoice invoice = new Invoice();
-        invoice.setPaymentMethod(paymentMethod);
-        invoice.setTotalPrice(calculateTotalPrice(order.getOrderItems()));
-        invoice.setOrder(order);
-        order.setInvoice(invoice);
-
         // Set delivery address
         Address address = addressRepository.findById(orderRequestDto.getDeliveryAddressId()).orElseThrow(
                 () -> new ResourceNotFoundException("Address", "id", orderRequestDto.getDeliveryAddressId().toString())
         );
-        order.setDeliveryAddress(address);
 
-        // Save Order
-        Order savedOrder = orderRepository.save(order);
-        order.getOrderItems().forEach(orderItem -> {
-            orderItem.setOrder(savedOrder);
-            orderItem.setShoppingCart(null);
-            orderItemRepository.save(orderItem);
+        orderItemsMap.forEach((storeId, items) -> {
+            // Create new Order
+            Order order = new Order();
+            order.setUserId(orderRequestDto.getUserId());
+            order.setStoreId(storeId);
+            order.setStatus(OrderStatus.PENDING);
+            order.setOrderItems(items);
+
+            // Create new Facture
+            Invoice invoice = new Invoice();
+            invoice.setPaymentMethod(paymentMethod);
+            invoice.setTotalPrice(calculateTotalPrice(order.getOrderItems()));
+            invoice.setOrder(order);
+            order.setInvoice(invoice);
+            order.setDeliveryAddress(address);
+
+            // Save Order
+            Order savedOrder = orderRepository.save(order);
+            order.getOrderItems().forEach(orderItem -> {
+                orderItem.setOrder(savedOrder);
+                orderItem.setShoppingCart(null);
+                orderItemRepository.save(orderItem);
+            });
+
+            // Deduct stock for each order item
+            items.forEach(orderItem -> {
+                InventoryDto inventoryDto = OrderItemMapper.INSTANCE.orderItemToInventoryDto(orderItem);
+                inventoryApiClient.deductQuantity(inventoryDto, token);
+            });
+
+            // Send order placed event
+            OrderEvent orderEvent = new OrderEvent();
+            orderEvent.setOrderId(savedOrder.getId());
+            orderEvent.setUser(new UserEvent(userDto.getFirstName() + " " + userDto.getLastName(), userDto.getEmail(), 0));
+            orderEvent.setStatus(savedOrder.getStatus().toString());
+            orderPlacedProducer.sendMessage(orderEvent, orderPlacedTopic);
         });
-
-        // Deduct stock for each order item
-        orderItems.forEach(orderItem -> {
-            InventoryDto inventoryDto = OrderItemMapper.INSTANCE.orderItemToInventoryDto(orderItem);
-            inventoryApiClient.deductQuantity(inventoryDto, token);
-        });
-
-        // Send order placed event
-        OrderEvent orderEvent = new OrderEvent();
-        orderEvent.setOrderId(savedOrder.getId());
-        orderEvent.setUser(new UserEvent(userDto.getFirstName() + " " + userDto.getLastName(), userDto.getEmail(), 0));
-        orderEvent.setStatus(savedOrder.getStatus().toString());
-        orderPlacedProducer.sendMessage(orderEvent, orderPlacedTopic);
-        return OrderMapper.INSTANCE.orderToOrderResponseDto(savedOrder);
     }
 
     @Override
@@ -149,10 +190,19 @@ public class OrderServiceImpl implements OrderService {
         UserDto userDto = userApiClient.getUserById(order.getUserId(), token);
         OrderEvent orderEvent = new OrderEvent();
         orderEvent.setOrderId(savedOrder.getId());
-        orderEvent.setUser(new UserEvent(userDto.getFirstName() + " " + userDto.getLastName(), userDto.getEmail(), 0));
+        String userName = userDto.getFirstName() + " " + userDto.getLastName();
+        orderEvent.setUser(new UserEvent(userName, userDto.getEmail(), 0));
         orderEvent.setStatus(savedOrder.getStatus().toString());
         orderPlacedProducer.sendMessage(orderEvent, orderStatusTopic);
-        return OrderMapper.INSTANCE.orderToOrderResponseDto(savedOrder);
+        return getOrderResponseDto(savedOrder, userName);
+    }
+
+    private OrderResponseDto getOrderResponseDto(Order order, String userName) {
+        StoreDto storeDto = userApiClient.getStoreById(order.getStoreId());
+        OrderResponseDto orderResponseDto = OrderMapper.INSTANCE.orderToOrderResponseDto(order);
+        orderResponseDto.setUserName(userName);
+        orderResponseDto.setStoreName(storeDto.getName());
+        return orderResponseDto;
     }
 
     @Override
@@ -175,8 +225,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<BestSellingProductProjection> getBestSellingProducts() {
-        return orderItemRepository.findBestSellingProducts();
+    public List<BestSellingProductDto> getBestSellingProducts() {
+        return orderItemRepository.findBestSellingProducts().stream()
+                .map(bestSellingProductProjection -> {
+                    ProductDto productDto = productApiClient.getProductById(bestSellingProductProjection.getProductId());
+                    BestSellingProductDto bestSellingProductDto = new BestSellingProductDto();
+                    bestSellingProductDto.setProductId(bestSellingProductProjection.getProductId());
+                    bestSellingProductDto.setTotalSold(bestSellingProductProjection.getTotalSold());
+                    bestSellingProductDto.setProductName(productDto.getName());
+                    bestSellingProductDto.setProductImage(productDto.getMedias().getFirst().getUrl());
+                    return bestSellingProductDto;
+                }).toList();
     }
 
     private double calculateTotalPrice(List<OrderItem> orderItems) {
