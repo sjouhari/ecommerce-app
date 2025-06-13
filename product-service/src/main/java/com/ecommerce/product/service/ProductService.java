@@ -28,4 +28,8 @@ public interface ProductService {
 
     boolean productExistsById(Long id);
 
+    void approveProduct(Long id);
+
+    void rejectProduct(Long id);
+
 }

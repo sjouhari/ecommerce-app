@@ -109,4 +109,16 @@ public class ProductController {
         }
     }
 
+    @PutMapping("/approve/{id}")
+    public ResponseEntity<Void> approveProduct(@PathVariable Long id) {
+        productService.approveProduct(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/reject/{id}")
+    public ResponseEntity<Void> rejectProduct(@PathVariable Long id) {
+        productService.rejectProduct(id);
+        return ResponseEntity.ok().build();
+    }
+
 }

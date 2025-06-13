@@ -44,4 +44,5 @@ public class ProductRequestDto {
     private Long tvaId;
 
     private List<InventoryDto> stock;
+
 }

@@ -30,6 +30,10 @@ public class Product extends BaseEntity {
 
     private Long storeId;
 
+    private boolean approved = false;
+
+    private boolean rejected = false;
+
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 

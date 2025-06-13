@@ -177,6 +177,8 @@ public class ProductServiceImpl implements ProductService {
             Product product = ProductMapper.INSTANCE.productRequestDtoToProduct(productDto);
             product.setId(id);
             product.setTva(tva);
+            product.setApproved(productToUpdate.isApproved());
+            product.setRejected(productToUpdate.isRejected());
 
             // Save new images
             product.setMedias(productToUpdate.getMedias());
@@ -267,6 +269,26 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean productExistsById(Long id) {
         return productRepository.existsById(id);
+    }
+
+    @Override
+    public void approveProduct(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "id", id.toString())
+        );
+        product.setApproved(true);
+        product.setRejected(false);
+        productRepository.save(product);
+    }
+
+    @Override
+    public void rejectProduct(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "id", id.toString())
+        );
+        product.setApproved(false);
+        product.setRejected(true);
+        productRepository.save(product);
     }
 
 }

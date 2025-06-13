@@ -40,4 +40,9 @@ public class ProductResponseDto {
     private List<InventoryDto> stock;
 
     private StoreDto store;
+
+    private boolean approved;
+
+    private boolean rejected;
+
 }
