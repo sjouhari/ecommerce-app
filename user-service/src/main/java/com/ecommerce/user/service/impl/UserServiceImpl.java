@@ -162,4 +162,15 @@ public class UserServiceImpl implements UserService {
         return user.getFirstName() + " " + user.getLastName();
     }
 
+    @Override
+    public UserDto subscribeToNewsletter(Long id, String email) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", id.toString())
+        );
+        user.setSubscribed(true);
+        user.setSubscriptionEmail(email);
+        User savedUser = userRepository.save(user);
+        return UserMapper.INSTANCE.userToUserDto(savedUser);
+    }
+
 }

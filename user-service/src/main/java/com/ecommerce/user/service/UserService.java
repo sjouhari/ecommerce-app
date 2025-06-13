@@ -29,4 +29,6 @@ public interface UserService {
 
     String getUserFullName(Long id);
 
+    UserDto subscribeToNewsletter(Long id, String email);
+
 }

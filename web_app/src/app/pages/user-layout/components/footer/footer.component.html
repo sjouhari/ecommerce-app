@@ -1,0 +1,65 @@
+<p-toast></p-toast>
+
+<!-- Newsletter Subscription Section -->
+<div class="col-span-12 p-6 md:p-20 bg-gradient-to-b from-white/70 via-yellow-100 to-yellow-100">
+    <div class="flex flex-col justify-center items-center text-center">
+        <div class="text-gray-900 mb-2 text-3xl font-bold">Abonnez-vous à notre newsletter</div>
+        <span class="text-gray-600 text-xl mb-4">Recevez les meilleures offres et nouveautés produit directement dans votre boîte mail.</span>
+        <div class="w-full max-w-md">
+            <input [(ngModel)]="email" pInputText type="email" class="w-full text-center mb-4" placeholder="Votre adresse email" />
+            <p-button label="S'abonner" class="w-full" severity="primary" (onClick)="subscribe()"></p-button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Footer Section -->
+<div class="py-12 px-6 md:px-20 bg-gradient-to-b from-yellow-100 via-blue-100 to-white">
+    <div class="grid grid-cols-12 gap-6 text-center md:text-left">
+        <!-- Logo -->
+        <div class="col-span-12 md:col-span-3 flex justify-center md:justify-start items-center mb-6 md:mb-0">
+            <a (click)="router.navigate(['/pages/landing'], { fragment: 'home' })" class="cursor-pointer">
+                <img src="assets/logo/app-logo.png" alt="App Logo" class="h-12" />
+            </a>
+        </div>
+
+        <!-- Company Links -->
+        <div class="col-span-12 sm:col-span-6 md:col-span-2">
+            <h4 class="font-semibold text-lg mb-4 text-gray-800">Entreprise</h4>
+            <a class="block text-gray-600 mb-2 cursor-pointer">À propos</a>
+            <a class="block text-gray-600 mb-2 cursor-pointer">Blog</a>
+            <a class="block text-gray-600 mb-2 cursor-pointer">Carrières</a>
+            <a class="block text-gray-600 cursor-pointer">Presse</a>
+        </div>
+
+        <!-- Support Links -->
+        <div class="col-span-12 sm:col-span-6 md:col-span-2">
+            <h4 class="font-semibold text-lg mb-4 text-gray-800">Support</h4>
+            <a class="block text-gray-600 mb-2 cursor-pointer">Contact</a>
+            <a class="block text-gray-600 mb-2 cursor-pointer">FAQ</a>
+            <a class="block text-gray-600 mb-2 cursor-pointer">Suivi de commande</a>
+            <a class="block text-gray-600 cursor-pointer">Retour produit</a>
+        </div>
+
+        <!-- Legal Links -->
+        <div class="col-span-12 sm:col-span-6 md:col-span-2">
+            <h4 class="font-semibold text-lg mb-4 text-gray-800">Légal</h4>
+            <a class="block text-gray-600 mb-2 cursor-pointer">CGU</a>
+            <a class="block text-gray-600 mb-2 cursor-pointer">Politique de confidentialité</a>
+            <a class="block text-gray-600 cursor-pointer">Cookies</a>
+        </div>
+
+        <!-- Mobile Apps -->
+        <div class="col-span-12 sm:col-span-6 md:col-span-3">
+            <h4 class="font-semibold text-lg mb-4 text-gray-800">Télécharger notre application mobile</h4>
+            <a href="https://play.google.com/store/apps/details?id=com.example" target="_blank" class="flex items-center mb-3 cursor-pointer hover:opacity-80">
+                <img src="assets/logo/google-play-store.png" alt="Google Play" class="h-5rem w-18rem" />
+            </a>
+            <a href="https://apps.apple.com/app/example" target="_blank" class="flex items-center cursor-pointer hover:opacity-80">
+                <img src="assets/logo/app-store-logo.png" alt="App Store" class="h-5rem w-18rem" />
+            </a>
+        </div>
+    </div>
+
+    <!-- Bottom Text -->
+    <div class="text-center mt-12 text-sm text-gray-500">© {{ currentYear }} VotreEntreprise. Tous droits réservés.</div>
+</div>

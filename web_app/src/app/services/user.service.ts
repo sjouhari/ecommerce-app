@@ -34,4 +34,8 @@ export class UserService {
     changePassword(id: number, currentPassword: string, newPassword: string): Observable<void> {
         return this.http.put<void>(`${this.baseUrl}/reset-password/${id}`, { currentPassword, newPassword });
     }
+
+    subscribeToNewsletter(id: number, email: string): Observable<User> {
+        return this.http.put<User>(`${this.baseUrl}/subscribe/${id}?email=${email}`, {});
+    }
 }

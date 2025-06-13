@@ -42,4 +42,8 @@ public class UserDto {
 
     private LocalDateTime updatedAt;
 
+    private boolean subscribed;
+
+    private String subscriptionEmail;
+
 }

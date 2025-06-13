@@ -73,4 +73,9 @@ public class UserController {
         return userService.getUserFullName(id);
     }
 
+    @PutMapping("/subscribe/{id}")
+    public UserDto subscribeToNewsletter(@PathVariable Long id, @RequestParam("email") String email) {
+        return userService.subscribeToNewsletter(id, email);
+    }
+
 }

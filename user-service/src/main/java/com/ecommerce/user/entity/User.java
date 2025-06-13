@@ -41,4 +41,8 @@ public class User extends BaseEntity {
     )
     private List<Profil> profils;
 
+    //newsletter subscription
+    private boolean subscribed;
+    private String subscriptionEmail;
+
 }
