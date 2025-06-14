@@ -18,4 +18,6 @@ public interface CategoryService {
 
     boolean categoryExistsById(Long id);
 
+    List<Long> getAllSubCategoriesIdsByCategoryId(Long categoryId);
+
 }

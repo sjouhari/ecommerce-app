@@ -6,11 +6,16 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 @FeignClient("CATEGORY-SERVICE")
 public interface CategoryApiClient {
 
     @GetMapping("/api/categories/existsById/{id}")
     boolean categoryExistsById(@PathVariable Long id);
+
+    @GetMapping("/api/categories/{categoryId}/subcategories")
+    List<Long> getAllSubCategoriesIdsByCategoryId(@PathVariable Long categoryId);
 
     @GetMapping("/api/subcategories/existsById/{id}")
     boolean subCategoryExistsById(@PathVariable Long id);

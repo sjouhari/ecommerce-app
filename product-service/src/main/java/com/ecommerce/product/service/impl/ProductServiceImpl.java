@@ -63,26 +63,27 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductResponseDto> getAllProductsByApprovedStores() {
         List<Long> ids = userApiClient.getAllApprovedStoresIds();
         List<Product> products = productRepository.findAllByStoreIdIn(ids);
-        return products.stream().map(
-                this::getProductResponseDto
-        ).toList();
+        return products.stream()
+                .filter(Product::isApproved)
+                .map(this::getProductResponseDto)
+                .toList();
     }
-
 
     @Override
     public List<ProductResponseDto> getProductsByStoreId(Long storeId) {
         List<Product> products = productRepository.findAllByStoreId(storeId);
-        return products.stream().map(
-                this::getProductResponseDto
-        ).toList();
+        return products.stream()
+                .map(this::getProductResponseDto)
+                .toList();
     }
 
     @Override
-    public List<ProductResponseDto> getProductsBySubCategoryId(Long subCategoryId) {
+    public List<ProductResponseDto> getProductsByCategoryId(Long categoryId) {
         List<Long> ids = userApiClient.getAllApprovedStoresIds();
-        List<Product> products = productRepository.findAllBySubCategoryId(subCategoryId);
+        List<Long> subCategoriesIds = categoryApiClient.getAllSubCategoriesIdsByCategoryId(categoryId);
+        List<Product> products = productRepository.findAllBySubCategoryIdIn(subCategoriesIds);
         return  products.stream()
-                .filter(product -> ids.contains(product.getStoreId()))
+                .filter(product -> ids.contains(product.getStoreId()) && product.isApproved())
                 .map(this::getProductResponseDto)
                 .toList();
     }

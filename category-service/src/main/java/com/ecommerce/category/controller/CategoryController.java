@@ -50,4 +50,9 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.categoryExistsById(id));
     }
 
+    @GetMapping("{categoryId}/subcategories")
+    public ResponseEntity<List<Long>> getAllSubCategoriesIdsByCategoryId(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(categoryService.getAllSubCategoriesIdsByCategoryId(categoryId));
+    }
+
 }

@@ -14,7 +14,7 @@ public interface ProductService {
 
     List<ProductResponseDto> getProductsByStoreId(Long storeId);
 
-    List<ProductResponseDto> getProductsBySubCategoryId(Long subCategoryId);
+    List<ProductResponseDto> getProductsByCategoryId(Long categoryId);
 
     List<ProductResponseDto> getNewProducts();
 

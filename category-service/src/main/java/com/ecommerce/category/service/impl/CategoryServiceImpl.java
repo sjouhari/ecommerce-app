@@ -2,6 +2,7 @@ package com.ecommerce.category.service.impl;
 
 import com.ecommerce.category.dto.CategoryRequestDto;
 import com.ecommerce.category.entity.Category;
+import com.ecommerce.category.entity.SubCategory;
 import com.ecommerce.category.mapper.CategoryMapper;
 import com.ecommerce.category.repository.CategoryRepository;
 import com.ecommerce.category.service.CategoryService;
@@ -56,5 +57,16 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public boolean categoryExistsById(Long id) {
         return categoryRepository.existsById(id);
+    }
+
+    @Override
+    public List<Long> getAllSubCategoriesIdsByCategoryId(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(
+                () -> new ResourceNotFoundException("Category", "id", categoryId.toString())
+        );
+
+        return category.getSubCategories().stream()
+                .map(SubCategory::getId)
+                .toList();
     }
 }
