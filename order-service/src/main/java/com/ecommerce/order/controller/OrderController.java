@@ -72,7 +72,7 @@ public class OrderController {
     }
 
     @GetMapping("/stats/top-selling-stores")
-    public ResponseEntity<List<TopSellersProjection>> getTopSellers() {
+    public ResponseEntity<List<TopSellersDto>> getTopSellers() {
         return ResponseEntity.ok(orderService.getTopSellers());
     }
 

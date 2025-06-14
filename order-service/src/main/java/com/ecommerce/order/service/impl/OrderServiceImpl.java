@@ -251,8 +251,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<TopSellersProjection> getTopSellers() {
-        return orderItemRepository.findTopSellers();
+    public List<TopSellersDto> getTopSellers() {
+        return orderItemRepository.findTopSellers().stream()
+                .map(topSellersProjection -> {
+                    StoreDto storeDto = userApiClient.getStoreById(topSellersProjection.getStoreId());
+                    TopSellersDto topSellersDto = new TopSellersDto();
+                    topSellersDto.setStoreId(topSellersProjection.getStoreId());
+                    topSellersDto.setStoreName(storeDto.getName());
+                    topSellersDto.setTotalSold(topSellersProjection.getTotalSold());
+                    return topSellersDto;
+                }).toList();
     }
 
     private List<BestSellingProductDto> getBestSellingProductDtos(List<BestSellingProductProjection> bestSellingProductProjections) {

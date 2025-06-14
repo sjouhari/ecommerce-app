@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { StatsWidget } from './components/statswidget';
 import { RecentSalesWidget } from './components/recentsaleswidget';
 import { BestSellingWidget } from './components/bestsellingwidget';
-import { RevenueStreamWidget } from './components/revenuestreamwidget';
+import { ChartsComponent } from './components/charts/charts.component';
 
 @Component({
     selector: 'app-dashboard',
-    imports: [StatsWidget, RecentSalesWidget, BestSellingWidget, RevenueStreamWidget],
+    imports: [StatsWidget, RecentSalesWidget, BestSellingWidget, ChartsComponent],
     template: `
         <div class="grid grid-cols-12 gap-4">
             <h1 class="col-span-12 text-3xl font-bold text-surface-900 dark:text-surface-0 mb-1">Tableau de bord</h1>
