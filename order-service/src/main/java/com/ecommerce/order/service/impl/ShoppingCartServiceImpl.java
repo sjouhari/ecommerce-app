@@ -36,12 +36,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCartDto shoppingCartDto = ShoppingCartMapper.INSTANCE.shoppingCartToShoppingCartDto(shoppingCart.get());
         shoppingCartDto.setOrderItems(shoppingCartDto.getOrderItems().stream()
                 .map(orderItem -> {
-                    ProductDto productDto = productApiClient.getProductById(orderItem.getProductId());
-                    orderItem.setProductName(productDto.getName());
-                    orderItem.setProductImage(productDto.getMedias().getFirst().getUrl());
-                    return orderItem;
+                    return getOrderItemRequestDto(orderItem);
                 }).toList());
         return shoppingCartDto;
+    }
+
+    private OrderItemRequestDto getOrderItemRequestDto(OrderItemRequestDto orderItem) {
+        ProductDto productDto = productApiClient.getProductById(orderItem.getProductId());
+        orderItem.setProductName(productDto.getName());
+        orderItem.setProductImage(productDto.getMedias().getFirst().getUrl());
+        return orderItem;
     }
 
     @Override

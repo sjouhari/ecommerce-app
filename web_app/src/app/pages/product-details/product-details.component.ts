@@ -74,7 +74,7 @@ export class ProductDetailsComponent implements OnInit {
                     this.getSizeColors();
                     this.getColorQuantity();
                     this.getProductComments(+id);
-                    this.getRelatedProducts(product.subCategoryId);
+                    this.getRelatedProducts(product.categoryId);
                 },
                 error: (error) => {
                     console.log(error); //TODO: handle error
@@ -94,8 +94,8 @@ export class ProductDetailsComponent implements OnInit {
         });
     }
 
-    getRelatedProducts(subCategoryId: number) {
-        this.productService.getProductsBySubCategory(subCategoryId).subscribe({
+    getRelatedProducts(categoryId: number) {
+        this.productService.getProductsByCategory(categoryId).subscribe({
             next: (products) => {
                 this.relatedProducts.set(products.filter((product) => product.id !== this.product()?.id));
             },
@@ -148,6 +148,7 @@ export class ProductDetailsComponent implements OnInit {
 
     addToCart() {
         if (this.product() && this.selectedSize && this.selectedColor) {
+            this.loading.set(true);
             this.shoppingCartService
                 .addItemToShoppingCart(this.authService.currentUser()?.id!, {
                     productId: this.product()!.id,
@@ -169,6 +170,10 @@ export class ProductDetailsComponent implements OnInit {
                     },
                     error: (error) => {
                         console.log(error); //TODO: handle error
+                    },
+                    complete: () => {
+                        this.shoppingCartService.getCurrentUserShoppingCart();
+                        this.loading.set(false);
                     }
                 });
         }

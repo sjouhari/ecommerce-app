@@ -21,6 +21,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Category } from '../../models/category/category.model';
 import { CategoryService } from '../../services/category.service';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-categories',
@@ -56,6 +57,7 @@ export class CategoriesComponent implements OnInit {
     categoryFormGroup!: FormGroup;
 
     categoryService = inject(CategoryService);
+    authService = inject(AuthService);
     messageService = inject(MessageService);
     confirmationService = inject(ConfirmationService);
     formBuilder = inject(FormBuilder);

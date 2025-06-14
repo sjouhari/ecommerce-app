@@ -2,6 +2,7 @@ package com.ecommerce.order.service.impl;
 
 import com.ecommerce.order.dto.*;
 import com.ecommerce.order.entity.*;
+import com.ecommerce.order.enums.FactureStatus;
 import com.ecommerce.order.enums.OrderStatus;
 import com.ecommerce.order.enums.PaymentMethods;
 import com.ecommerce.order.enums.PaymentMethodStatus;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -185,6 +187,15 @@ public class OrderServiceImpl implements OrderService {
                 () -> new ResourceNotFoundException("Order", "id", orderId.toString())
         );
         order.setStatus(updateOrderStatusRequestDto.getStatus());
+        if(updateOrderStatusRequestDto.getStatus() == OrderStatus.DELIVERED) {
+            order.setDeliveryDate(LocalDateTime.now());
+            Invoice invoice = order.getInvoice();
+            invoice.setStatus(FactureStatus.PAID);
+            PaymentMethod paymentMethod = invoice.getPaymentMethod();
+            paymentMethod.setStatus(PaymentMethodStatus.PAID);
+            invoice.setPaymentMethod(paymentMethod);
+            order.setInvoice(invoice);
+        }
         Order savedOrder = orderRepository.save(order);
         // Send order placed event
         UserDto userDto = userApiClient.getUserById(order.getUserId(), token);

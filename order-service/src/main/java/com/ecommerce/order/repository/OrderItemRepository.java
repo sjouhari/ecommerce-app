@@ -20,7 +20,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     List<BestSellingProductProjection> findBestSellingProducts();
 
     @Query("""
-    SELECT o.order.storeId AS storeId, SUM(o.quantity) AS total
+    SELECT o.order.storeId AS storeId, SUM(o.quantity) AS totalSold
     FROM OrderItem o
     WHERE o.order.storeId IS NOT NULL
     GROUP BY o.order.storeId

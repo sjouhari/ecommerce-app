@@ -23,6 +23,7 @@ import { SizeService } from '../../services/size.service';
 import { Category } from '../../models/category/category.model';
 import { CategoryService } from '../../services/category.service';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-sizes',
@@ -59,6 +60,7 @@ export class SizesComponent implements OnInit {
 
     sizeService = inject(SizeService);
     categoryService = inject(CategoryService);
+    authService = inject(AuthService);
     messageService = inject(MessageService);
     confirmationService = inject(ConfirmationService);
     formBuilder = inject(FormBuilder);
@@ -202,6 +204,7 @@ export class SizesComponent implements OnInit {
                 },
                 error: (error) => {
                     console.log(error); //TODO: handle error
+                    this.loading.set(false);
                 }
             });
         } else {
@@ -220,6 +223,7 @@ export class SizesComponent implements OnInit {
                 },
                 error: (error) => {
                     console.log(error); //TODO: handle error
+                    this.loading.set(false);
                 }
             });
         }

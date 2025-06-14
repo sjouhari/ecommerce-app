@@ -11,6 +11,7 @@ export interface Product {
     status: string;
     subCategoryId: number;
     subCategoryName: string;
+    categoryId: number;
     categoryName: string;
     tva: TVA;
     medias: Media[];

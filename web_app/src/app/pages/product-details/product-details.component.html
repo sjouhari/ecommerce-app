@@ -90,9 +90,21 @@
 
                         <!-- Boutons d'action -->
                         <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                            <button pButton label="Ajouter au panier" icon="pi pi-shopping-cart" size="large" severity="success" (click)="addToCart()" class="w-full sm:w-auto"></button>
+                            <button
+                                pButton
+                                label="Ajouter au panier"
+                                icon="pi pi-shopping-cart"
+                                size="large"
+                                severity="success"
+                                (click)="addToCart()"
+                                class="w-full sm:w-auto"
+                                [loading]="loading()"
+                                [disabled]="quantityInStock() == 0 || loading()"
+                            ></button>
                         </div>
                     </div>
+
+                    <p class="mt-2 text-sm text-gray-500">Livraison 48h à 72h après validation de la commande. Vous serez contacté par téléphone dans les 24 heures pour confirmer votre commande.</p>
                 </div>
             </div>
         </div>

@@ -24,4 +24,8 @@ export class ListCategoriesComponent {
             }
         });
     }
+
+    getCategorySubCategories(category: Category) {
+        return category.subCategories.map((subCategory) => subCategory.name).join(', ');
+    }
 }

@@ -97,7 +97,9 @@
             <!-- Product Grid -->
             <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-6">
                 @for (product of paginatedProducts(); track product.id) {
-                    <app-product-card [product]="product" />
+                    <div class="h-full">
+                        <app-product-card [product]="product" />
+                    </div>
                 }
             </div>
 

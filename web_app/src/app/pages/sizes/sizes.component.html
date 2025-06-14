@@ -1,11 +1,13 @@
 <p-toast></p-toast>
 
-<p-toolbar styleClass="mb-3">
-    <ng-template #start>
-        <p-button label="Nouveau" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
-        <p-button severity="secondary" label="Supprimer" icon="pi pi-trash" outlined (onClick)="deleteSelectedSizes()" [disabled]="!selectedSizes || !selectedSizes.length" />
-    </ng-template>
-</p-toolbar>
+@if (authService.isAdmin()) {
+    <p-toolbar styleClass="mb-3">
+        <ng-template #start>
+            <p-button label="Nouveau" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+            <p-button severity="secondary" label="Supprimer" icon="pi pi-trash" outlined (onClick)="deleteSelectedSizes()" [disabled]="!selectedSizes || !selectedSizes.length" />
+        </ng-template>
+    </p-toolbar>
+}
 
 <p-table
     #dt
@@ -23,7 +25,7 @@
 >
     <ng-template #caption>
         <div class="flex items-center justify-between">
-            <h5 class="m-0">Gestion des tailles</h5>
+            <h5 class="m-0">{{ authService.isAdmin() ? 'Gestion des tailles' : 'Liste des tailles' }}</h5>
             <p-iconfield>
                 <p-inputicon styleClass="pi pi-search" />
                 <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." />
@@ -44,7 +46,9 @@
                     Catégorie
                     <p-sortIcon field="category.name" />
                 </th>
-                <th style="min-width: 7rem"></th>
+                @if (authService.isAdmin()) {
+                    <th style="min-width: 7rem"></th>
+                }
             </tr>
         </ng-template>
     }
@@ -55,10 +59,12 @@
             </td>
             <td>{{ size.libelle }}</td>
             <td>{{ size.category.name }}</td>
-            <td>
-                <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editSize(size)" />
-                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteSize(size)" />
-            </td>
+            @if (authService.isAdmin()) {
+                <td>
+                    <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editSize(size)" />
+                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteSize(size)" />
+                </td>
+            }
         </tr>
     </ng-template>
     <ng-template #emptymessage>

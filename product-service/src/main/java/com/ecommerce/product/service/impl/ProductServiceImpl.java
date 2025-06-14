@@ -93,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
         List<Long> ids = userApiClient.getAllApprovedStoresIds();
         List<Product> products = productRepository.findAllNewProducts();
         return products.stream()
-                .filter(product -> ids.contains(product.getStoreId()))
+                .filter(product -> ids.contains(product.getStoreId()) && product.isApproved())
                 .map(this::getProductResponseDto)
                 .toList();
     }
@@ -116,6 +116,7 @@ public class ProductServiceImpl implements ProductService {
 
         productResponseDto.setStock(stock);
         productResponseDto.setSubCategoryName(subCategoryDto.getName());
+        productResponseDto.setCategoryId(categoryDto.getId());
         productResponseDto.setCategoryName(categoryDto.getName());
         productResponseDto.setStore(store);
         return productResponseDto;

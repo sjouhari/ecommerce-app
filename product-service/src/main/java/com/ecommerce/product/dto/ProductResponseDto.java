@@ -27,6 +27,8 @@ public class ProductResponseDto {
 
     private ProductStatus status;
 
+    private Long categoryId;
+
     private Long subCategoryId;
 
     private String categoryName;

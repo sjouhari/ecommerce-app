@@ -23,8 +23,8 @@ export class ProductService {
         return this.http.get<Product[]>(`${this.baseUrl}/store/${storeId}`);
     }
 
-    getProductsBySubCategory(subCategoryId: number): Observable<Product[]> {
-        return this.http.get<Product[]>(`${this.baseUrl}/subcategory/${subCategoryId}`);
+    getProductsByCategory(categoryId: number): Observable<Product[]> {
+        return this.http.get<Product[]>(`${this.baseUrl}/category/${categoryId}`);
     }
 
     getProduct(id: string): Observable<Product> {
@@ -45,5 +45,13 @@ export class ProductService {
 
     deleteProduct(id: number): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    }
+
+    approveProduct(id: number): Observable<void> {
+        return this.http.put<void>(`${this.baseUrl}/approve/${id}`, {});
+    }
+
+    rejectProduct(id: number): Observable<void> {
+        return this.http.put<void>(`${this.baseUrl}/reject/${id}`, {});
     }
 }

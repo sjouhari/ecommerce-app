@@ -1,7 +1,7 @@
 <div id="categories" class="p-2 mb-2">
     <div class="grid grid-cols-12 gap-3 justify-center">
-        <div class="col-span-12 text-center">
-            <h2 class="text-surface-900 dark:text-surface-0 font-semibold text-xl mb-1 tracking-wide">Nos Catégories</h2>
+        <div class="col-span-12">
+            <h2 class="text-surface-900 dark:text-surface-0 font-semibold text-xl mb-1 tracking-wide">Nos catégories de produits</h2>
             <p class="text-surface-600 dark:text-surface-300 text-base">Découvrez les différentes familles de produits</p>
         </div>
 
@@ -13,13 +13,13 @@
                             {{ category.name }}
                         </h5>
                         <p class="text-surface-600 dark:text-surface-300 text-sm leading-relaxed">
-                            {{ category.description }}
+                            {{ getCategorySubCategories(category) }}
                         </p>
                     </div>
                 </div>
             </div>
         } @empty {
-            <div class="col-span-12 text-center">
+            <div class="col-span-12">
                 <p class="text-xl text-surface-600 dark:text-surface-300 italic">Aucune catégorie disponible pour le moment. Restez à l’écoute !</p>
             </div>
         }

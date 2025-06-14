@@ -23,6 +23,7 @@ import { SubCategoryService } from '../../services/sub-category.service';
 import { SubCategory } from '../../models/category/sub-category.model';
 import { CategoryService } from '../../services/category.service';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-categories',
@@ -59,6 +60,7 @@ export class SubCategoriesComponent implements OnInit {
 
     subCategoryService = inject(SubCategoryService);
     categoryService = inject(CategoryService);
+    authService = inject(AuthService);
     messageService = inject(MessageService);
     confirmationService = inject(ConfirmationService);
     formBuilder = inject(FormBuilder);

@@ -18,17 +18,21 @@ export class ShoppingCartService {
 
     constructor() {
         if (this.authService.isLoggedIn()) {
-            this.getShoppingCart(this.authService.currentUser()?.id!).subscribe({
-                next: (cart) => {
-                    this.setShoppingCart(cart);
-                },
-                error: (error) => {
-                    if (error.status !== 404) {
-                        console.log(error); //TODO: handle error
-                    }
-                }
-            });
+            this.getCurrentUserShoppingCart();
         }
+    }
+
+    public getCurrentUserShoppingCart() {
+        this.getShoppingCart(this.authService.currentUser()?.id!).subscribe({
+            next: (cart) => {
+                this.setShoppingCart(cart);
+            },
+            error: (error) => {
+                if (error.status !== 404) {
+                    console.log(error);
+                }
+            }
+        });
     }
 
     setShoppingCart(cart: ShoppingCart) {

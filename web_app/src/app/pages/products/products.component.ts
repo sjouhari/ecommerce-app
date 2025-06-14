@@ -374,6 +374,40 @@ export class ProductsComponent implements OnInit {
         }
     }
 
+    approveProduct(productId: number) {
+        this.productService.approveProduct(productId).subscribe({
+            next: () => {
+                this.getProducts();
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Approbation',
+                    detail: 'Le produit a été approuvé avec succès.',
+                    life: 3000
+                });
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
+    }
+
+    rejectProduct(productId: number) {
+        this.productService.rejectProduct(productId).subscribe({
+            next: () => {
+                this.getProducts();
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Rejet',
+                    detail: 'Le produit a été rejeté avec succès.',
+                    life: 3000
+                });
+            },
+            error: (error) => {
+                console.log(error); //TODO: handle error
+            }
+        });
+    }
+
     removeProductImage(imageUrl: string) {
         this.productImages.update((images) => images.filter((image) => image.url !== imageUrl));
         this.deletedProductImages.update((images) => [...images, imageUrl]);

@@ -49,13 +49,17 @@
                     TVA
                     <p-sortIcon field="tva" />
                 </th>
-                <th pSortableColumn="subCategoryName" style="min-width: 11rem">
+                <th pSortableColumn="subCategoryName" style="min-width: 10rem">
                     Sous Catégorie
                     <p-sortIcon field="subCategoryName" />
                 </th>
-                <th pSortableColumn="status" style="min-width: 12rem">
+                <th pSortableColumn="status" style="min-width: 7rem">
                     Statut
                     <p-sortIcon field="status" />
+                </th>
+                <th pSortableColumn="approved" style="min-width: 8rem">
+                    Approuvé
+                    <p-sortIcon field="approved" />
                 </th>
                 <th style="min-width: 8rem"></th>
             </tr>
@@ -75,6 +79,18 @@
             <td>{{ product.subCategoryName }}</td>
             <td>
                 <p-tag [value]="product.status" [severity]="getSeverity(product.status)" />
+            </td>
+            <td>
+                <div class="flex justify-between gap-2">
+                    <p-tag [value]="product.approved ? 'Oui' : 'Non'" [severity]="product.approved ? 'success' : 'danger'" />
+                    @if (authService.isAdmin()) {
+                        @if (!product.approved) {
+                            <p-button title="Approuver" text icon="pi pi-check" (click)="approveProduct(product.id)" />
+                        } @else {
+                            <p-button title="Rejeter" text icon="pi pi-times" severity="danger" (click)="rejectProduct(product.id)" />
+                        }
+                    }
+                </div>
             </td>
             <td>
                 <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editProduct(product)" />
@@ -246,7 +262,7 @@
     </ng-template>
 
     <ng-template #footer>
-        <p-button label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Annuler" icon="pi pi-times" text (click)="hideDialog()" [disabled]="loading()" />
         <p-button label="Enregistrer" icon="pi pi-check" (click)="saveProduct()" [loading]="loading()" [disabled]="loading() || productFormGroup.invalid" />
     </ng-template>
 </p-dialog>

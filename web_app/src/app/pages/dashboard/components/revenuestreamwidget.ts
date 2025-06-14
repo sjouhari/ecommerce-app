@@ -1,17 +1,21 @@
 import { Component, inject } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
-import { debounceTime, Subscription } from 'rxjs';
-import { LayoutService } from '../../../layout/service/layout.service';
 import { OrderService } from '../../../services/order.service';
 
 @Component({
     standalone: true,
     selector: 'app-revenue-stream-widget',
     imports: [ChartModule],
-    template: `<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <p-chart type="bar" [data]="bestSellingChartData" [options]="{ responsive: true, plugins: { legend: { position: 'top' } } }"></p-chart>
-        <p-chart type="bar" [data]="topSellersChartData" [options]="{ responsive: true, plugins: { legend: { position: 'top' } } }"></p-chart>
-    </div> `
+    template: `<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="card bg-white h-full">
+            <h3 class="text-lg font-semibold text-center mb-2">Les produits les mieux vendus</h3>
+            <p-chart type="bar" [data]="bestSellingChartData" [options]="{ responsive: true, plugins: { legend: { position: 'top', labels: { boxWidth: 40 } } }, barThickness: 30 }"></p-chart>
+        </div>
+        <div class="card bg-white h-full">
+            <h3 class="text-lg font-semibold text-center mb-2">Les vendeurs les mieux vendus</h3>
+            <p-chart type="bar" [data]="topSellersChartData" [options]="{ responsive: true, plugins: { legend: { position: 'top', labels: { boxWidth: 40 } } }, barThickness: 30 }"></p-chart>
+        </div>
+    </div>`
 })
 export class RevenueStreamWidget {
     orderService = inject(OrderService);
@@ -21,7 +25,7 @@ export class RevenueStreamWidget {
     ngOnInit() {
         this.orderService.getBestSellingProducts().subscribe((data) => {
             this.bestSellingChartData = {
-                labels: data.map((p) => 'Produit ' + p.productId),
+                labels: data.map((p) => 'Produit ' + p.productId).slice(0, 10),
                 datasets: [
                     {
                         label: 'Quantité vendue',
@@ -34,7 +38,7 @@ export class RevenueStreamWidget {
 
         this.orderService.getTopSellingStores().subscribe((data) => {
             this.topSellersChartData = {
-                labels: data.map((s) => 'Vendeur ' + s.storeId),
+                labels: data.map((s) => 'Vendeur ' + s.storeId).slice(0, 10),
                 datasets: [
                     {
                         label: 'Produits vendus',

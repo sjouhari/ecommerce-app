@@ -98,5 +98,11 @@ export class AppMenu {
                 ]
             }
         ];
+
+        if (!this.authService.isAdmin()) {
+            this.model[0]?.items?.splice(2, 1);
+            this.model[0]?.items?.splice(4, 1);
+            this.model[0]?.items?.splice(4, 1);
+        }
     }
 }
