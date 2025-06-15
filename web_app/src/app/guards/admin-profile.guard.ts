@@ -6,5 +6,5 @@ export const adminProfileGuard: CanActivateFn = (route, state) => {
     const authService = inject(AuthService);
     const router = inject(Router);
 
-    return authService.isAdmin() ? true : router.createUrlTree(['/home']);
+    return authService.isAdmin() ? true : router.createUrlTree(['']);
 };

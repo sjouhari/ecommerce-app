@@ -9,20 +9,4 @@
         <span>{{ store?.phoneNumber }}</span>
     </div>
 </div>
-<!-- Products Section -->
-<div class="col-span-12 md:col-span-9 lg:col-span-10 p-10">
-    @if (products.length > 0) {
-        <!-- Product Grid -->
-        <h3 class="text-gray-500 mb-4">Nos produits</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
-            @for (product of products; track product.id) {
-                <app-product-card [product]="product" />
-            }
-        </div>
-    } @else {
-        <!-- Empty State -->
-        <ng-template #noProducts>
-            <div class="text-center text-surface-500 text-lg mt-12">Aucun produit ne correspond aux critères.</div>
-        </ng-template>
-    }
-</div>
+<app-product-list [products]="products" title="Produits de {{ store?.name }}"></app-product-list>

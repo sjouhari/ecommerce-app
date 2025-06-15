@@ -1,13 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { Product } from '../../../../models/product/product.model';
-import { RouterLink } from '@angular/router';
 import { ProductService } from '../../../../services/product.service';
-import { ProductCardComponent } from '../../../product-card/product-card.component';
+import { ProductListComponent } from '../../../../user-layout/components/product-list/product-list.component';
 
 @Component({
     selector: 'app-new-products',
     standalone: true,
-    imports: [RouterLink, ProductCardComponent],
+    imports: [ProductListComponent],
     templateUrl: 'new-products.component.html'
 })
 export class NewProductsComponent {

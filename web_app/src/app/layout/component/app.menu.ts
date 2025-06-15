@@ -32,53 +32,52 @@ export class AppMenu {
                     {
                         label: 'Dashboard',
                         icon: 'pi pi-fw pi-home',
-                        routerLink: ['/']
+                        routerLink: ['/admin']
                     },
                     {
                         label: 'Gestion des produits',
                         icon: 'pi pi-fw pi-box',
-                        routerLink: ['/products']
+                        routerLink: ['/admin/products']
                     },
                     {
                         label: 'Gestion des magasins',
                         icon: 'pi pi-fw pi-shop',
-                        routerLink: ['/stores']
+                        routerLink: ['/admin/stores']
                     },
                     {
                         label: 'Gestion des catégories',
                         icon: 'pi pi-fw pi-tags',
                         items: [
-                            { label: 'Catégories', icon: 'pi pi-fw pi-sitemap', routerLink: ['/categories'] },
-                            { label: 'Sous-catégories', icon: 'pi pi-fw pi-angle-double-right', routerLink: ['/subcategories'] },
-                            { label: 'Tailles', icon: 'pi pi-fw pi-tags', routerLink: ['/sizes'] }
+                            { label: 'Catégories', icon: 'pi pi-fw pi-sitemap', routerLink: ['/admin/categories'] },
+                            { label: 'Sous-catégories', icon: 'pi pi-fw pi-angle-double-right', routerLink: ['/admin/subcategories'] },
+                            { label: 'Tailles', icon: 'pi pi-fw pi-tags', routerLink: ['/admin/sizes'] }
                         ]
                     },
                     {
                         label: 'Commandes',
                         icon: 'pi pi-fw pi-shopping-cart',
                         items: [
-                            { label: 'Toutes les commandes', icon: 'pi pi-fw pi-list', routerLink: ['/orders'] },
-                            { label: 'En attente', icon: 'pi pi-fw pi-clock', routerLink: ['/orders/pending'] },
-                            { label: 'Expédiées', icon: 'pi pi-fw pi-send', routerLink: ['/orders/shipped'] },
-                            { label: 'Retours', icon: 'pi pi-fw pi-refresh', routerLink: ['/orders/returns'] }
+                            { label: 'Toutes les commandes', icon: 'pi pi-fw pi-list', routerLink: ['/admin/orders'] },
+                            { label: 'En attente', icon: 'pi pi-fw pi-clock', routerLink: ['/admin/orders/pending'] },
+                            { label: 'Expédiées', icon: 'pi pi-fw pi-send', routerLink: ['/admin/orders/shipped'] }
                         ]
                     },
                     {
                         label: 'Gestion des utilisateurs',
                         icon: 'pi pi-fw pi-users',
                         items: [
-                            { label: 'Toutes les utilisateurs', icon: 'pi pi-fw pi-list', routerLink: ['/users'] },
-                            { label: 'Clients', icon: 'pi pi-fw pi-clock', routerLink: ['/clients'] },
-                            { label: 'Administrateurs', icon: 'pi pi-fw pi-ticket', routerLink: ['/admins'] },
-                            { label: 'Vendeurs', icon: 'pi pi-fw pi-briefcase', routerLink: ['/vendors'] }
+                            { label: 'Toutes les utilisateurs', icon: 'pi pi-fw pi-list', routerLink: ['/admin/users'] },
+                            { label: 'Clients', icon: 'pi pi-fw pi-clock', routerLink: ['/admin/clients'] },
+                            { label: 'Administrateurs', icon: 'pi pi-fw pi-ticket', routerLink: ['/admin/admins'] },
+                            { label: 'Vendeurs', icon: 'pi pi-fw pi-briefcase', routerLink: ['/admin/vendors'] }
                         ]
                     },
                     {
                         label: 'Gestion des permissions',
                         icon: 'pi pi-fw pi-lock',
                         items: [
-                            { label: 'Profils', icon: 'pi pi-fw pi-id-card', routerLink: ['/roles'] },
-                            { label: 'Fonctionnalités', icon: 'pi pi-fw pi-th-large', routerLink: ['/features'] }
+                            { label: 'Profils', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/roles'] },
+                            { label: 'Fonctionnalités', icon: 'pi pi-fw pi-th-large', routerLink: ['/admin/features'] }
                         ]
                     },
                     {

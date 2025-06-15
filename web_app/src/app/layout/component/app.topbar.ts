@@ -19,7 +19,7 @@ import { AuthService } from '../../services/auth.service';
             <a class="flex items-center mr-6" routerLink="/">
                 <img src="assets/logo/app-logo.png" class="h-2rem" alt="APP LOGO" />
             </a>
-            <a routerLink="/home" class="flex items-center mr-6">Espace Utilisateur</a>
+            <a routerLink="" class="flex items-center mr-6">Espace Utilisateur</a>
         </div>
 
         <div class="layout-topbar-actions">
@@ -31,7 +31,7 @@ import { AuthService } from '../../services/auth.service';
 
             <div class="layout-topbar-menu hidden lg:block">
                 <div class="layout-topbar-menu-content">
-                    <a routerLink="profile"><p-chip [label]="getUserFullName()" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" styleClass="px-3 py-2"></p-chip></a>
+                    <a routerLink="profile"><p-chip [label]="getUserFullName()" image="https://cdn4.iconfinder.com/data/icons/ecommerce-flat-8/64/avatar_man_think_shopping_ecommerce-512.png" styleClass="px-3 py-2"></p-chip></a>
                 </div>
             </div>
         </div>

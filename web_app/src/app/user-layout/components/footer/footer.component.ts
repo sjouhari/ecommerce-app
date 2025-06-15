@@ -3,8 +3,8 @@ import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { UserService } from '../../../../services/user.service';
-import { AuthService } from '../../../../services/auth.service';
+import { UserService } from '../../../services/user.service';
+import { AuthService } from '../../../services/auth.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 

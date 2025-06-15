@@ -1,0 +1,19 @@
+<!-- Products Section -->
+<div>
+    @if (products()) {
+        <!-- Product Grid -->
+        @if (title()) {
+            <h3 class="text-gray-500 my-4">{{ title() }}</h3>
+        }
+        <div [class]="'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-6'">
+            @for (product of products(); track product.id) {
+                <app-product-card [product]="product" />
+            }
+        </div>
+    } @else {
+        <!-- Empty State -->
+        <ng-template #noProducts>
+            <div class="text-center text-surface-500 text-lg mt-12">Aucun produit ne correspond aux critères.</div>
+        </ng-template>
+    }
+</div>

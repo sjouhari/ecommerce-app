@@ -47,9 +47,9 @@ export class LoginComponent implements OnInit {
                     next: (user) => {
                         this.authService.setCurrentUser(user);
                         if (user.profils?.some((p) => p.name === 'ROLE_ADMIN' || p.name === 'ROLE_SELLER')) {
-                            this.router.navigate(['/']);
+                            this.router.navigate(['/admin']);
                         } else {
-                            this.router.navigate(['/home']);
+                            this.router.navigate(['']);
                         }
                         this.loading.set(false);
                     },

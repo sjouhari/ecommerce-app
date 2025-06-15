@@ -9,10 +9,10 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { OverlayBadgeModule } from 'primeng/overlaybadge';
-import { CategoryService } from '../../../../services/category.service';
-import { Category } from '../../../../models/category/category.model';
-import { ShoppingCartService } from '../../../../services/shopping-cart.service';
-import { AuthService } from '../../../../services/auth.service';
+import { CategoryService } from '../../../services/category.service';
+import { ShoppingCartService } from '../../../services/shopping-cart.service';
+import { AuthService } from '../../../services/auth.service';
+import { Category } from '../../../models/category/category.model';
 
 @Component({
     selector: 'app-navbar',
@@ -49,6 +49,6 @@ export class NavbarComponent implements OnInit {
 
     gotoCart(op: Popover, event: any) {
         this.toggleDataTable(op, event);
-        this.router.navigate(['/home/shopping-cart']);
+        this.router.navigate(['/shopping-cart']);
     }
 }

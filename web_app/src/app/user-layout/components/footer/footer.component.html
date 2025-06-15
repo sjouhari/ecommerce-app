@@ -1,16 +1,18 @@
 <p-toast></p-toast>
 
-<!-- Newsletter Subscription Section -->
-<div class="col-span-12 p-6 md:p-20 bg-gradient-to-b from-white/70 via-yellow-100 to-yellow-100">
-    <div class="flex flex-col justify-center items-center text-center">
-        <div class="text-gray-900 mb-2 text-3xl font-bold">Abonnez-vous à notre newsletter</div>
-        <span class="text-gray-600 text-xl mb-4">Recevez les meilleures offres et nouveautés produit directement dans votre boîte mail.</span>
-        <div class="w-full max-w-md">
-            <input [(ngModel)]="email" pInputText type="email" class="w-full text-center mb-4" placeholder="Votre adresse email" />
-            <p-button label="S'abonner" class="w-full" severity="primary" (onClick)="subscribe()"></p-button>
+@if (authService.isLoggedIn()) {
+    <!-- Newsletter Subscription Section -->
+    <div class="col-span-12 p-6 md:p-20 bg-gradient-to-b from-white/70 via-yellow-100 to-yellow-100">
+        <div class="flex flex-col justify-center items-center text-center">
+            <div class="text-gray-900 mb-2 text-3xl font-bold">Abonnez-vous à notre newsletter</div>
+            <span class="text-gray-600 text-xl mb-4">Recevez les meilleures offres et nouveautés produit directement dans votre boîte mail.</span>
+            <div class="w-full max-w-md">
+                <input [(ngModel)]="email" pInputText type="email" class="w-full text-center mb-4" placeholder="Votre adresse email" />
+                <p-button label="S'abonner" class="w-full" severity="primary" (onClick)="subscribe()"></p-button>
+            </div>
         </div>
     </div>
-</div>
+}
 
 <!-- Main Footer Section -->
 <div class="py-12 px-6 md:px-20 bg-gradient-to-b from-yellow-100 via-blue-100 to-white">

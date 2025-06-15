@@ -5,32 +5,32 @@
 <div class="items-center bg-surface-0 dark:bg-surface-900 grow justify-between hidden lg:flex absolute lg:static w-full left-0 top-full px-12 lg:px-0 z-20 rounded-border">
     <ul class="list-none p-0 m-0 flex lg:items-center select-none flex-col lg:flex-row cursor-pointer gap-5">
         <li>
-            <a (click)="router.navigate(['/home'], { fragment: 'home' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
+            <a (click)="router.navigate([''], { fragment: 'home' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
                 <span>Accueil</span>
             </a>
         </li>
         <li>
             <div class="flex flex-wrap gap-2 align-items-center">
-                <a (click)="router.navigate(['/home'], { fragment: 'categories' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">Catégories</a>
+                <a (click)="router.navigate([''], { fragment: 'categories' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">Catégories</a>
             </div>
         </li>
         <li>
-            <a (click)="router.navigate(['/home'], { fragment: 'new-products' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
+            <a (click)="router.navigate([''], { fragment: 'new-products' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
                 <span>Nouveaux arrivages</span>
             </a>
         </li>
         <li>
-            <a (click)="router.navigate(['/home/list-products'])" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
+            <a (click)="router.navigate(['/list-products'])" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
                 <span>Produits</span>
             </a>
         </li>
         @if (authService.currentUser()?.store) {
-            <li class="bg-surface-900 p-2 rounded text-white">
-                <a (click)="router.navigate(['/'])" pRipple class="px-0 py-4 font-medium text-xl">
+            <li class="p-2 rounded border-1 border-blue-500">
+                <a (click)="router.navigate(['/admin'])" pRipple class="px-0 py-4 font-medium text-xl">
                     @if (authService.isAdmin()) {
                         <span>Espace Admin</span>
                     } @else if (authService.isSeller()) {
-                        <span>Mon magasin</span>
+                        <span>Espace Vendeur</span>
                     }
                 </a>
             </li>
@@ -72,7 +72,7 @@
                     <a pButton (click)="gotoCart(op2, $event)" label="Accéder au panier" class="w-full py-2" severity="contrast"></a>
                 </p-popover>
             </div>
-            <a routerLink="/home/profile"><p-chip [label]="getFullName()" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" styleClass="px-3 py-2"></p-chip></a>
+            <a routerLink="/profile"><p-chip [label]="getFullName()" image="https://cdn4.iconfinder.com/data/icons/ecommerce-flat-8/64/avatar_man_think_shopping_ecommerce-512.png" styleClass="px-3 py-2"></p-chip></a>
         } @else {
             <div>
                 <button pButton pRipple label="Login" routerLink="/login" [rounded]="true" [text]="true"></button>

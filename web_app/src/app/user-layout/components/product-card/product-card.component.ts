@@ -1,9 +1,9 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Product } from '../../models/product/product.model';
 import { CommonModule } from '@angular/common';
 import { Tag } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
+import { Product } from '../../../models/product/product.model';
 
 @Component({
     selector: 'app-product-card',

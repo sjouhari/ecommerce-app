@@ -2,13 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product/product.model';
-import { ProductCardComponent } from '../product-card/product-card.component';
 import { Store } from '../../models/user/store.model';
 import { StoreService } from '../../services/store.service';
+import { ProductListComponent } from '../../user-layout/components/product-list/product-list.component';
 
 @Component({
     selector: 'app-stores',
-    imports: [ProductCardComponent],
+    imports: [ProductListComponent],
     templateUrl: './store-products.component.html'
 })
 export class StoreProductsComponent implements OnInit {

@@ -292,7 +292,7 @@ export class ShoppingCartComponent implements OnInit {
                     life: 3000
                 });
                 this.loading.set(false);
-                this.router.navigate(['/home/list-products']);
+                this.router.navigate(['/list-products']);
             },
             error: (error) => {
                 console.log(error);

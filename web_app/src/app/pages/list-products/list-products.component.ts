@@ -10,31 +10,24 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PaginatorModule } from 'primeng/paginator';
 import { DropdownModule } from 'primeng/dropdown';
-
-import { CategoryService } from '../../services/category.service';
-import { SubCategoryService } from '../../services/sub-category.service';
-import { SizeService } from '../../services/size.service';
 import { ProductService } from '../../services/product.service';
-
+import { CategoryService } from '../../services/category.service';
+import { Product } from '../../models/product/product.model';
 import { Category } from '../../models/category/category.model';
 import { SubCategory } from '../../models/category/sub-category.model';
 import { Size } from '../../models/category/size.model';
 import { ProductColor } from '../../models/product/product-color';
-import { Product } from '../../models/product/product.model';
-
-import { ProductCardComponent } from '../product-card/product-card.component';
+import { ProductListComponent } from '../../user-layout/components/product-list/product-list.component';
 
 @Component({
     selector: 'app-list-products',
     standalone: true,
-    imports: [CommonModule, FormsModule, Checkbox, ButtonModule, Slider, IconFieldModule, InputIconModule, InputTextModule, DropdownModule, PaginatorModule, ProductCardComponent],
+    imports: [CommonModule, FormsModule, Checkbox, ButtonModule, Slider, IconFieldModule, InputIconModule, InputTextModule, DropdownModule, PaginatorModule, ProductListComponent],
     templateUrl: './list-products.component.html'
 })
 export class ListProductsComponent implements OnInit {
     private productService = inject(ProductService);
     private categoryService = inject(CategoryService);
-    private subCategoryService = inject(SubCategoryService);
-    private sizeService = inject(SizeService);
 
     // Signals
     products = signal<Product[]>([]);
@@ -50,7 +43,7 @@ export class ListProductsComponent implements OnInit {
     selectedSubCategories = signal<SubCategory[]>([]);
     selectedSizes: Size[] = [];
     selectedColors = signal<string[]>([]);
-    selectedPrice = signal<number[]>([0, 100000]);
+    selectedPrice = signal<number[]>([0, 50000]);
 
     // Pagination
     first = 0;

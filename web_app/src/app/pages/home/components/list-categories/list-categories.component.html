@@ -1,4 +1,4 @@
-<div id="categories" class="p-2 mb-2">
+<div id="categories" class="p-4 mb-2">
     <div class="grid grid-cols-12 gap-3 justify-center">
         <div class="col-span-12">
             <h2 class="text-surface-900 dark:text-surface-0 font-semibold text-xl mb-1 tracking-wide">Nos catégories de produits</h2>
@@ -7,7 +7,7 @@
 
         @for (category of categories(); track category.id) {
             <div class="col-span-12 sm:col-span-6 lg:col-span-3 transition-transform hover:scale-[1.03]">
-                <div class="bg-surface-0 dark:bg-surface-800 rounded-2xl shadow-lg p-5 h-full flex flex-col justify-between">
+                <div [routerLink]="'/category-products/' + category.id" class="bg-surface-0 dark:bg-surface-800 rounded-2xl shadow-lg p-5 h-full flex flex-col justify-between cursor-pointer">
                     <div>
                         <h5 class="text-xl text-surface-900 dark:text-surface-0 font-semibold mb-2">
                             {{ category.name }}

@@ -1,27 +1,27 @@
 import { MessageService } from 'primeng/api';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Product } from '../../models/product/product.model';
-import { ProductService } from '../../services/product.service';
 import { GalleriaModule } from 'primeng/galleria';
 import { ButtonModule } from 'primeng/button';
-import { Media } from '../../models/product/media.model';
 import { FormsModule } from '@angular/forms';
-import { ProductColor } from '../../models/product/product-color';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumber } from 'primeng/inputnumber';
-import { ShoppingCartService } from '../../services/shopping-cart.service';
-import { AuthService } from '../../services/auth.service';
 import { ToastModule } from 'primeng/toast';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { TextareaModule } from 'primeng/textarea';
-import { CommentModel } from '../../models/product/comment.model';
+import { ProductService } from '../../services/product.service';
+import { ShoppingCartService } from '../../services/shopping-cart.service';
+import { AuthService } from '../../services/auth.service';
 import { CommentService } from '../../services/comment.service';
-import { ProductCardComponent } from '../product-card/product-card.component';
+import { Media } from '../../models/product/media.model';
+import { ProductColor } from '../../models/product/product-color';
+import { CommentModel } from '../../models/product/comment.model';
+import { Product } from '../../models/product/product.model';
+import { ProductListComponent } from '../../user-layout/components/product-list/product-list.component';
 
 @Component({
     selector: 'app-product-details',
-    imports: [GalleriaModule, ButtonModule, RadioButtonModule, InputNumber, FormsModule, ToastModule, FloatLabelModule, TextareaModule, RouterLink, ProductCardComponent],
+    imports: [GalleriaModule, ButtonModule, RadioButtonModule, InputNumber, FormsModule, ToastModule, FloatLabelModule, TextareaModule, RouterLink, ProductListComponent],
     templateUrl: './product-details.component.html',
     providers: [MessageService]
 })
@@ -62,8 +62,8 @@ export class ProductDetailsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        const id = this.route.snapshot.paramMap.get('id');
-        if (id) {
+        this.route.paramMap.subscribe((params) => {
+            const id = params.get('id')!;
             this.productService.getProduct(id).subscribe({
                 next: (product) => {
                     this.product.set(product);
@@ -80,7 +80,7 @@ export class ProductDetailsComponent implements OnInit {
                     console.log(error); //TODO: handle error
                 }
             });
-        }
+        });
     }
 
     getProductComments(productId: number) {

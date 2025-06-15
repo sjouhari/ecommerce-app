@@ -34,7 +34,7 @@ import { AuthService } from '../../../services/auth.service';
                     <td style="width: 35%; min-width: 7rem;">{{ product.productName }}</td>
                     <td style="width: 35%; min-width: 8rem;">{{ product.price | currency: 'MAD ' }}</td>
                     <td style="width: 15%;">
-                        <a [routerLink]="'/home/list-products/' + product.productId"><i class="pi pi-eye"></i></a>
+                        <a [routerLink]="'/list-products/' + product.productId"><i class="pi pi-eye"></i></a>
                     </td>
                 </tr>
             </ng-template>

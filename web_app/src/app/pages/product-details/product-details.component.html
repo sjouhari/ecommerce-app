@@ -11,10 +11,10 @@
                 </ng-template>
             </p-galleria>
         </div>
-        <div class="card ml-0 col-offset-1 col-span-8">
-            <div class="p-3 mb-3 rounded text-white text-2xl font-semibold bg-gray-900 flex justify-between">
+        <div class="card m-0 col-offset-1 col-span-8">
+            <div class="p-3 mb-3 bg-blue-500 rounded-2xl text-white text-2xl font-semibold flex justify-between">
                 <span class="font-bold">Vendu par</span>
-                <a [routerLink]="'/home/stores/' + product()!.store?.id" class="hover:underline">{{ product()!.store?.name }}</a>
+                <a [routerLink]="'/stores/' + product()!.store?.id" class="hover:underline">{{ product()!.store?.name }}</a>
             </div>
             <!-- Détails produit + Formulaire -->
             <div class="space-y-1">
@@ -99,7 +99,7 @@
                                 (click)="addToCart()"
                                 class="w-full sm:w-auto"
                                 [loading]="loading()"
-                                [disabled]="quantityInStock() == 0 || loading()"
+                                [disabled]="quantityInStock() == 0 || loading() || !authService.isLoggedIn()"
                             ></button>
                         </div>
                     </div>
@@ -108,6 +108,21 @@
                 </div>
             </div>
         </div>
+
+        <!-- Products Section -->
+        <div class="col-span-12">
+            @if (relatedProducts().length > 0) {
+                <!-- Product Grid -->
+                <h3 class="text-gray-500 mb-4">Produits similaires</h3>
+                <app-product-list [products]="relatedProducts()"></app-product-list>
+            } @else {
+                <!-- Empty State -->
+                <ng-template #noProducts>
+                    <div class="text-center text-surface-500 text-lg mt-12">Aucun produit ne correspond aux critères.</div>
+                </ng-template>
+            }
+        </div>
+
         <section class="card col-span-12 border border-gray-200 p-4">
             <h2 class="text-xl font-bold mb-2">Commentaires</h2>
 
@@ -128,23 +143,5 @@
                 <button pButton icon="pi pi-send" (click)="addComment()" class="p-button-rounded p-button-primary"></button>
             </div>
         </section>
-
-        <!-- Products Section -->
-        <div class="col-span-12 md:col-span-9 lg:col-span-10 p-10">
-            @if (relatedProducts().length > 0) {
-                <!-- Product Grid -->
-                <h3 class="text-gray-500 mb-4">Produits similaires</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
-                    @for (product of relatedProducts(); track product.id) {
-                        <app-product-card [product]="product" />
-                    }
-                </div>
-            } @else {
-                <!-- Empty State -->
-                <ng-template #noProducts>
-                    <div class="text-center text-surface-500 text-lg mt-12">Aucun produit ne correspond aux critères.</div>
-                </ng-template>
-            }
-        </div>
     </div>
 }
