@@ -24,11 +24,15 @@ export class FooterComponent {
     authService = inject(AuthService);
     messageService = inject(MessageService);
 
+    loading = false;
+
     subscribe() {
         if (!this.email || !this.email.includes('@')) {
             this.messageService.add({ severity: 'error', summary: 'Adresse email invalide', detail: 'Veuillez entrer une adresse email valide.' });
             return;
         }
+
+        this.loading = true;
 
         this.userService.subscribeToNewsletter(this.authService.currentUser()?.id!, this.email).subscribe({
             next: () => {
@@ -45,6 +49,9 @@ export class FooterComponent {
             },
             error: (error) => {
                 console.log(error); //TODO: handle error
+            },
+            complete: () => {
+                this.loading = false;
             }
         });
     }

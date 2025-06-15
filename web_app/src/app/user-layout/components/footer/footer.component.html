@@ -8,7 +8,7 @@
             <span class="text-gray-600 text-xl mb-4">Recevez les meilleures offres et nouveautés produit directement dans votre boîte mail.</span>
             <div class="w-full max-w-md">
                 <input [(ngModel)]="email" pInputText type="email" class="w-full text-center mb-4" placeholder="Votre adresse email" />
-                <p-button label="S'abonner" class="w-full" severity="primary" (onClick)="subscribe()"></p-button>
+                <p-button label="S'abonner" [loading]="loading" class="w-full" severity="primary" (onClick)="subscribe()"></p-button>
             </div>
         </div>
     </div>
