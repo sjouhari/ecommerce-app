@@ -1,10 +1,10 @@
-<div id="hero" class="flex flex-col overflow-hidden">
-    <p-carousel [value]="images()" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions">
+<div id="hero" class="grid">
+    <p-carousel contentClass="p-0" [value]="images()" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions" [showNavigators]="false">
         <ng-template let-image #item>
             <div class="border border-surface-200 dark:border-surface-700 rounded m-2">
-                <div class="">
+                <div class="w-full">
                     <div class="relative mx-auto">
-                        <img [src]="'assets/home/' + image" [alt]="image" class="w-full h-30rem rounded-border" />
+                        <img [src]="'assets/home/' + image" [alt]="image" class="w-full rounded-border" />
                     </div>
                 </div>
             </div>
