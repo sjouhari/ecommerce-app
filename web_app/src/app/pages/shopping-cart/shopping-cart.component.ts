@@ -287,16 +287,18 @@ export class ShoppingCartComponent implements OnInit {
                 this.getShoppingCart();
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Succès',
-                    detail: 'Votre commande a bien été créée.',
-                    life: 3000
+                    summary: 'Création de commande',
+                    detail: 'Votre commande a bien été créée, vous pouvez consulter votre historique de commandes',
+                    life: 5000
                 });
-                this.loading.set(false);
-                this.router.navigate(['/list-products']);
             },
             error: (error) => {
                 console.log(error);
                 this.loading.set(false);
+            },
+            complete: () => {
+                this.loading.set(false);
+                this.getShoppingCart();
             }
         });
     }
