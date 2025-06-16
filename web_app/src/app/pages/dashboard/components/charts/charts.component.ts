@@ -1,7 +1,7 @@
-import { BestSellingProduct } from './../../../../models/order/best-selling-product.model';
 import { Component, inject } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { OrderService } from '../../../../services/order.service';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
     standalone: true,
@@ -11,6 +11,7 @@ import { OrderService } from '../../../../services/order.service';
 })
 export class ChartsComponent {
     orderService = inject(OrderService);
+    authService = inject(AuthService);
 
     bestSellingChartData: any;
     topSellersChartData: any;
@@ -63,18 +64,33 @@ export class ChartsComponent {
     };
 
     ngOnInit() {
-        this.orderService.getBestSellingProducts().subscribe((data) => {
-            this.bestSellingChartData = {
-                labels: data.map((p) => 'Produit ' + p.productName).slice(0, 10),
-                datasets: [
-                    {
-                        label: 'Quantité vendue',
-                        backgroundColor: '#42A5F5',
-                        data: data.map((p) => p.totalSold)
-                    }
-                ]
-            };
-        });
+        if (this.authService.isAdmin()) {
+            this.orderService.getBestSellingProducts().subscribe((data) => {
+                this.bestSellingChartData = {
+                    labels: data.map((p) => 'Produit ' + p.productName).slice(0, 10),
+                    datasets: [
+                        {
+                            label: 'Quantité vendue',
+                            backgroundColor: '#42A5F5',
+                            data: data.map((p) => p.totalSold)
+                        }
+                    ]
+                };
+            });
+        } else {
+            this.orderService.getBestSellingProductsByStoreId(this.authService.currentUser()?.store?.id!).subscribe((data) => {
+                this.bestSellingChartData = {
+                    labels: data.map((p) => 'Produit ' + p.productName).slice(0, 10),
+                    datasets: [
+                        {
+                            label: 'Quantité vendue',
+                            backgroundColor: '#42A5F5',
+                            data: data.map((p) => p.totalSold)
+                        }
+                    ]
+                };
+            });
+        }
 
         this.orderService.getTopSellingStores().subscribe({
             next: (data) => {
