@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    List<Order> findAllByUserId(Long userId);
+    List<Order> findAllByUserIdOrderByCreatedAtDesc(Long userId);
 
-    List<Order> findAllByStoreId(Long storeId);
+    List<Order> findAllByStoreIdOrderByCreatedAtDesc(Long storeId);
 
 }

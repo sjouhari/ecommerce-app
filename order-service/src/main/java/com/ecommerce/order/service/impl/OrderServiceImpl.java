@@ -20,7 +20,6 @@ import com.ecommerce.shared.dto.StoreDto;
 import com.ecommerce.shared.dto.UserEvent;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.ecommerce.shared.exception.StockInsufficientException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -31,36 +30,31 @@ import java.util.Map;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private OrderItemRepository orderItemRepository;
-
-    @Autowired
-    private PaymentMethodRepository paymentMethodRepository;
-
-    @Autowired
-    private AddressRepository addressRepository;
-
-    @Autowired
-    private UserApiClient userApiClient;
-
-    @Autowired
-    private InventoryApiClient inventoryApiClient;
-
-    @Autowired
-    private ProductApiClient productApiClient;
-
-    @Autowired
-    private OrderPlacedProducer orderPlacedProducer;
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
+    private final AddressRepository addressRepository;
+    private final UserApiClient userApiClient;
+    private final InventoryApiClient inventoryApiClient;
+    private final ProductApiClient productApiClient;
+    private final OrderPlacedProducer orderPlacedProducer;
 
     @Value("${kafka.topic.order.placed.name}")
     private String orderPlacedTopic;
 
     @Value("${kafka.topic.order.status.changed.name}")
     private String orderStatusTopic;
+
+    public OrderServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, PaymentMethodRepository paymentMethodRepository, AddressRepository addressRepository, UserApiClient userApiClient, InventoryApiClient inventoryApiClient, ProductApiClient productApiClient, OrderPlacedProducer orderPlacedProducer) {
+        this.orderRepository = orderRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.paymentMethodRepository = paymentMethodRepository;
+        this.addressRepository = addressRepository;
+        this.userApiClient = userApiClient;
+        this.inventoryApiClient = inventoryApiClient;
+        this.productApiClient = productApiClient;
+        this.orderPlacedProducer = orderPlacedProducer;
+    }
 
     @Override
     public List<OrderResponseDto> getAllOrders(String token) {
@@ -76,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderResponseDto> getOrdersByUserId(Long userId, String token) {
-        List<Order> orders = orderRepository.findAllByUserId(userId);
+        List<Order> orders = orderRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
         return orders.stream()
                 .map(order -> {
                     UserDto userDto = userApiClient.getUserById(order.getUserId(), token);
@@ -87,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderResponseDto> getOrdersByStoreId(Long storeId, String token) {
-        List<Order> orders = orderRepository.findAllByStoreId(storeId);
+        List<Order> orders = orderRepository.findAllByStoreIdOrderByCreatedAtDesc(storeId);
         return orders.stream()
                 .map(order -> {
                     UserDto userDto = userApiClient.getUserById(order.getUserId(), token);

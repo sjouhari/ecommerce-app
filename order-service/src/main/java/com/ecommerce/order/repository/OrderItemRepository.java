@@ -14,6 +14,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Query("""
     SELECT o.productId AS productId, SUM(o.quantity) AS totalSold
     FROM OrderItem o
+    WHERE o.order.status = 'DELIVERED'
     GROUP BY o.productId
     ORDER BY totalSold DESC
     """)
@@ -22,7 +23,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Query("""
     SELECT o.order.storeId AS storeId, SUM(o.quantity) AS totalSold
     FROM OrderItem o
-    WHERE o.order.storeId IS NOT NULL
+    WHERE o.order.storeId IS NOT NULL and o.order.status = 'DELIVERED'
     GROUP BY o.order.storeId
     ORDER BY SUM(o.quantity) DESC
     """)
@@ -33,7 +34,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     SELECT oi.productId AS productId, SUM(oi.quantity) AS totalSold
     FROM OrderItem oi
     JOIN oi.order o
-    WHERE o.storeId = :storeId
+    WHERE o.storeId = :storeId and o.status = 'DELIVERED'
     GROUP BY oi.productId
     ORDER BY totalSold DESC
     """)
