@@ -17,11 +17,14 @@ public class ContactConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContactConsumer.class);
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
     @Value("${spring.mail.username}")
     private String email;
+
+    public ContactConsumer(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     @KafkaListener(topics = "contact", groupId = "contact-group")
     public void consume(ContactDto contactDto) {
@@ -29,12 +32,12 @@ public class ContactConsumer {
 
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(email);
-        emailDto.setSubject("Nouveau contact message");
+        emailDto.setSubject(contactDto.getSubject());
 
         Map<String, Object> variables = Map.of(
-                "subject", "Nouveau contact message",
-                "name", "Admin",
-                "message", contactDto.getMessage() + " de " + contactDto.getEmail()
+                "subject", contactDto.getSubject(),
+                "name", contactDto.getName(),
+                "message", contactDto.getMessage()
         );
 
         emailService.sendEmail(emailDto, variables);

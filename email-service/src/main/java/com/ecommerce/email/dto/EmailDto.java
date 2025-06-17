@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EmailDto {
 
+    private String from;
     private String to;
     private String subject;
 

@@ -37,6 +37,9 @@
         }
     </ul>
     <div class="flex border-t lg:border-t-0 border-surface py-4 lg:py-0 mt-4 lg:mt-0 gap-2">
+        <a (click)="router.navigate(['/contact'])" pRipple class="px-0 py-4 cursor-pointer mr-5 text-surface-900 dark:text-surface-0 font-medium text-xl">
+            <span>Contactez-nous</span>
+        </a>
         @if (authService.isLoggedIn()) {
             <div class="flex flex-wrap gap-2 align-items-center">
                 <p-overlaybadge class="mr-3 cursor-pointer" [value]="shoppingCartService.shoppingCart() ? shoppingCartService.shoppingCart()!.orderItems.length : 0" (click)="toggleDataTable(op2, $event)">

@@ -1,5 +1,6 @@
 package com.ecommerce.email.service;
 
+import com.ecommerce.email.SendEmailFailedException;
 import com.ecommerce.email.dto.EmailDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -34,13 +35,16 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         try {
+            if(emailDto.getFrom() != null) {
+                helper.setFrom(emailDto.getFrom());
+            }
             helper.setTo(emailDto.getTo());
             helper.setSubject(emailDto.getSubject());
             helper.setText(htmlContent, true);
             mailSender.send(message);
             LOGGER.info("Email sent to {} successfully", emailDto.getTo());
         } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send email", e);
+            throw new SendEmailFailedException("Failed to send email : " + e.getMessage());
         }
     }
 

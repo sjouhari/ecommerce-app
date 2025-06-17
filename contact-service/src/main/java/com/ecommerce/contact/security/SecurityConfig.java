@@ -33,10 +33,6 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET).hasAuthority("CONTACT_READ")
-						.requestMatchers(HttpMethod.POST).hasAuthority("CONTACT_CREATE")
-						.requestMatchers(HttpMethod.PUT).hasAuthority("CONTACT_UPDATE")
-						.requestMatchers(HttpMethod.DELETE).hasAuthority("CONTACT_DELETE")
 						.anyRequest().authenticated()
 				).exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)
