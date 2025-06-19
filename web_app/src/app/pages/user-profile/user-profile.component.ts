@@ -21,11 +21,12 @@ import { UserService } from '../../services/user.service';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Store } from '../../models/user/store.model';
 import { StoreService } from '../../services/store.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-user-profile',
     templateUrl: './user-profile.component.html',
-    imports: [CommonModule, ReactiveFormsModule, ToastModule, DialogModule, TableModule, PanelModule, CardModule, ButtonModule, InputTextModule, PasswordModule, TextareaModule, FloatLabelModule, ConfirmDialogModule],
+    imports: [CommonModule, ReactiveFormsModule, ToastModule, DialogModule, TableModule, PanelModule, CardModule, ButtonModule, InputTextModule, PasswordModule, TextareaModule, FloatLabelModule, ConfirmDialogModule, RouterLink],
     providers: [MessageService, ConfirmationService]
 })
 export class UserProfileComponent implements OnInit {

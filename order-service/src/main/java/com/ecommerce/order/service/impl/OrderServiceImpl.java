@@ -6,6 +6,7 @@ import com.ecommerce.order.enums.FactureStatus;
 import com.ecommerce.order.enums.OrderStatus;
 import com.ecommerce.order.enums.PaymentMethods;
 import com.ecommerce.order.enums.PaymentMethodStatus;
+import com.ecommerce.order.exception.InvalidPaymentMethodException;
 import com.ecommerce.order.kafka.OrderPlacedProducer;
 import com.ecommerce.order.mapper.OrderItemMapper;
 import com.ecommerce.order.mapper.OrderMapper;
@@ -20,9 +21,15 @@ import com.ecommerce.shared.dto.StoreDto;
 import com.ecommerce.shared.dto.UserEvent;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.ecommerce.shared.exception.StockInsufficientException;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.draw.LineSeparator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -257,6 +264,60 @@ public class OrderServiceImpl implements OrderService {
                 }).toList();
     }
 
+    @Override
+    public byte[] generateOrderPdf(Long orderId, String token) throws IOException {
+        OrderResponseDto order = getOrderById(orderId, token);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Document document = new Document();
+        PdfWriter.getInstance(document, baos);
+
+        Font paragraphFont = new Font(Font.COURIER, 11);
+
+        AddressDto addressDto = order.getDeliveryAddress();
+        String deliveryAddress = addressDto.getDeliveryAddress() +  ", " + addressDto.getPostalCode() + ", " + addressDto.getCity() + ", " + addressDto.getCountry();
+
+        document.open();
+        Image logo = Image.getInstance("classpath:/static/logo.png");
+        logo.scaleToFit(120, 120);
+        logo.setAlignment(Element.ALIGN_LEFT);
+        document.add(logo);
+        document.add(Chunk.NEWLINE);
+        document.add(new LineSeparator());
+        document.add(Chunk.NEWLINE);
+
+        document.add(new Paragraph("Commande N°: " + order.getId()));
+        document.add(Chunk.NEWLINE);
+        document.add(new LineSeparator());
+
+        document.add(new Paragraph("Client               : " + order.getUserName(), paragraphFont));
+        document.add(new Paragraph("Date                 : " + order.getCreatedAt(), paragraphFont));
+        document.add(new Paragraph("Vendeur              : " + order.getStoreName(), paragraphFont));
+        document.add(new Paragraph("Adresse de livraison : " + deliveryAddress, paragraphFont));
+        document.add(new Paragraph("Statut               : " + order.getStatus(), paragraphFont));
+
+        document.add(Chunk.NEWLINE);
+        document.add(new Paragraph("Listes des produits commandés : "));
+        document.add(Chunk.NEWLINE);
+        document.add(new LineSeparator());
+
+        for(OrderItemRequestDto item : order.getOrderItems()) {
+            document.add(new Paragraph("Produit #" + item.getProductId(), paragraphFont));
+            document.add(new Paragraph("Nom        : " + item.getProductName(), paragraphFont));
+            document.add(new Paragraph("Détails    : " + item.getSize() + ", " + item.getColor() + ", " + item.getPrice() + ", x" + item.getQuantity() + ", " + " MAD", paragraphFont));
+            document.add(new Paragraph("Prix total : " + (item.getPrice() * item.getQuantity()) + " MAD", paragraphFont));
+            document.add(Chunk.NEWLINE);
+            document.add(new LineSeparator());
+        }
+
+        document.add(Chunk.NEWLINE);
+        document.add(new Paragraph("Résumé de la commande : "));
+        document.add(new Paragraph("Prix Total         : " + order.getInvoice().getTotalPrice() + " MAD", paragraphFont));
+        document.add(new Paragraph("Statut de paiement : " + order.getInvoice().getPaymentMethod().getStatus().toString(), paragraphFont));
+        document.close();
+
+        return baos.toByteArray();
+    }
+
     private List<BestSellingProductDto> getBestSellingProductDtos(List<BestSellingProductProjection> bestSellingProductProjections) {
         return bestSellingProductProjections.stream()
                 .map(bestSellingProductProjection -> {
@@ -282,6 +343,6 @@ public class OrderServiceImpl implements OrderService {
         } else if(orderRequestDto.getPaymentMethod() == PaymentMethods.CHEQUE) {
             return new Cheque(orderRequestDto.getChequeNumber(), orderRequestDto.getBankName());
         }
-        throw new RuntimeException("Invalid payment method");
+        throw new InvalidPaymentMethodException("Invalid payment method");
     }
 }

@@ -136,6 +136,7 @@
                     <th>Date</th>
                     <th>Prix totale</th>
                     <th>Statut</th>
+                    <th></th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-order>
@@ -145,6 +146,9 @@
                     <td>{{ order.invoice.totalPrice | currency: 'MAD ' }}</td>
                     <td>
                         <span class="order-status" [ngClass]="'status-' + order.status.toLowerCase()">{{ order.status }}</span>
+                    </td>
+                    <td>
+                        <a routerLink="/order-summary/{{ order.id }}" class="p-button font-bold"> Détails </a>
                     </td>
                 </tr>
             </ng-template>

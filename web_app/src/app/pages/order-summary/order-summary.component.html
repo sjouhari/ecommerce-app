@@ -1,6 +1,9 @@
 <div class="w-7 mx-auto p-3 border-1 border-surface rounded">
     <div class="flex flex-col gap-4">
-        <h2 class="text-2xl font-bold mb-2">Récapitulatif de la commande</h2>
+        <div class="flex justify-between">
+            <h2 class="text-2xl font-bold mb-2">Récapitulatif de la commande</h2>
+            <p class="m-0">N° de commande : {{ order()?.id }}</p>
+        </div>
 
         <div class="flex justify-between">
             <h3 class="text-xl font-bold mb-2">Statut de la commande</h3>
@@ -57,5 +60,9 @@
                 <span>{{ order()?.invoice?.totalPrice }} MAD</span>
             </div>
         </div>
+    </div>
+    <div class="flex justify-between items-center mt-4 border-top-1 pt-3">
+        <h3 class="text-xl font-bold mb-3">Télécharger la facture de cette commande</h3>
+        <button pButton label="Télécharger" icon="pi pi-download" class="mt-2" [loading]="loading()" (click)="downloadInvoice()"></button>
     </div>
 </div>

@@ -57,4 +57,10 @@ export class OrderService {
     getTopSellingStores(): Observable<TopSellingStore[]> {
         return this.http.get<TopSellingStore[]>(`${this.baseUrl}/stats/top-selling-stores`);
     }
+
+    downloadInvoice(orderId: number): Observable<Blob> {
+        return this.http.get(`http://localhost:8080/api/orders/${orderId}/pdf`, {
+            responseType: 'blob' // très important
+        });
+    }
 }

@@ -4,11 +4,14 @@ import com.ecommerce.order.dto.*;
 import com.ecommerce.order.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -74,6 +77,15 @@ public class OrderController {
     @GetMapping("/stats/top-selling-stores")
     public ResponseEntity<List<TopSellersDto>> getTopSellers() {
         return ResponseEntity.ok(orderService.getTopSellers());
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> downloadOrderPdf(@PathVariable Long id, @RequestHeader("Authorization") String token) throws IOException {
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=commande_" + id + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(orderService.generateOrderPdf(id, token));
     }
 
 }

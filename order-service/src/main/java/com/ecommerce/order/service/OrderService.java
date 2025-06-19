@@ -2,6 +2,7 @@ package com.ecommerce.order.service;
 
 import com.ecommerce.order.dto.*;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface OrderService {
@@ -27,5 +28,7 @@ public interface OrderService {
     List<BestSellingProductDto> getBestSellingProductsByStoreId(Long storeId);
 
     List<TopSellersDto> getTopSellers();
+
+    byte[] generateOrderPdf(Long orderId, String token) throws IOException;
 
 }
