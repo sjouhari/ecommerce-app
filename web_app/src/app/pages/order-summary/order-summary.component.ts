@@ -4,10 +4,11 @@ import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order/order.model';
 import { PaymentMethods } from '../../models/order/payment-methods';
 import { ButtonModule } from 'primeng/button';
+import { Tag } from 'primeng/tag';
 
 @Component({
     selector: 'app-order-summary',
-    imports: [ButtonModule],
+    imports: [ButtonModule, Tag],
     templateUrl: './order-summary.component.html'
 })
 export class OrderSummaryComponent implements OnInit {
