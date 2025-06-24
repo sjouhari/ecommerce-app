@@ -5,7 +5,6 @@ import com.ecommerce.email.service.EmailService;
 import com.ecommerce.shared.dto.OrderEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +15,11 @@ public class OrderConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderConsumer.class);
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
+
+    public OrderConsumer(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     @KafkaListener(topics = "${kafka.topic.order.placed.name}", groupId = "order_placed_group_id")
     public void consumeOrderPlacedEvent(OrderEvent orderEvent) {

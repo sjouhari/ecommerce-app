@@ -8,7 +8,6 @@ import com.ecommerce.contact.mapper.ContactMapper;
 import com.ecommerce.contact.repository.ContactRepository;
 import com.ecommerce.contact.service.ContactService;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,14 +15,17 @@ import java.util.List;
 @Service
 public class ContactServiceImpl implements ContactService {
 
-    @Autowired
-    private ContactRepository contactRepository;
+    private final ContactRepository contactRepository;
 
-    @Autowired
-    private UserApiClient userApiClient;
+    private final UserApiClient userApiClient;
 
-    @Autowired
-    private ContactProducer contactProducer;
+    private final ContactProducer contactProducer;
+
+    public ContactServiceImpl(ContactRepository contactRepository, UserApiClient userApiClient, ContactProducer contactProducer) {
+        this.contactRepository = contactRepository;
+        this.userApiClient = userApiClient;
+        this.contactProducer = contactProducer;
+    }
 
     @Override
     public List<ContactDto> getAllContacts() {
@@ -46,7 +48,7 @@ public class ContactServiceImpl implements ContactService {
         }
         Contact contact = ContactMapper.INSTANCE.contactDtoToContact(contactDto);
         Contact savedContact = contactRepository.save(contact);
-        contactProducer.sendMessage(contactDto, "new-contact-message");
+        contactProducer.sendMessage(contactDto, "contact_new");
         return ContactMapper.INSTANCE.contactToContactDto(savedContact);
     }
 
@@ -58,7 +60,7 @@ public class ContactServiceImpl implements ContactService {
         contact.setResponse(contactResponseDto.getResponse());
         contact.setId(id);
         Contact savedContact = contactRepository.save(contact);
-        contactProducer.sendMessage(ContactMapper.INSTANCE.contactToContactDto(savedContact), "contact-response-message");
+        contactProducer.sendMessage(ContactMapper.INSTANCE.contactToContactDto(savedContact), "contact_response");
         return ContactMapper.INSTANCE.contactToContactDto(savedContact);
     }
 

@@ -1,6 +1,6 @@
 package com.ecommerce.email.service;
 
-import com.ecommerce.email.SendEmailFailedException;
+import com.ecommerce.email.exception.SendEmailFailedException;
 import com.ecommerce.email.dto.EmailDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

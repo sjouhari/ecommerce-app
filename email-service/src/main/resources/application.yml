@@ -60,3 +60,8 @@ kafka:
       status:
         changed:
           name: order_status_changed
+    contact:
+      new:
+        name: contact_new
+      response:
+        name: contact_response

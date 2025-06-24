@@ -1,4 +1,4 @@
-package com.ecommerce.email;
+package com.ecommerce.email.exception;
 
 public class SendEmailFailedException extends RuntimeException {
 

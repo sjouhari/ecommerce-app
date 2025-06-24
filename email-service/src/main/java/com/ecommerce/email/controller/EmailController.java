@@ -2,10 +2,8 @@ package com.ecommerce.email.controller;
 
 import com.ecommerce.email.dto.EmailDto;
 import com.ecommerce.email.dto.NewsletterDto;
-import com.ecommerce.email.dto.ProductItem;
 import com.ecommerce.email.service.EmailService;
 import com.ecommerce.email.service.NewsletterService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,11 +16,14 @@ import java.util.Map;
 @RequestMapping("/api/email")
 public class EmailController {
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
-    @Autowired
-    private NewsletterService newsletterService;
+    private final NewsletterService newsletterService;
+
+    public EmailController(EmailService emailService, NewsletterService newsletterService) {
+        this.emailService = emailService;
+        this.newsletterService = newsletterService;
+    }
 
     @PostMapping("/send")
     public ResponseEntity<String> sendEmail(@RequestBody EmailDto emailDto) {
