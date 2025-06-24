@@ -28,6 +28,8 @@ public class Contact extends BaseEntity {
 
     private String message;
 
+    private String response;
+
     private Long userId;
 
 }

@@ -1,5 +1,6 @@
 package com.ecommerce.contact.service.impl;
 
+import com.ecommerce.contact.dto.ContactResponseDto;
 import com.ecommerce.contact.kafka.ContactProducer;
 import com.ecommerce.shared.dto.ContactDto;
 import com.ecommerce.contact.entity.Contact;
@@ -45,16 +46,19 @@ public class ContactServiceImpl implements ContactService {
         }
         Contact contact = ContactMapper.INSTANCE.contactDtoToContact(contactDto);
         Contact savedContact = contactRepository.save(contact);
-        contactProducer.sendMessage(contactDto);
+        contactProducer.sendMessage(contactDto, "new-contact-message");
         return ContactMapper.INSTANCE.contactToContactDto(savedContact);
     }
 
     @Override
-    public ContactDto updateContact(Long id, ContactDto contactDto) {
-        getContactById(id);
-        Contact contact = ContactMapper.INSTANCE.contactDtoToContact(contactDto);
+    public ContactDto responseContact(Long id, ContactResponseDto contactResponseDto) {
+        Contact contact = contactRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Contact", "id", id.toString())
+        );
+        contact.setResponse(contactResponseDto.getResponse());
         contact.setId(id);
         Contact savedContact = contactRepository.save(contact);
+        contactProducer.sendMessage(ContactMapper.INSTANCE.contactToContactDto(savedContact), "contact-response-message");
         return ContactMapper.INSTANCE.contactToContactDto(savedContact);
     }
 

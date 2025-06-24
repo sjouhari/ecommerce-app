@@ -1,5 +1,6 @@
 package com.ecommerce.contact.service;
 
+import com.ecommerce.contact.dto.ContactResponseDto;
 import com.ecommerce.shared.dto.ContactDto;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface ContactService {
 
     ContactDto createContact(ContactDto contactDto, String token);
 
-    ContactDto updateContact(Long id, ContactDto contactDto);
+    ContactDto responseContact(Long id, ContactResponseDto contactResponseDto);
 
     String deleteContact(Long id);
 

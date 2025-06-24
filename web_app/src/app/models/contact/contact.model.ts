@@ -5,5 +5,8 @@ export interface Contact {
     phone: string;
     subject: string;
     message: string;
+    response?: string;
     userId: number;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

@@ -26,6 +26,7 @@ import { CategoryProductsComponent } from './app/pages/category-products/categor
 import { ShoppingCartComponent } from './app/pages/shopping-cart/shopping-cart.component';
 import { OrderSummaryComponent } from './app/pages/order-summary/order-summary.component';
 import { ContactComponent } from './app/pages/contact/contact.component';
+import { ContactsComponent } from './app/pages/contacts/contacts.component';
 
 export const appRoutes: Routes = [
     {
@@ -80,7 +81,8 @@ export const appRoutes: Routes = [
             // Permissions et rôles
             { path: 'roles', component: ProfilesComponent },
             { path: 'features', component: FeaturesComponent },
-            { path: 'profile', component: UserProfileComponent }
+            { path: 'profile', component: UserProfileComponent },
+            { path: 'contacts', component: ContactsComponent }
         ]
     },
     { path: 'notfound', component: Notfound },

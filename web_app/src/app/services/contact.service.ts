@@ -23,8 +23,8 @@ export class ContactService {
         return this.http.post<Contact>(this.baseUrl, contact);
     }
 
-    updateContact(contact: Contact): Observable<Contact> {
-        return this.http.put<Contact>(`${this.baseUrl}/${contact.id}`, contact);
+    responseContact(id: number, response: string): Observable<Contact> {
+        return this.http.put<Contact>(`${this.baseUrl}/${id}`, { response });
     }
 
     deleteContact(id: number): Observable<void> {

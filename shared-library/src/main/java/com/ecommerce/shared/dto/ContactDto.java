@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,7 +34,13 @@ public class ContactDto {
     @NotBlank(message = "Message is required")
     private String message;
 
+    private String response;
+
     @NotNull(message = "User id is required")
     private Long userId;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
 }

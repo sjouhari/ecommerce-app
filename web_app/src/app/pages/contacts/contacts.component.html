@@ -1,0 +1,108 @@
+<p-toast></p-toast>
+
+<p-table
+    #dt
+    [value]="contacts()"
+    [rows]="10"
+    [paginator]="contacts().length > 10"
+    [globalFilterFields]="['name', 'description']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedContacts"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Affichage {first} to {last} of {totalRecords} products"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30, 40, 50]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">{{ authService.isAdmin() ? 'Gestion des tailles' : 'Liste des tailles' }}</h5>
+            <div class="flex items-center gap-3">
+                @if (authService.isAdmin()) {
+                    <p-button severity="secondary" label="Supprimer" icon="pi pi-trash" outlined (onClick)="deleteSelectedContacts()" [disabled]="!selectedContacts || !selectedContacts.length" />
+                }
+                <p-iconfield>
+                    <p-inputicon styleClass="pi pi-search" />
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." />
+                </p-iconfield>
+            </div>
+        </div>
+    </ng-template>
+    @if (contacts().length > 0) {
+        <ng-template #header>
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox />
+                </th>
+                <th pSortableColumn="name">
+                    Utilisateur
+                    <p-sortIcon field="name" />
+                </th>
+                <th pSortableColumn="subject">
+                    Sujet
+                    <p-sortIcon field="subject" />
+                </th>
+                <th pSortableColumn="message">
+                    Message
+                    <p-sortIcon field="message" />
+                </th>
+                @if (authService.isAdmin()) {
+                    <th style="min-width: 7rem"></th>
+                }
+            </tr>
+        </ng-template>
+    }
+    <ng-template #body let-contact>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="contact" />
+            </td>
+            <td>{{ contact.name }}</td>
+            <td>{{ contact.subject }}</td>
+            <td>{{ contact.message }}</td>
+            @if (authService.isAdmin()) {
+                <td>
+                    <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="editContact(contact)" />
+                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteContact(contact)" />
+                </td>
+            }
+        </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+        <tr>
+            <td colspan="6">Aucune message pour le moment</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="contactDialog" [style]="{ width: '650px' }" header="Contact" [modal]="true">
+    <ng-template #content>
+        <div>
+            <p class="mb-2"><span class="font-semibold">Nom de l'utilisateur: </span> {{ selectedContact?.name }}</p>
+            <p class="mb-2"><span class="font-semibold">Email de l'utilisateur: </span> {{ selectedContact?.email }}</p>
+            <p class="mb-2"><span class="font-semibold">N° de téléphone : </span> {{ selectedContact?.phone }}</p>
+            <p class="mb-2"><span class="font-semibold">Sujet : </span> {{ selectedContact?.subject }}</p>
+            <p class="mb-2"><span class="font-semibold">Message : </span> {{ selectedContact?.message }}</p>
+            <p class="mb-2"><span class="font-semibold">Date : </span> {{ selectedContact?.createdAt | date: 'dd/MM/yyyy' }}</p>
+        </div>
+        <form [formGroup]="contactFormGroup" (ngSubmit)="saveContact()" class="flex flex-col gap-3 mt-4">
+            <div>
+                <p-floatlabel variant="in">
+                    <textarea id="response" pTextarea formControlName="response" rows="5" fluid></textarea>
+                    <label for="response">Réponse</label>
+                </p-floatlabel>
+                @if (formControls['response'].errors && formControls['response'].touched) {
+                    @if (formControls['response'].errors['required']) {
+                        <small class="text-red-500">Vous devez saisir la réponse du contact</small>
+                    }
+                }
+            </div>
+            <div class="flex justify-end gap-3">
+                <p-button type="button" label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
+                <p-button type="submit" label="Envoyer" icon="pi pi-send" [loading]="loading()" [disabled]="!contactFormGroup.valid || loading()" />
+            </div>
+        </form>
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />

@@ -1,5 +1,6 @@
 package com.ecommerce.contact.controller;
 
+import com.ecommerce.contact.dto.ContactResponseDto;
 import com.ecommerce.shared.dto.ContactDto;
 import com.ecommerce.contact.service.ContactService;
 import jakarta.validation.Valid;
@@ -40,8 +41,8 @@ public class ContactController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ContactDto> updateContact(@PathVariable Long id, @RequestBody @Valid ContactDto contactDto) {
-        return ResponseEntity.ok(contactService.updateContact(id, contactDto));
+    public ResponseEntity<ContactDto> updateContact(@PathVariable Long id, @RequestBody @Valid ContactResponseDto contactResponseDto) {
+        return ResponseEntity.ok(contactService.responseContact(id, contactResponseDto));
     }
 
     @DeleteMapping("/{id}")

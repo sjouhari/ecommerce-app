@@ -26,8 +26,8 @@ public class ContactConsumer {
         this.emailService = emailService;
     }
 
-    @KafkaListener(topics = "contact", groupId = "contact-group")
-    public void consume(ContactDto contactDto) {
+    @KafkaListener(topics = "new-contact-message", groupId = "new-contact-group")
+    public void consumeNewContact(ContactDto contactDto) {
         LOGGER.info(String.format("#### -> Received message -> %s", contactDto.toString()));
 
         EmailDto emailDto = new EmailDto();
@@ -36,6 +36,23 @@ public class ContactConsumer {
 
         Map<String, Object> variables = Map.of(
                 "subject", contactDto.getSubject(),
+                "name", contactDto.getName(),
+                "message", contactDto.getMessage()
+        );
+
+        emailService.sendEmail(emailDto, variables);
+    }
+
+    @KafkaListener(topics = "contact-response-message", groupId = "contact-response-group")
+    public void consumeContactResponse(ContactDto contactDto) {
+        LOGGER.info(String.format("#### -> Received message -> %s", contactDto.toString()));
+
+        EmailDto emailDto = new EmailDto();
+        emailDto.setTo(contactDto.getEmail());
+        emailDto.setSubject(contactDto.getSubject());
+
+        Map<String, Object> variables = Map.of(
+                "subject", contactDto.getSubject() + "  - Réponse",
                 "name", contactDto.getName(),
                 "message", contactDto.getMessage()
         );
