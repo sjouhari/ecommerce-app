@@ -48,7 +48,9 @@
                     <p-tag [value]="order.status" [severity]="getSeverity(order.status)" />
                 </td>
                 <td>
-                    <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="showStatusDialog(order)" />
+                    @if (order.status !== 'DELIVERED' && order.status !== 'CANCELLED') {
+                        <p-button icon="pi pi-pencil" class="mr-3" [rounded]="true" [outlined]="true" (click)="showStatusDialog(order)" />
+                    }
                 </td>
             </tr>
         </ng-template>
@@ -95,15 +97,26 @@
     </p-table>
 </div>
 
-<p-dialog [(visible)]="orderStatusDialog" [style]="{ width: '600px', minHeight: '40vh' }" header="Statut de la commande" [modal]="true">
+<p-dialog [(visible)]="orderStatusDialog" [style]="{ width: '600px' }" header="Statut de la commande" [modal]="true">
     <ng-template #content>
-        <p-iftalabel variant="in">
-            <p-select scrollHeight="20vh" id="status" [options]="statuses" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value" placeholder="Sélectionner un statut" fluid />
-            <label for="status">Statut</label>
-        </p-iftalabel>
+        <div>
+            <label for="currentStatus" class="block font-semibold mb-4">Le statut actuel de la commande est : <p-tag [value]="currentStatus" [severity]="getSeverity(currentStatus)" /></label>
+        </div>
+        @if (getNextStatus()) {
+            <label class="block mb-3">Veuillez choisir le nouveau statut de la commande</label>
+            <div class="flex items-center mb-3">
+                <p-radiobutton [value]="getNextStatus()" [inputId]="getNextStatus()" [(ngModel)]="selectedStatus" />
+                <label [for]="getNextStatus()" class="ml-2">{{ getNextStatus() }}</label>
+            </div>
+            <div class="flex items-center mb-3">
+                <p-radiobutton [value]="'CANCELLED'" [inputId]="'CANCELLED'" [(ngModel)]="selectedStatus" />
+                <label [for]="'CANCELLED'" class="ml-2">{{ 'CANCELLED' }}</label>
+            </div>
+        }
+
         <div class="flex justify-end gap-3 mt-5">
             <p-button type="button" label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
-            <p-button type="submit" label="Enregistrer" icon="pi pi-check" (click)="updateOrderStatus()" />
+            <p-button type="submit" label="Enregistrer" icon="pi pi-check" (click)="updateOrderStatus()" [loading]="loading" [disabled]="!selectedStatus || loading" />
         </div>
     </ng-template>
 </p-dialog>

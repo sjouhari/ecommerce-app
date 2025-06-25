@@ -59,7 +59,10 @@ export class AppMenu {
                         items: [
                             { label: 'Toutes les commandes', icon: 'pi pi-fw pi-list', routerLink: ['/admin/orders'] },
                             { label: 'En attente', icon: 'pi pi-fw pi-clock', routerLink: ['/admin/orders/pending'] },
-                            { label: 'Expédiées', icon: 'pi pi-fw pi-send', routerLink: ['/admin/orders/shipped'] }
+                            { label: 'En cours de traitement', icon: 'pi pi-fw pi-cog', routerLink: ['/admin/orders/processing'] },
+                            { label: 'En attente de livraison', icon: 'pi pi-fw pi-gift', routerLink: ['/admin/orders/shipped'] },
+                            { label: 'Livré', icon: 'pi pi-fw pi-check', routerLink: ['/admin/orders/delivered'] },
+                            { label: 'Annulé', icon: 'pi pi-fw pi-times-circle', routerLink: ['/admin/orders/cancelled'] }
                         ]
                     },
                     {

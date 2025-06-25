@@ -67,10 +67,12 @@ export const appRoutes: Routes = [
             { path: 'sizes', component: SizesComponent },
 
             // Commandes
-            { path: 'orders', component: OrdersComponent },
-            { path: 'orders/pending', component: OrdersComponent },
-            { path: 'orders/shipped', component: OrdersComponent },
-            { path: 'orders/returns', component: OrdersComponent },
+            { path: 'orders', component: OrdersComponent, data: { status: 'all' } },
+            { path: 'orders/pending', component: OrdersComponent, data: { status: 'pending' } },
+            { path: 'orders/processing', component: OrdersComponent, data: { status: 'processing' } },
+            { path: 'orders/shipped', component: OrdersComponent, data: { status: 'shipped' } },
+            { path: 'orders/delivered', component: OrdersComponent, data: { status: 'delivered' } },
+            { path: 'orders/cancelled', component: OrdersComponent, data: { status: 'cancelled' } },
 
             // Utilisateurs
             { path: 'users', component: UsersComponent, data: { role: 'all' } },
