@@ -23,7 +23,7 @@ public class OrderConsumer {
 
     @KafkaListener(topics = "${kafka.topic.order.placed.name}", groupId = "order_placed_group_id")
     public void consumeOrderPlacedEvent(OrderEvent orderEvent) {
-        LOGGER.info(String.format("#### -> Received message -> %s", orderEvent.toString()));
+        LOGGER.info("#### -> OrderPlacedEvent: Received message -> {}", orderEvent);
 
         // send email notification
         EmailDto emailDto = new EmailDto();
@@ -36,12 +36,13 @@ public class OrderConsumer {
                 "message", "Votre commande a été passée avec succès. Veuillez consulter votre compte pour plus de détails."
         );
 
-        emailService.sendEmail(emailDto, variables);
+        emailService.sendEmail(emailDto, variables, "email-template");
     }
 
     @KafkaListener(topics = "${kafka.topic.order.status.changed.name}", groupId = "order_status_changed_group_id")
     public void consumeOrderStatusChangedEvent(OrderEvent orderEvent) {
-        LOGGER.info(String.format("#### -> Received message -> %s", orderEvent.toString()));
+        LOGGER.info("#### -> OrderStatusChangedEvent: Received message -> {}", orderEvent);
+
 
         // send email notification
         EmailDto emailDto = new EmailDto();
@@ -54,6 +55,6 @@ public class OrderConsumer {
                 "message", "Le statut de votre commande a été mise à jour.",
                 "status", orderEvent.getStatus()
         );
-        emailService.sendEmail(emailDto, variables);
+        emailService.sendEmail(emailDto, variables, "email-template");
     }
 }

@@ -26,10 +26,10 @@ public class EmailService {
         this.templateEngine = templateEngine;
     }
 
-    public void sendEmail(EmailDto emailDto, Map<String, Object> variables) {
+    public void sendEmail(EmailDto emailDto, Map<String, Object> variables, String templateName) {
         Context context = new Context();
         context.setVariables(variables);
-        String htmlContent = templateEngine.process("email-template", context);
+        String htmlContent = templateEngine.process(templateName, context);
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);

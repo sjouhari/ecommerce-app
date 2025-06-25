@@ -22,7 +22,7 @@ public class KafkaUserConsumer {
 
     @KafkaListener(topics = "${kafka.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
     public void userConfirmation(UserEvent userEvent) {
-        LOGGER.info(String.format("#### -> Received message -> %s", userEvent.toString()));
+        LOGGER.info("#### -> UserConfirmationEvent: Received message -> {}", userEvent);
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(userEvent.getEmail());
         emailDto.setSubject("Confirmation de compte");
@@ -35,12 +35,12 @@ public class KafkaUserConsumer {
                 "message", "Bienvenue sur notre site, pour contniuer veuillez confirmer votre compte",
                 "verificationUrl", verificationUrl
         );
-        emailService.sendEmail(emailDto, variables);
+        emailService.sendEmail(emailDto, variables, "email-template");
     }
 
     @KafkaListener(topics = "${kafka.topic.user.confirmed.name}", groupId = "${spring.kafka.consumer.group-id}")
     public void userConfirmed(UserEvent userEvent) {
-        LOGGER.info(String.format("#### -> Received message -> %s", userEvent.toString()));
+        LOGGER.info("#### -> UserConfirmedEvent: Received message -> {}", userEvent);
 
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(userEvent.getEmail());
@@ -51,12 +51,12 @@ public class KafkaUserConsumer {
                 "name", userEvent.getName(),
                 "message", "Votre compte a été verifié avec succès. Vous pouvez maintenant vous connecter."
         );
-        emailService.sendEmail(emailDto, variables);
+        emailService.sendEmail(emailDto, variables, "email-template");
     }
 
     @KafkaListener(topics = "${kafka.topic.forgot.password.name}", groupId = "user_forgot_password_group_id")
     public void forgotPassword(UserEvent userEvent) {
-        LOGGER.info(String.format("#### -> Received message -> %s", userEvent.toString()));
+        LOGGER.info("#### -> ForgotPasswordEvent: Received message -> {}", userEvent);
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(userEvent.getEmail());
         emailDto.setSubject("Mot de passe oublié");
@@ -67,12 +67,12 @@ public class KafkaUserConsumer {
                 "message", "Vous avez oublié votre mot de passe, c'est possible. Vous pouvez le réinitiliser !",
                 "resetPasswordUrl", "http://localhost:8080/api/users/reset-password?code=" + userEvent.getCode()
         );
-        emailService.sendEmail(emailDto, variables);
+        emailService.sendEmail(emailDto, variables, "email-template");
     }
 
     @KafkaListener(topics = "${kafka.topic.reset.password.name}", groupId = "user_forgot_password_group_id")
     public void resetPassword(UserEvent userEvent) {
-        LOGGER.info(String.format("#### -> Received message -> %s", userEvent.toString()));
+        LOGGER.info("#### -> ResetPasswordEvent: Received message -> {}", userEvent);
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(userEvent.getEmail());
         emailDto.setSubject("Modification de mot de passe");
@@ -82,6 +82,6 @@ public class KafkaUserConsumer {
                 "name", userEvent.getName(),
                 "message", "Votre mot de passe a été modifié avec succès."
         );
-        emailService.sendEmail(emailDto, variables);
+        emailService.sendEmail(emailDto, variables, "email-template");
     }
 }

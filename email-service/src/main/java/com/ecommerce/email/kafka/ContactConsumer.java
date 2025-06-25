@@ -5,7 +5,6 @@ import com.ecommerce.email.service.EmailService;
 import com.ecommerce.shared.dto.ContactDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -28,36 +27,40 @@ public class ContactConsumer {
 
     @KafkaListener(topics = "${kafka.topic.contact.new.name}", groupId = "new-contact-group")
     public void consumeNewContact(ContactDto contactDto) {
-        LOGGER.info(String.format("#### -> Received message -> %s", contactDto.toString()));
+        LOGGER.info("#### -> ContactMessageEvent: Message received");
 
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(email);
         emailDto.setSubject(contactDto.getSubject());
 
-        Map<String, Object> variables = Map.of(
-                "subject", contactDto.getSubject(),
-                "name", contactDto.getName(),
-                "message", contactDto.getMessage()
-        );
+        EmailDto userEmailDto = new EmailDto();
+        userEmailDto.setTo(contactDto.getEmail());
+        userEmailDto.setSubject("Confirmation de réception");
 
-        emailService.sendEmail(emailDto, variables);
+        Map<String, Object> variables = Map.of("contact", contactDto);
+
+        LOGGER.info("#### -> ContactMessageEvent: Sending contact message to email to {}", email);
+        emailService.sendEmail(emailDto, variables, "contact/contact-message-template");
+        LOGGER.info("#### -> ContactMessageEvent: Message sent");
+
+        LOGGER.info("#### -> ContactMessageEvent: Sending contact confirmation email to {}", contactDto.getEmail());
+        emailService.sendEmail(userEmailDto, variables, "contact/contact-confirmation-template");
+        LOGGER.info("#### -> ContactMessageEvent: Message sent");
     }
 
     @KafkaListener(topics = "${kafka.topic.contact.response.name}", groupId = "contact-response-group")
     public void consumeContactResponse(ContactDto contactDto) {
-        LOGGER.info(String.format("#### -> Received message -> %s", contactDto.toString()));
+        LOGGER.info("#### -> ContactResponseEvent: Message received");
 
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(contactDto.getEmail());
-        emailDto.setSubject(contactDto.getSubject());
+        emailDto.setSubject("Réponse sur votre message");
 
-        Map<String, Object> variables = Map.of(
-                "subject", contactDto.getSubject() + "  - Réponse",
-                "name", contactDto.getName(),
-                "message", contactDto.getMessage()
-        );
+        Map<String, Object> variables = Map.of("contact", contactDto);
 
-        emailService.sendEmail(emailDto, variables);
+        LOGGER.info("#### -> ContactResponseEvent: Sending email to {}", contactDto.getEmail());
+        emailService.sendEmail(emailDto, variables, "contact/contact-response-template");
+        LOGGER.info("#### -> ContactResponseEvent: Message sent");
     }
 
 }

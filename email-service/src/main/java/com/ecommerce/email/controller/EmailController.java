@@ -27,7 +27,7 @@ public class EmailController {
 
     @PostMapping("/send")
     public ResponseEntity<String> sendEmail(@RequestBody EmailDto emailDto) {
-        emailService.sendEmail(emailDto, Map.of("message", "Hello World"));
+        emailService.sendEmail(emailDto, Map.of("message", "Hello World"), "email-template");
         return ResponseEntity.ok("Email sent successfully");
     }
 
