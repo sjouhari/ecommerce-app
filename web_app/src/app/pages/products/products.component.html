@@ -101,7 +101,7 @@
         </ng-template>
     </p-table>
 } @else {
-    <form [formGroup]="productFormGroup" (ngSubmit)="saveProduct()" class="grid grid-cols-12 gap-4">
+    <form [formGroup]="productFormGroup" (ngSubmit)="saveProduct()" class="grid grid-cols-12 gap-3">
         <div class="col-span-12">
             @if (formControls['id'].value) {
                 <h5 class="m-0">Modification du produit N° : {{ formControls['id'].value }}</h5>
@@ -110,9 +110,9 @@
             }
         </div>
         <div class="col-span-12">
-            <div class="mb-3">
+            <div>
                 <label class="block font-semibold text-base mb-2">Images du produit</label>
-                <p-fileupload name="images[]" (onSelect)="onUpload($event)" [multiple]="true" accept="image/*" maxFileSize="1000000" mode="advanced">
+                <p-fileupload name="images[]" (onSelect)="onUpload($event)" [multiple]="true" accept="image/*" maxFileSize="1000000" mode="advanced" cancelLabel="Annuler" chooseLabel="Choisir" chooseIcon="pi pi-images" [showUploadButton]="false">
                     <ng-template #empty>
                         <div>Faites glisser et déposez les fichiers ici pour les télécharger.</div>
                     </ng-template>
@@ -143,6 +143,17 @@
                 }
             }
         </div>
+        <div class="col-span-12">
+            <p-floatlabel variant="in">
+                <textarea id="description" pTextarea formControlName="description" rows="3" fluid></textarea>
+                <label for="description">Description</label>
+            </p-floatlabel>
+            @if (formControls['description'].errors && formControls['description'].touched) {
+                @if (formControls['description'].errors['required']) {
+                    <small class="text-red-500">La description du produit est obligatoire.</small>
+                }
+            }
+        </div>
         <div class="col-span-6">
             <p-iftalabel variant="in">
                 <p-select id="status" [options]="statuses" formControlName="status" optionLabel="label" optionValue="value" placeholder="Sélectionner un statut" fluid />
@@ -162,17 +173,6 @@
             @if (formControls['tvaId'].errors && formControls['tvaId'].touched) {
                 @if (formControls['tvaId'].errors['required']) {
                     <small class="text-red-500">Le TVA du produit est obligatoire.</small>
-                }
-            }
-        </div>
-        <div class="col-span-12">
-            <p-floatlabel variant="in">
-                <textarea id="description" pTextarea formControlName="description" rows="3" fluid></textarea>
-                <label for="description">Description</label>
-            </p-floatlabel>
-            @if (formControls['description'].errors && formControls['description'].touched) {
-                @if (formControls['description'].errors['required']) {
-                    <small class="text-red-500">La description du produit est obligatoire.</small>
                 }
             }
         </div>
@@ -207,7 +207,7 @@
                 <label class="block font-bold mb-3">Stock</label>
                 <div formArrayName="stock">
                     @for (stock of stockFormArray.controls; let i = $index; track i) {
-                        <div [formGroupName]="i" class="grid grid-cols-12 gap-2 border p-2 rounded-md">
+                        <div [formGroupName]="i" class="grid grid-cols-12 gap-2 border-1 p-2 mb-3 rounded-md">
                             <!-- Taille -->
                             <div class="col-span-3">
                                 <p-iftalabel variant="in">
