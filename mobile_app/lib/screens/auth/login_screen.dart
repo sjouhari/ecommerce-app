@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +15,15 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
   bool _isLoading = false;
 
+  final _authService = AuthService();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.text = 'admin@gmail.com';
+    _passwordController.text = 'Admin123@@';
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -28,27 +38,17 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
     });
 
-    // Simulation d'une connexion avec identifiants prédéfinis
-    await Future.delayed(const Duration(seconds: 2));
+    // Vérification des identifiants (pour demo uniquement)
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
+    String? loginResponse = await _authService.login(email, password);
+
+    setState(() {
+      _isLoading = false;
+    });
     if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-      
-      // Vérification des identifiants (pour demo uniquement)
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
-      
-      // Identifiants de test prédéfinis
-      const validCredentials = {
-        'admin@ecommerce.com': 'admin123',
-        'test@ecommerce.com': 'test123',
-        'demo@ecommerce.com': 'demo123',
-        'user@ecommerce.com': 'user123',
-      };
-      
-      if (validCredentials.containsKey(email) && validCredentials[email] == password) {
+      if (loginResponse == null) {
         // Connexion réussie
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -61,8 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         // Identifiants incorrects
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Email ou mot de passe incorrect'),
+          SnackBar(
+            content: Text(loginResponse),
             backgroundColor: Colors.red,
             duration: Duration(seconds: 3),
           ),
@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 50),
-                
+
                 // Logo et titre
                 Center(
                   child: Column(
@@ -121,17 +121,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 8),
                       Text(
                         'Connectez-vous à votre compte',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                       ),
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(height: 50),
-                
+
                 // Champ Email
                 TextFormField(
                   controller: _emailController,
@@ -145,15 +142,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Veuillez entrer votre email';
                     }
-                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                    if (!RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                    ).hasMatch(value)) {
                       return 'Veuillez entrer un email valide';
                     }
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Champ Mot de passe
                 TextFormField(
                   controller: _passwordController,
@@ -164,7 +163,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
                       onPressed: () {
                         setState(() {
@@ -183,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     return null;
                   },
                 ),
-                
+
                 // Lien mot de passe oublié
                 Align(
                   alignment: Alignment.centerRight,
@@ -200,32 +201,36 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 30),
-                
+
                 // Bouton de connexion
                 SizedBox(
                   height: 56,
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _login,
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
+                    child:
+                        _isLoading
+                            ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                            : const Text(
+                              'Se connecter',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          )
-                        : const Text(
-                            'Se connecter',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                          ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Lien vers l'inscription
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -255,4 +260,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-} 
+}
