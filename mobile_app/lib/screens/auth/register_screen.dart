@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/services/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -9,7 +10,8 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -17,9 +19,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
 
+  final _authService = AuthService();
+
   @override
   void dispose() {
-    _nameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -33,24 +38,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _isLoading = true;
     });
 
-    // Simulation d'une inscription
-    await Future.delayed(const Duration(seconds: 2));
+    String? registerResponse = await _authService.register(
+      _firstNameController.text.trim(),
+      _lastNameController.text.trim(),
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
+    );
+    setState(() {
+      _isLoading = false;
+    });
 
     if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-      
-      // Afficher un message de succès
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Compte créé avec succès !'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      
-      // Rediriger vers la page de connexion
-      Navigator.pushReplacementNamed(context, '/login');
+      if (registerResponse == null) {
+        // Afficher un message de succès
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Votre compte a été créé avec succès! Veuillez consulter votre boite mail pour activer votre compte.',
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Rediriger vers la page de connexion
+        Navigator.pushReplacementNamed(context, '/login');
+      } else {
+        // Afficher un message d'erreur
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(registerResponse),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -73,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 20),
-                
+
                 // Titre
                 const Center(
                   child: Column(
@@ -89,28 +109,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(height: 8),
                       Text(
                         'Rejoignez notre communauté',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
-                        ),
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(height: 40),
-                
-                // Champ Nom complet
+
+                // Champ Nom
                 TextFormField(
-                  controller: _nameController,
+                  controller: _firstNameController,
                   decoration: const InputDecoration(
-                    labelText: 'Nom complet',
-                    hintText: 'Entrez votre nom complet',
+                    labelText: 'Nom',
+                    hintText: 'Entrez votre nom',
                     prefixIcon: Icon(Icons.person_outline),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer votre nom complet';
+                      return 'Veuillez entrer votre nom';
                     }
                     if (value.length < 2) {
                       return 'Le nom doit contenir au moins 2 caractères';
@@ -118,9 +135,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
+                // Champ Prénom
+                TextFormField(
+                  controller: _lastNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Prénom',
+                    hintText: 'Entrez votre prénom',
+                    prefixIcon: Icon(Icons.person_outline),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Veuillez entrer votre prénom';
+                    }
+                    if (value.length < 2) {
+                      return 'Le prénom doit contenir au moins 2 caractères';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
                 // Champ Email
                 TextFormField(
                   controller: _emailController,
@@ -134,15 +172,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Veuillez entrer votre email';
                     }
-                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                    if (!RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                    ).hasMatch(value)) {
                       return 'Veuillez entrer un email valide';
                     }
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Champ Mot de passe
                 TextFormField(
                   controller: _passwordController,
@@ -153,7 +193,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
                       onPressed: () {
                         setState(() {
@@ -172,9 +214,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Champ Confirmer le mot de passe
                 TextFormField(
                   controller: _confirmPasswordController,
@@ -185,11 +227,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isConfirmPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
                       onPressed: () {
                         setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
                         });
                       },
                     ),
@@ -204,32 +249,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 30),
-                
+
                 // Bouton d'inscription
                 SizedBox(
                   height: 56,
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _register,
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
+                    child:
+                        _isLoading
+                            ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                            : const Text(
+                              'S\'inscrire',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          )
-                        : const Text(
-                            'S\'inscrire',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                          ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Lien vers la connexion
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -259,4 +308,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-} 
+}

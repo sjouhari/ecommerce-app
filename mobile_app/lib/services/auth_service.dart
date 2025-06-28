@@ -20,4 +20,29 @@ class AuthService {
       return 'Echec de connexion!';
     }
   }
+
+  Future<String?> register(
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+  ) async {
+    final response = await ApiClient.post(
+      endpoint: 'auth/register',
+      body: {
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'password': password,
+      },
+    );
+
+    if (response.statusCode == 201) {
+      return null;
+    } else if (response.statusCode == 500) {
+      return jsonDecode(response.body)['message'];
+    } else {
+      return 'Echec de l\'inscription!';
+    }
+  }
 }
