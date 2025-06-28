@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/services/auth_service.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -11,6 +12,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   bool _isLoading = false;
+
+  final _authService = AuthService();
 
   @override
   void dispose() {
@@ -25,29 +28,36 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       _isLoading = true;
     });
 
-    // Simulation d'envoi d'email de récupération
-    await Future.delayed(const Duration(seconds: 2));
+    String? forgotPasswordResponse = await _authService.forgotPassword(
+      _emailController.text.trim(),
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
 
     if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-      
-      // Afficher un message de succès
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Un email de récupération a été envoyé à votre adresse email'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 4),
-        ),
-      );
-
-      // Optionnel : retourner à la page de connexion après un délai
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) {
-          Navigator.pop(context);
-        }
-      });
+      if (forgotPasswordResponse == null) {
+        // Afficher un message de succès
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Un email de récupération a été envoyé à votre adresse email',
+            ),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 4),
+          ),
+        );
+      } else {
+        // Afficher un message d'erreur
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(forgotPasswordResponse),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
     }
   }
 
@@ -70,7 +80,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 30),
-                
+
                 // Icon et titre
                 Center(
                   child: Column(
@@ -111,9 +121,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(height: 50),
-                
+
                 // Champ Email
                 TextFormField(
                   controller: _emailController,
@@ -127,38 +137,44 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Veuillez entrer votre adresse email';
                     }
-                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                    if (!RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                    ).hasMatch(value)) {
                       return 'Veuillez entrer une adresse email valide';
                     }
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 40),
-                
+
                 // Bouton de récupération
                 SizedBox(
                   height: 56,
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _resetPassword,
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
+                    child:
+                        _isLoading
+                            ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                            : const Text(
+                              'Récupérer mot de passe',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          )
-                        : const Text(
-                            'Récupérer mot de passe',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                          ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 30),
-                
+
                 // Lien retour vers connexion
                 Center(
                   child: TextButton(
@@ -175,9 +191,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Informations supplémentaires
                 Container(
                   padding: const EdgeInsets.all(16),
@@ -228,4 +244,4 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ),
     );
   }
-} 
+}

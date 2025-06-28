@@ -45,4 +45,18 @@ class AuthService {
       return 'Echec de l\'inscription!';
     }
   }
+
+  Future<String?> forgotPassword(String email) async {
+    final response = await ApiClient.get(
+      endpoint: 'users/forgot-password?email=$email',
+    );
+
+    if (response.statusCode == 200) {
+      return null;
+    } else if (response.statusCode == 500) {
+      return jsonDecode(response.body)['message'];
+    } else {
+      return 'Echec de l\'envoi de l\'email!';
+    }
+  }
 }
