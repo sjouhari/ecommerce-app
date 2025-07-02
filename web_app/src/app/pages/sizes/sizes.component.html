@@ -14,7 +14,7 @@
     [value]="sizes()"
     [rows]="10"
     [paginator]="sizes().length > 10"
-    [globalFilterFields]="['name', 'description']"
+    [globalFilterFields]="['libelle', 'category.name']"
     [tableStyle]="{ 'min-width': '75rem' }"
     [(selection)]="selectedSizes"
     [rowHover]="true"
