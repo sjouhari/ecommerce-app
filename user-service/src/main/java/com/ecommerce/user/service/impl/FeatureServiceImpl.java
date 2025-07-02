@@ -6,7 +6,6 @@ import com.ecommerce.user.entity.Feature;
 import com.ecommerce.user.mapper.FeatureMapper;
 import com.ecommerce.user.repository.FeatureRepository;
 import com.ecommerce.user.service.FeatureService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +13,11 @@ import java.util.List;
 @Service
 public class FeatureServiceImpl implements FeatureService {
 
-    @Autowired
-    private FeatureRepository featureRepository;
+    private final FeatureRepository featureRepository;
+
+    public FeatureServiceImpl(FeatureRepository featureRepository) {
+        this.featureRepository = featureRepository;
+    }
 
     @Override
     public List<FeatureDto> getAllFeatures() {

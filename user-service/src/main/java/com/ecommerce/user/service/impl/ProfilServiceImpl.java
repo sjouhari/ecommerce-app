@@ -5,11 +5,11 @@ import com.ecommerce.user.dto.ProfilDto;
 import com.ecommerce.user.dto.ProfilFeaturesDto;
 import com.ecommerce.user.entity.Feature;
 import com.ecommerce.user.entity.Profil;
+import com.ecommerce.user.exception.ProfileAlreadyExistsException;
 import com.ecommerce.user.mapper.ProfilMapper;
 import com.ecommerce.user.repository.FeatureRepository;
 import com.ecommerce.user.repository.ProfilRepository;
 import com.ecommerce.user.service.ProfilService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +19,15 @@ import java.util.stream.Collectors;
 @Service
 public class ProfilServiceImpl implements ProfilService {
 
-    @Autowired
-    private ProfilRepository profilRepository;
+    private static final String PROFILE = "Profile";
 
-    @Autowired
-    private FeatureRepository featureRepository;
+    private final ProfilRepository profilRepository;
+    private final FeatureRepository featureRepository;
+
+    public ProfilServiceImpl(ProfilRepository profilRepository, FeatureRepository featureRepository) {
+        this.profilRepository = profilRepository;
+        this.featureRepository = featureRepository;
+    }
 
     @Override
     public List<ProfilDto> getAllProfils() {
@@ -34,7 +38,7 @@ public class ProfilServiceImpl implements ProfilService {
     @Override
     public ProfilDto getProfilById(Long id) {
         Profil profil = profilRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Profil", "id", id.toString())
+                () -> new ResourceNotFoundException(PROFILE, "id", id.toString())
         );
         return ProfilMapper.INSTANCE.profilToProfilDto(profil);
     }
@@ -42,7 +46,7 @@ public class ProfilServiceImpl implements ProfilService {
     @Override
     public ProfilDto createProfil(ProfilDto profilDto) {
         if(profilRepository.existsByName(profilDto.getName())) {
-            throw new RuntimeException("Profil with name " + profilDto.getName() + " already exists");
+            throw new ProfileAlreadyExistsException("Profil with name " + profilDto.getName() + " already exists");
         }
         Profil profil = ProfilMapper.INSTANCE.profilDtoToProfil(profilDto);
         Profil savedProfil = profilRepository.save(profil);
@@ -67,7 +71,7 @@ public class ProfilServiceImpl implements ProfilService {
     @Override
     public ProfilDto addFeaturesToProfil(ProfilFeaturesDto profilFeaturesDto) {
         Profil profil = profilRepository.findById(profilFeaturesDto.getProfilId()).orElseThrow(
-                () -> new ResourceNotFoundException("Profil", "id", profilFeaturesDto.getProfilId().toString())
+                () -> new ResourceNotFoundException(PROFILE, "id", profilFeaturesDto.getProfilId().toString())
         );
 
         Set<Feature> features = profilFeaturesDto.getFeatureIds().stream()
@@ -84,7 +88,7 @@ public class ProfilServiceImpl implements ProfilService {
     @Override
     public ProfilDto removeFeaturesFromProfil(ProfilFeaturesDto profilFeaturesDto) {
         Profil profil = profilRepository.findById(profilFeaturesDto.getProfilId()).orElseThrow(
-                () -> new ResourceNotFoundException("Profil", "id", profilFeaturesDto.getProfilId().toString())
+                () -> new ResourceNotFoundException(PROFILE, "id", profilFeaturesDto.getProfilId().toString())
         );
 
         Set<Feature> features = profilFeaturesDto.getFeatureIds().stream()

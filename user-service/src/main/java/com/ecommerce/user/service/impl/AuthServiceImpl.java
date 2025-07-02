@@ -13,7 +13,6 @@ import com.ecommerce.user.repository.ProfilRepository;
 import com.ecommerce.user.repository.UserRepository;
 import com.ecommerce.user.security.JwtTokenProvider;
 import com.ecommerce.user.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,30 +29,28 @@ import java.util.*;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private ProfilRepository profilRepository;
-
-	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
-
-	@Autowired
-	private KafkaUserProducer kafkaUserConfirmationProducer;
+	private final AuthenticationManager authenticationManager;
+	private final PasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
+	private final ProfilRepository profilRepository;
+	private final JwtTokenProvider jwtTokenProvider;
+	private final KafkaUserProducer kafkaUserConfirmationProducer;
 
 	@Value("${kafka.topic.user.confirmation.name}")
 	private String userConfirmationTopicName;
 
 	private final Random random = new Random();
 
-	@Override
+    public AuthServiceImpl(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, UserRepository userRepository, ProfilRepository profilRepository, JwtTokenProvider jwtTokenProvider, KafkaUserProducer kafkaUserConfirmationProducer) {
+        this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.profilRepository = profilRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.kafkaUserConfirmationProducer = kafkaUserConfirmationProducer;
+    }
+
+    @Override
 	public JWTAuthResponse login(LoginDto loginDTO) {
 		try {
 			Authentication authentication = authenticationManager.authenticate(

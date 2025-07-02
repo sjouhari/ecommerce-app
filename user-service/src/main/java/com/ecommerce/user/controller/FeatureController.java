@@ -3,7 +3,6 @@ package com.ecommerce.user.controller;
 import com.ecommerce.user.dto.FeatureDto;
 import com.ecommerce.user.service.FeatureService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,8 +15,11 @@ import java.util.List;
 @Validated
 public class FeatureController {
 
-    @Autowired
-    private FeatureService featureService;
+    private final FeatureService featureService;
+
+    public FeatureController(FeatureService featureService) {
+        this.featureService = featureService;
+    }
 
     @GetMapping
     public ResponseEntity<List<FeatureDto>> getAllFeatures() {

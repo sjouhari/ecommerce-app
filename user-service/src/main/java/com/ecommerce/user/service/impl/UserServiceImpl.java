@@ -14,7 +14,6 @@ import com.ecommerce.user.mapper.UserMapper;
 import com.ecommerce.user.repository.ProfilRepository;
 import com.ecommerce.user.repository.UserRepository;
 import com.ecommerce.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,17 +26,10 @@ import java.util.Random;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ProfilRepository profilRepository;
-
-    @Autowired
-    private KafkaUserProducer kafkaUserProducer;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final ProfilRepository profilRepository;
+    private final KafkaUserProducer kafkaUserProducer;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${kafka.topic.user.confirmed.name}")
     private String userConfirmedTopicName;
@@ -47,6 +39,13 @@ public class UserServiceImpl implements UserService {
 
     @Value("${kafka.topic.reset.password.name}")
     private String userResetPasswordTopicName;
+
+    public UserServiceImpl(UserRepository userRepository, ProfilRepository profilRepository, KafkaUserProducer kafkaUserProducer, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.profilRepository = profilRepository;
+        this.kafkaUserProducer = kafkaUserProducer;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public List<UserDto> getAllUsers() {

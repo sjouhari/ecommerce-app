@@ -2,7 +2,6 @@ package com.ecommerce.user.controller;
 
 import com.ecommerce.user.entity.User;
 import com.ecommerce.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,11 +18,15 @@ import java.util.Optional;
 @RequestMapping("api/users/reset-password")
 public class PasswordResetController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private static final String RESET_PASSWORD_TEMPLATE = "reset-password-template";
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public PasswordResetController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping
     public String resetPassword(@RequestParam("code") int verificationCode, Model model) {
@@ -31,16 +34,16 @@ public class PasswordResetController {
 
         if(user.isEmpty()) {
             model.addAttribute("error", "Le code de verification est incorrect.");
-            return "reset-password-template";
+            return RESET_PASSWORD_TEMPLATE;
         }
 
         if(user.get().getVerificationCodeExpireAt() != null && user.get().getVerificationCodeExpireAt().isBefore(LocalDateTime.now())) {
             model.addAttribute("error", "Le code de verification est expiré.");
-            return "reset-password-template";
+            return RESET_PASSWORD_TEMPLATE;
         }
 
         model.addAttribute("verificationCode", verificationCode);
-        return "reset-password-template";
+        return RESET_PASSWORD_TEMPLATE;
     }
 
     @PostMapping
@@ -53,18 +56,18 @@ public class PasswordResetController {
 
         if(user.isEmpty()) {
             model.addAttribute("error", "Le code de verification est incorrect.");
-            return "reset-password-template";
+            return RESET_PASSWORD_TEMPLATE;
         }
 
         if(user.get().getVerificationCodeExpireAt() != null && user.get().getVerificationCodeExpireAt().isBefore(LocalDateTime.now())) {
             model.addAttribute("error", "Le code de verification est expiré.");
-            return "reset-password-template";
+            return RESET_PASSWORD_TEMPLATE;
         }
 
         if(!Objects.equals(password, confirmPassword)) {
             model.addAttribute("error", "Les mots de passe ne correspondent pas.");
             model.addAttribute("verificationCode", verificationCode);
-            return "reset-password-template";
+            return RESET_PASSWORD_TEMPLATE;
         }
 
         user.get().setPassword(passwordEncoder.encode(password));
@@ -74,7 +77,7 @@ public class PasswordResetController {
 
         model.addAttribute("message", "Le mot de passe a été réinitialisé avec success.");
 
-        return "reset-password-template";
+        return RESET_PASSWORD_TEMPLATE;
     }
 
 }

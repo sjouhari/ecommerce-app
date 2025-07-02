@@ -7,8 +7,6 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-import static org.mapstruct.factory.Mappers.getMapper;
-
 @Mapper
 public interface ProfilMapper {
 
