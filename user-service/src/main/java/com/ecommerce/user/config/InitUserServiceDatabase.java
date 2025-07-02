@@ -90,6 +90,11 @@ public class InitUserServiceDatabase {
                Store store =    new Store(null, admin, "AdminStore", "Casablanca", "0608100760", "admin@gmail.com", true, false);
                admin.setStore(store);
                userRepository.save(admin);
+           } else {
+               User admin = userRepository.findByEmail("admin@gmail.com").orElseThrow();
+               admin.setEnabled(true);
+               admin.setVerified(true);
+               userRepository.save(admin);
            }
         };
     }
