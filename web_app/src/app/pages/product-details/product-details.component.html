@@ -37,7 +37,15 @@
                                     'bg-white border-gray-300 text-gray-700': selectedSize !== size
                                 }"
                             >
-                                {{ size }}
+                                @if (product()?.categoryName === 'Téléphones' || product()?.categoryName === 'Ordinateurs') {
+                                    <ul>
+                                        @for (line of size.split('-'); track line) {
+                                            <li class="list-disc ml-3">{{ line }}</li>
+                                        }
+                                    </ul>
+                                } @else {
+                                    {{ size }}
+                                }
                             </label>
                         }
                     </div>
