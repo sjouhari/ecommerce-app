@@ -75,8 +75,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User", "id", id.toString())
         );
-        UserMapper.INSTANCE.updateUserMapper(userDto, user);
         user.setId(id);
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
         if(userDto.getProfilesIds() != null) {
             List<Profil> profiles = profilRepository.findAllById(userDto.getProfilesIds());
             user.setProfils(profiles);
