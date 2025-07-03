@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/models/category.dart';
+import 'package:mobile_app/services/category_service.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../models/cart_model.dart';
@@ -17,39 +19,14 @@ class _HomeScreenState extends State<HomeScreen> {
   String _priceFilter = '';
   int _currentSlideIndex = 0;
 
-  // Catégories disponibles
-  final List<Map<String, dynamic>> _categories = [
-    {
-      'name': 'Téléphone',
-      'icon': Icons.phone_android,
-      'color': const Color(0xFF4CAF50),
-    },
-    {
-      'name': 'Ordinateur portable',
-      'icon': Icons.laptop,
-      'color': const Color(0xFF2196F3),
-    },
-    {
-      'name': 'T-shirt',
-      'icon': Icons.checkroom,
-      'color': const Color(0xFFFF9800),
-    },
-    {
-      'name': 'AirPods',
-      'icon': Icons.headphones,
-      'color': const Color(0xFF9C27B0),
-    },
-    {
-      'name': 'Télévision',
-      'icon': Icons.tv,
-      'color': const Color(0xFFF44336),
-    },
-    {
-      'name': 'Chaussures',
-      'icon': Icons.sports_baseball,
-      'color': const Color(0xFF607D8B),
-    },
-  ];
+  late Future<List<Category>> _categoriesFuture;
+  final _categoryService = CategoryService();
+
+  @override
+  void initState() {
+    super.initState();
+    _categoriesFuture = _categoryService.fetchCategories();
+  }
 
   // Images du slideshow promotionnel
   final List<Map<String, String>> _promoSlides = [
@@ -63,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'image': 'assets/images/offre pc.png',
       'title': 'Offre PC Portable',
       'subtitle': 'Ordinateurs portables en promotion',
-      'category': 'Ordinateur portable',
+      'category': 'Ordinateurs',
     },
     {
       'image': 'assets/images/offre television.png',
@@ -75,13 +52,13 @@ class _HomeScreenState extends State<HomeScreen> {
       'image': 'assets/images/offre telephone.png',
       'title': 'Offre Téléphone',
       'subtitle': 'Smartphones dernière génération à prix réduit',
-      'category': 'Téléphone',
+      'category': 'Téléphones',
     },
     {
       'image': 'assets/images/offre.png',
       'title': 'Offre T-shirts',
       'subtitle': 'Collection de t-shirts tendance à prix réduits',
-      'category': 'T-shirt',
+      'category': 'Vêtements',
     },
   ];
 
@@ -91,15 +68,16 @@ class _HomeScreenState extends State<HomeScreen> {
       'id': '1',
       'name': 'iPhone 14 Pro Blanc',
       'price': 1099.99,
-      'category': 'Téléphone',
+      'category': 'Téléphones',
       'image': 'assets/images/iPhone-14-Pro white.jpg',
-      'description': 'Smartphone Apple iPhone 14 Pro avec écran Super Retina XDR',
+      'description':
+          'Smartphone Apple iPhone 14 Pro avec écran Super Retina XDR',
     },
     {
       'id': '2',
       'name': 'PC Portable HP 15" i7',
       'price': 849.99,
-      'category': 'Ordinateur portable',
+      'category': 'Ordinateurs',
       'image': 'assets/images/pc portable hp elet book 1 1 3.jpg',
       'description': 'PC Portable HP 15 pouces avec processeur i7',
     },
@@ -107,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'id': '3',
       'name': 'T-shirt Rouge Premium',
       'price': 29.99,
-      'category': 'T-shirt',
+      'category': 'Vêtements',
       'image': 'assets/images/t-shirt-rouge-.png',
       'description': 'T-shirt rouge en coton premium',
     },
@@ -139,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'id': '7',
       'name': 'Samsung Galaxy S21',
       'price': 699.99,
-      'category': 'Téléphone',
+      'category': 'Téléphones',
       'image': 'assets/images/s21 gray.jpg',
       'description': 'Smartphone Samsung Galaxy S21 Ultra',
     },
@@ -147,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'id': '8',
       'name': 'PC Dell Portable 14"',
       'price': 749.99,
-      'category': 'Ordinateur portable',
+      'category': 'Ordinateurs',
       'image': 'assets/images/pc-portable-dell-14-n075l549014emea.jpg',
       'description': 'Ordinateur portable Dell 14 pouces performant',
     },
@@ -155,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'id': '9',
       'name': 'T-shirt Gris Mode',
       'price': 34.99,
-      'category': 'T-shirt',
+      'category': 'Vêtements',
       'image': 'assets/images/t-shirt gray.png',
       'description': 'T-shirt gris moderne et confortable',
     },
@@ -179,8 +157,9 @@ class _HomeScreenState extends State<HomeScreen> {
       'id': '12',
       'name': 'T-shirt Pack Mode',
       'price': 79.99,
-      'category': 'T-shirt',
-      'image': 'assets/images/lot-de-4-mode-tee-shirt-homme-imprime-col-arrondi.webp',
+      'category': 'Vêtements',
+      'image':
+          'assets/images/lot-de-4-mode-tee-shirt-homme-imprime-col-arrondi.webp',
       'description': 'Pack de 4 t-shirts mode avec col arrondi',
     },
   ];
@@ -190,29 +169,47 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Filtrer par catégorie
     if (_selectedCategory.isNotEmpty) {
-      filtered = filtered.where((product) => 
-        product['category'] == _selectedCategory).toList();
+      filtered =
+          filtered
+              .where((product) => product['category'] == _selectedCategory)
+              .toList();
     }
 
     // Filtrer par recherche
     if (_searchQuery.isNotEmpty) {
-      filtered = filtered.where((product) =>
-        product['name'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        product['description'].toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+      filtered =
+          filtered
+              .where(
+                (product) =>
+                    product['name'].toLowerCase().contains(
+                      _searchQuery.toLowerCase(),
+                    ) ||
+                    product['description'].toLowerCase().contains(
+                      _searchQuery.toLowerCase(),
+                    ),
+              )
+              .toList();
     }
 
     // Filtrer par prix
     if (_priceFilter.isNotEmpty) {
       switch (_priceFilter) {
         case 'low':
-          filtered = filtered.where((product) => product['price'] < 100).toList();
+          filtered =
+              filtered.where((product) => product['price'] < 100).toList();
           break;
         case 'medium':
-          filtered = filtered.where((product) => 
-            product['price'] >= 100 && product['price'] < 500).toList();
+          filtered =
+              filtered
+                  .where(
+                    (product) =>
+                        product['price'] >= 100 && product['price'] < 500,
+                  )
+                  .toList();
           break;
         case 'high':
-          filtered = filtered.where((product) => product['price'] >= 500).toList();
+          filtered =
+              filtered.where((product) => product['price'] >= 500).toList();
           break;
       }
     }
@@ -347,16 +344,34 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                ..._categories.map((category) => ListTile(
-                  leading: Icon(category['icon'], color: category['color']),
-                  title: Text(category['name']),
-                  onTap: () {
-                    setState(() {
-                      _selectedCategory = category['name'];
-                    });
-                    Navigator.pop(context);
+                FutureBuilder<List<Category>>(
+                  future: _categoriesFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      final categories = snapshot.data!;
+                      return Column(
+                        children:
+                            categories.map((category) {
+                              return ListTile(
+                                title: Text(category.name),
+                                onTap: () {
+                                  setState(() {
+                                    _selectedCategory = category.name;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              );
+                            }).toList(),
+                      );
+                    } else {
+                      return const Center(child: Text('No categories found.'));
+                    }
                   },
-                )),
+                ),
                 const Divider(),
                 ListTile(
                   leading: const Icon(Icons.clear_all),
@@ -409,24 +424,28 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: InputDecoration(
                 hintText: 'Rechercher par nom ou description...',
                 prefixIcon: const Icon(Icons.search, color: Color(0xFF2196F3)),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear, color: Colors.grey),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchQuery = '';
-                          });
-                        },
-                      )
-                    : null,
+                suffixIcon:
+                    _searchQuery.isNotEmpty
+                        ? IconButton(
+                          icon: const Icon(Icons.clear, color: Colors.grey),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _searchQuery = '';
+                            });
+                          },
+                        )
+                        : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
               ),
               onChanged: (value) {
                 setState(() {
@@ -436,7 +455,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          
+
           // Filtres de prix modernes
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -456,7 +475,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     _buildPriceFilter('Tous', '', Icons.all_inclusive),
                     _buildPriceFilter('< 100€', 'low', Icons.attach_money),
-                    _buildPriceFilter('100€ - 500€', 'medium', Icons.monetization_on),
+                    _buildPriceFilter(
+                      '100€ - 500€',
+                      'medium',
+                      Icons.monetization_on,
+                    ),
                     _buildPriceFilter('> 500€', 'high', Icons.diamond),
                   ],
                 ),
@@ -483,13 +506,14 @@ class _HomeScreenState extends State<HomeScreen> {
           curve: Curves.easeInOut,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            gradient: isSelected 
-                ? const LinearGradient(
-                    colors: [Color(0xFF2196F3), Color(0xFF21CBF3)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
-                : null,
+            gradient:
+                isSelected
+                    ? const LinearGradient(
+                      colors: [Color(0xFF2196F3), Color(0xFF21CBF3)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                    : null,
             color: isSelected ? null : Colors.white,
             borderRadius: BorderRadius.circular(25),
             border: Border.all(
@@ -498,9 +522,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             boxShadow: [
               BoxShadow(
-                color: isSelected 
-                    ? const Color(0xFF2196F3).withOpacity(0.3)
-                    : Colors.grey.withOpacity(0.1),
+                color:
+                    isSelected
+                        ? const Color(0xFF2196F3).withOpacity(0.3)
+                        : Colors.grey.withOpacity(0.1),
                 spreadRadius: isSelected ? 2 : 1,
                 blurRadius: isSelected ? 8 : 4,
                 offset: const Offset(0, 2),
@@ -542,30 +567,30 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 // Mapping direct des images vers les catégories
                 String targetCategory = '';
-                
+
                 switch (slide['image']) {
                   case 'assets/images/offre aipods.png':
                     targetCategory = 'AirPods';
                     break;
                   case 'assets/images/offre pc.png':
-                    targetCategory = 'Ordinateur portable';
+                    targetCategory = 'Ordinateurs';
                     break;
                   case 'assets/images/offre television.png':
                     targetCategory = 'Télévision';
                     break;
                   case 'assets/images/offre telephone.png':
-                    targetCategory = 'Téléphone';
+                    targetCategory = 'Téléphones';
                     break;
                   case 'assets/images/offre.png':
-                    targetCategory = 'T-shirt';
+                    targetCategory = 'Vetements';
                     break;
                 }
-                
+
                 if (targetCategory.isNotEmpty) {
                   setState(() {
                     _selectedCategory = targetCategory;
                   });
-                  
+
                   // Feedback visuel amélioré
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -733,139 +758,127 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: _promoSlides.asMap().entries.map((entry) {
-            return Container(
-              width: 8,
-              height: 8,
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _currentSlideIndex == entry.key
-                    ? const Color(0xFF2196F3)
-                    : Colors.grey[300],
-              ),
-            );
-          }).toList(),
+          children:
+              _promoSlides.asMap().entries.map((entry) {
+                return Container(
+                  width: 8,
+                  height: 8,
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color:
+                        _currentSlideIndex == entry.key
+                            ? const Color(0xFF2196F3)
+                            : Colors.grey[300],
+                  ),
+                );
+              }).toList(),
         ),
       ],
     );
   }
 
   Widget _buildCategoriesSection() {
-    // Catégories principales à afficher
-    final List<Map<String, dynamic>> displayedCategories = [
-      {
-        'name': 'Téléphone',
-        'icon': Icons.phone_android,
-        'color': const Color(0xFF4CAF50),
-      },
-      {
-        'name': 'Ordinateur portable',
-        'icon': Icons.laptop,
-        'color': const Color(0xFF2196F3),
-      },
-      {
-        'name': 'AirPods',
-        'icon': Icons.headphones,
-        'color': const Color(0xFF9C27B0),
-      },
-      {
-        'name': 'T-shirt',
-        'icon': Icons.checkroom,
-        'color': const Color(0xFFFF9800),
-      },
-      {
-        'name': 'Tous',
-        'icon': Icons.apps,
-        'color': const Color(0xFF607D8B),
-      },
-    ];
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            'Catégories',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+          child: Row(
+            children: [
+              Text(
+                'Catégories',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              Spacer(),
+              _buildCategoryWidget(
+                Category(id: 0, name: 'Tous'),
+                _selectedCategory == '',
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 10),
-        SizedBox(
-          height: 85,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: displayedCategories.length,
-            itemBuilder: (context, index) {
-              final category = displayedCategories[index];
-              final isSelected = category['name'] == 'Tous' 
-                  ? _selectedCategory.isEmpty 
-                  : _selectedCategory == category['name'];
-              
-              return GestureDetector(
-                onTap: () {
-                  if (category['name'] == 'Tous') {
-                    _showAllCategories();
-                  } else {
-                    setState(() {
-                      _selectedCategory = isSelected ? '' : category['name'];
-                    });
-                  }
-                },
-                child: Container(
-                  width: 75,
-                  margin: const EdgeInsets.only(right: 12),
-                  child: Column(
-                    children: [
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: isSelected 
-                              ? category['color'] 
-                              : category['color'].withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: isSelected ? [
-                            BoxShadow(
-                              color: category['color'].withOpacity(0.4),
-                              spreadRadius: 2,
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ] : [],
-                        ),
-                        child: Icon(
-                          category['icon'],
-                          size: 25,
-                          color: isSelected ? Colors.white : category['color'],
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        category['name'],
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected ? category['color'] : Colors.black87,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
+        FutureBuilder<List<Category>>(
+          future: _categoriesFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData) {
+              final categories = snapshot.data!;
+              return SizedBox(
+                height: 75,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    final category = categories[index];
+                    final isSelected =
+                        category.name == 'Tous'
+                            ? _selectedCategory.isEmpty
+                            : _selectedCategory == category.name;
+
+                    return _buildCategoryWidget(category, isSelected);
+                  },
                 ),
               );
-            },
-          ),
+            } else {
+              return const Center(child: Text('No categories found.'));
+            }
+          },
         ),
       ],
+    );
+  }
+
+  Widget _buildCategoryWidget(Category category, bool isSelected) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (category.name == 'Tous') {
+            _showAllCategories();
+          } else {
+            setState(() {
+              _selectedCategory = isSelected ? '' : category.name;
+            });
+          }
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(right: 12),
+        child: Column(
+          children: [
+            AnimatedContainer(
+              padding: EdgeInsets.all(8),
+              duration: const Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.white : Colors.grey.shade200,
+                border: Border.all(
+                  color:
+                      isSelected ? Colors.grey.shade400 : Colors.grey.shade300,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Text(
+                category.name,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  color: isSelected ? Colors.black54 : Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -884,23 +897,22 @@ class _HomeScreenState extends State<HomeScreen> {
               topRight: Radius.circular(25),
             ),
           ),
-          child: Column(
-            children: [
-              // Handle bar
-              Container(
-                margin: const EdgeInsets.only(top: 10),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                // Handle bar
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-              ),
-              
-              // Titre
-              const Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Text(
+
+                // Titre
+                const Text(
                   'Toutes les catégories',
                   style: TextStyle(
                     fontSize: 24,
@@ -908,90 +920,87 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Color(0xFF2196F3),
                   ),
                 ),
-              ),
-              
-              // Grid des catégories
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.2,
-                      crossAxisSpacing: 15,
-                      mainAxisSpacing: 15,
-                    ),
-                    itemCount: _categories.length,
-                    itemBuilder: (context, index) {
-                      final category = _categories[index];
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedCategory = category['name'];
-                          });
-                          Navigator.pop(context); // Fermer le modal
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                category['color'],
-                                category['color'].withOpacity(0.7),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: category['color'].withOpacity(0.3),
-                                spreadRadius: 2,
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
+
+                SizedBox(height: 20),
+
+                // Grid des catégories
+                Expanded(
+                  child: FutureBuilder(
+                    future: _categoriesFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (snapshot.hasData) {
+                        final categories = snapshot.data!;
+                        return GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 1.3,
+                                crossAxisSpacing: 15,
+                                mainAxisSpacing: 15,
                               ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                category['icon'],
-                                size: 40,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                category['name'],
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                          itemCount: categories.length,
+                          itemBuilder: (context, index) {
+                            final category = categories[index];
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _selectedCategory = category.name;
+                                });
+                                Navigator.pop(context); // Fermer le modal
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                    width: 1.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                '${_getProductCountForCategory(category['name'])} produits',
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 12,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      category.name,
+                                      style: const TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      '${_getProductCountForCategory(category.name)} produits',
+                                      style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      );
+                            );
+                          },
+                        );
+                      } else {
+                        return const Center(
+                          child: Text('No categories found.'),
+                        );
+                      }
                     },
                   ),
                 ),
-              ),
-              
-              // Bouton "Tous les produits"
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SizedBox(
+
+                // Bouton "Tous les produits"
+                SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () {
@@ -1011,8 +1020,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -1020,12 +1029,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   int _getProductCountForCategory(String categoryName) {
-    return _products.where((product) => product['category'] == categoryName).length;
+    return _products
+        .where((product) => product['category'] == categoryName)
+        .length;
   }
 
   Widget _buildProductsSection() {
     final filteredProducts = _filteredProducts;
-    
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -1035,8 +1046,8 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                _selectedCategory.isEmpty 
-                    ? 'Tous les produits' 
+                _selectedCategory.isEmpty
+                    ? 'Tous les produits'
                     : _selectedCategory,
                 style: const TextStyle(
                   fontSize: 20,
@@ -1045,49 +1056,39 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Text(
                 '${filteredProducts.length} produit(s)',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          
+
           filteredProducts.isEmpty
               ? const Center(
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.search_off,
-                        size: 80,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'Aucun produit trouvé',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.75,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                  ),
-                  itemCount: filteredProducts.length,
-                  itemBuilder: (context, index) {
-                    return _buildProductCard(filteredProducts[index]);
-                  },
+                child: Column(
+                  children: [
+                    Icon(Icons.search_off, size: 80, color: Colors.grey),
+                    SizedBox(height: 16),
+                    Text(
+                      'Aucun produit trouvé',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+                  ],
                 ),
+              )
+              : GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.75,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                itemCount: filteredProducts.length,
+                itemBuilder: (context, index) {
+                  return _buildProductCard(filteredProducts[index]);
+                },
+              ),
         ],
       ),
     );
@@ -1096,16 +1097,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildProductCard(Map<String, dynamic> product) {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(
-            context, 
-            '/product-detail',
-            arguments: product,
-          );
+          Navigator.pushNamed(context, '/product-detail', arguments: product);
         },
         borderRadius: BorderRadius.circular(12),
         child: Column(
@@ -1191,10 +1186,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           product['price'],
                           product['image'],
                         );
-                        
+
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('${product['name']} ajouté au panier'),
+                            content: Text(
+                              '${product['name']} ajouté au panier',
+                            ),
                             duration: const Duration(seconds: 2),
                             backgroundColor: Colors.green,
                           ),
@@ -1235,4 +1232,4 @@ class _HomeScreenState extends State<HomeScreen> {
         return 'Cliquez pour voir les produits';
     }
   }
-} 
+}

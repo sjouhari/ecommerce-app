@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiClient {
-  static const baseUrl = "http://10.0.2.2:8080/api"; // localhost Android
+  // static const baseUrl = "http://10.0.2.2:8080/api"; // localhost Android
+  static const baseUrl = "http://192.168.18.140:8080/api"; // Physique device
   static final _storage = FlutterSecureStorage();
 
   static Future<void> saveToken(String token) async {
@@ -16,6 +17,22 @@ class ApiClient {
 
   static Future<void> clearToken() async {
     await _storage.delete(key: "token");
+  }
+
+  static Future<http.Response> get({
+    required String endpoint,
+    bool auth = false,
+  }) async {
+    final headers = {'Content-Type': 'application/json'};
+    if (auth) {
+      final token = await getToken();
+      if (token != null) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+    }
+
+    final url = Uri.parse('$baseUrl/$endpoint');
+    return await http.get(url, headers: headers);
   }
 
   static Future<http.Response> post({
@@ -33,21 +50,5 @@ class ApiClient {
 
     final url = Uri.parse('$baseUrl/$endpoint');
     return await http.post(url, headers: headers, body: jsonEncode(body));
-  }
-
-  static Future<http.Response> get({
-    required String endpoint,
-    bool auth = false,
-  }) async {
-    final headers = {'Content-Type': 'application/json'};
-    if (auth) {
-      final token = await getToken();
-      if (token != null) {
-        headers['Authorization'] = 'Bearer $token';
-      }
-    }
-
-    final url = Uri.parse('$baseUrl/$endpoint');
-    return await http.get(url, headers: headers);
   }
 }
