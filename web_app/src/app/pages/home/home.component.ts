@@ -24,17 +24,6 @@ export class HomeComponent {
     categories = signal<Category[]>([]);
     productsByCategory: Map<number, Product[]> = new Map<number, Product[]>();
 
-    responsiveOptions: any[] = [
-        {
-            breakpoint: '1300px',
-            numVisible: 4
-        },
-        {
-            breakpoint: '575px',
-            numVisible: 1
-        }
-    ];
-
     ngOnInit() {
         this.images.set(['slide1.jpg', 'slide2.jpg', 'slide3.jpg'] as never[]);
 
