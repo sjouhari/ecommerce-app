@@ -16,22 +16,18 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    
+
     _animationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-    
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
     _animationController.forward();
-    
+
     Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(context, '/login');
     });
@@ -51,10 +47,7 @@ class _SplashScreenState extends State<SplashScreen>
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF2196F3),
-              Color(0xFF21CBF3),
-            ],
+            colors: [Color(0xFF2196F3), Color(0xFF21CBF3)],
           ),
         ),
         child: Center(
@@ -98,7 +91,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
                 const SizedBox(height: 30),
-                
+
                 // Logo texte ou image selon préférence
                 Image.asset(
                   'assets/images/logo.png',
@@ -117,7 +110,7 @@ class _SplashScreenState extends State<SplashScreen>
                     );
                   },
                 ),
-                
+
                 const SizedBox(height: 10),
                 const Text(
                   'Votre boutique en ligne',
@@ -143,4 +136,4 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
-} 
+}

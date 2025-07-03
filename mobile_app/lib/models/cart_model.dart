@@ -51,11 +51,16 @@ class CartModel extends ChangeNotifier {
 
   int get itemCount => _items.fold(0, (sum, item) => sum + item.quantity);
 
-  double get totalPrice => _items.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
+  double get totalPrice =>
+      _items.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
 
-  void addItem(String id, String name, double price, String image, {
+  void addItem(
+    String id,
+    String name,
+    double price,
+    String image, {
     String? selectedColor,
-    String? selectedSize, 
+    String? selectedSize,
     String? selectedSpec,
   }) {
     final newItem = CartItem(
@@ -67,9 +72,11 @@ class CartModel extends ChangeNotifier {
       selectedSize: selectedSize,
       selectedSpec: selectedSpec,
     );
-    
-    final existingIndex = _items.indexWhere((item) => item.uniqueId == newItem.uniqueId);
-    
+
+    final existingIndex = _items.indexWhere(
+      (item) => item.uniqueId == newItem.uniqueId,
+    );
+
     if (existingIndex >= 0) {
       _items[existingIndex].quantity++;
     } else {
@@ -99,4 +106,4 @@ class CartModel extends ChangeNotifier {
     _items.clear();
     notifyListeners();
   }
-} 
+}

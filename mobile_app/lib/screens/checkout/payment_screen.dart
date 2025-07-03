@@ -32,9 +32,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Paiement'),
-      ),
+      appBar: AppBar(title: const Text('Paiement')),
       body: Consumer<CartModel>(
         builder: (context, cart, child) {
           if (cart.items.isEmpty) {
@@ -99,9 +97,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget _buildOrderSummary(CartModel cart) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -109,76 +105,73 @@ class _PaymentScreenState extends State<PaymentScreen> {
           children: [
             const Text(
               'Résumé de la commande',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            
+
             // Liste des articles
-            ...cart.items.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset(
-                        item.image,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            Icons.image_not_supported,
-                            color: Colors.grey[400],
-                            size: 20,
-                          );
-                        },
+            ...cart.items.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.asset(
+                          item.image,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              Icons.image_not_supported,
+                              color: Colors.grey[400],
+                              size: 20,
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.name,
+                            style: const TextStyle(fontWeight: FontWeight.w500),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          'Quantité: ${item.quantity}',
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 12,
+                          Text(
+                            'Quantité: ${item.quantity}',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Text(
-                    '${(item.price * item.quantity).toStringAsFixed(2)}€',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2196F3),
+                    Text(
+                      '${(item.price * item.quantity).toStringAsFixed(2)}€',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2196F3),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            )),
-            
+            ),
+
             const Divider(),
-            
+
             // Totaux
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -206,10 +199,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               children: [
                 const Text(
                   'Total:',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   '${(cart.totalPrice + (cart.totalPrice >= 50 ? 0 : 5.99)).toStringAsFixed(2)}€',
@@ -230,9 +220,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget _buildDeliveryForm() {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -240,13 +228,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
           children: [
             const Text(
               'Adresse de livraison',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            
+
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
@@ -261,7 +246,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               },
             ),
             const SizedBox(height: 16),
-            
+
             TextFormField(
               controller: _addressController,
               decoration: const InputDecoration(
@@ -276,7 +261,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               },
             ),
             const SizedBox(height: 16),
-            
+
             Row(
               children: [
                 Expanded(
@@ -299,9 +284,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _postalCodeController,
-                    decoration: const InputDecoration(
-                      labelText: 'Code postal',
-                    ),
+                    decoration: const InputDecoration(labelText: 'Code postal'),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -317,7 +300,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            
+
             TextFormField(
               controller: _phoneController,
               decoration: const InputDecoration(
@@ -341,9 +324,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget _buildPaymentMethods() {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -351,20 +332,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
           children: [
             const Text(
               'Mode de paiement',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            
+
             // Virement bancaire
             Container(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: _selectedPaymentMethod == 'virement' 
-                      ? const Color(0xFF2196F3) 
-                      : Colors.grey[300]!,
+                  color:
+                      _selectedPaymentMethod == 'virement'
+                          ? const Color(0xFF2196F3)
+                          : Colors.grey[300]!,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(12),
@@ -397,16 +376,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Chèque
             Container(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: _selectedPaymentMethod == 'cheque' 
-                      ? const Color(0xFF2196F3) 
-                      : Colors.grey[300]!,
+                  color:
+                      _selectedPaymentMethod == 'cheque'
+                          ? const Color(0xFF2196F3)
+                          : Colors.grey[300]!,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(12),
@@ -439,7 +419,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ),
               ),
             ),
-            
+
             if (_selectedPaymentMethod.isNotEmpty) ...[
               const SizedBox(height: 16),
               Container(
@@ -453,8 +433,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _selectedPaymentMethod == 'virement' 
-                          ? 'Informations pour le virement:' 
+                      _selectedPaymentMethod == 'virement'
+                          ? 'Informations pour le virement:'
                           : 'Informations pour le chèque:',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
@@ -466,12 +446,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       const Text('IBAN: MA64 1234 5678 9012 3456 7890 123'),
                       const Text('BIC: BMCEMAMC'),
                       const Text('Bénéficiaire: E-Shop SARL'),
-                      Text('Référence: Commande #${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}'),
+                      Text(
+                        'Référence: Commande #${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
+                      ),
                     ] else ...[
                       const Text('Ordre: E-Shop SARL'),
                       const Text('Adresse: 123 Rue du Commerce'),
                       const Text('20000 Casablanca, Maroc'),
-                      Text('Référence: Commande #${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}'),
+                      Text(
+                        'Référence: Commande #${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
+                      ),
                     ],
                   ],
                 ),
@@ -487,23 +471,23 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
-        onPressed: _selectedPaymentMethod.isEmpty || _isProcessing 
-            ? null 
-            : () => _processOrder(cart),
-        icon: _isProcessing 
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              )
-            : const Icon(Icons.check_circle),
+        onPressed:
+            _selectedPaymentMethod.isEmpty || _isProcessing
+                ? null
+                : () => _processOrder(cart),
+        icon:
+            _isProcessing
+                ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+                : const Icon(Icons.check_circle),
         label: Text(
-          _isProcessing 
-              ? 'Traitement en cours...' 
-              : 'Confirmer la commande',
+          _isProcessing ? 'Traitement en cours...' : 'Confirmer la commande',
         ),
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -538,14 +522,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
       });
 
       // Générer un numéro de commande
-      final orderNumber = DateTime.now().millisecondsSinceEpoch.toString().substring(7);
-      
+      final orderNumber = DateTime.now().millisecondsSinceEpoch
+          .toString()
+          .substring(7);
+
       // Afficher la confirmation
       _showOrderConfirmation(context, orderNumber, cart);
     }
   }
 
-  void _showOrderConfirmation(BuildContext context, String orderNumber, CartModel cart) {
+  void _showOrderConfirmation(
+    BuildContext context,
+    String orderNumber,
+    CartModel cart,
+  ) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -570,9 +560,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
             children: [
               Text('Numéro de commande: #$orderNumber'),
               const SizedBox(height: 8),
-              Text('Total: ${(cart.totalPrice + (cart.totalPrice >= 50 ? 0 : 5.99)).toStringAsFixed(2)}€'),
+              Text(
+                'Total: ${(cart.totalPrice + (cart.totalPrice >= 50 ? 0 : 5.99)).toStringAsFixed(2)}€',
+              ),
               const SizedBox(height: 8),
-              Text('Mode de paiement: ${_selectedPaymentMethod == 'virement' ? 'Virement bancaire' : 'Chèque'}'),
+              Text(
+                'Mode de paiement: ${_selectedPaymentMethod == 'virement' ? 'Virement bancaire' : 'Chèque'}',
+              ),
               const SizedBox(height: 16),
               const Text(
                 'Vous recevrez un email de confirmation avec tous les détails.',
@@ -586,8 +580,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 Navigator.of(context).pop(); // Fermer le dialog
                 cart.clearCart(); // Vider le panier
                 Navigator.pushNamedAndRemoveUntil(
-                  context, 
-                  '/home', 
+                  context,
+                  '/home',
                   (route) => false,
                 ); // Retourner à l'accueil
               },
@@ -598,4 +592,4 @@ class _PaymentScreenState extends State<PaymentScreen> {
       },
     );
   }
-} 
+}

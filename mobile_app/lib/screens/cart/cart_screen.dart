@@ -15,14 +15,14 @@ class CartScreen extends StatelessWidget {
             builder: (context, cart, child) {
               return cart.items.isNotEmpty
                   ? TextButton(
-                      onPressed: () {
-                        _showClearCartDialog(context, cart);
-                      },
-                      child: const Text(
-                        'Vider',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    )
+                    onPressed: () {
+                      _showClearCartDialog(context, cart);
+                    },
+                    child: const Text(
+                      'Vider',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  )
                   : const SizedBox.shrink();
             },
           ),
@@ -76,10 +76,7 @@ class CartScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             'Ajoutez des produits pour commencer vos achats',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[500],
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey[500]),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -102,9 +99,7 @@ class CartScreen extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -135,9 +130,9 @@ class CartScreen extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             const SizedBox(width: 12),
-            
+
             // Informations du produit
             Expanded(
               child: Column(
@@ -153,7 +148,7 @@ class CartScreen extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 6),
-                  
+
                   // Affichage des options sélectionnées
                   if (_buildSelectedOptionsWidgets(item).isNotEmpty) ...[
                     Column(
@@ -162,7 +157,7 @@ class CartScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                   ],
-                  
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -185,7 +180,7 @@ class CartScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  
+
                   // Contrôles de quantité
                   Row(
                     children: [
@@ -200,7 +195,10 @@ class CartScreen extends StatelessWidget {
                             InkWell(
                               onTap: () {
                                 if (item.quantity > 1) {
-                                  cart.updateQuantity(item.uniqueId, item.quantity - 1);
+                                  cart.updateQuantity(
+                                    item.uniqueId,
+                                    item.quantity - 1,
+                                  );
                                 } else {
                                   _showRemoveItemDialog(context, item, cart);
                                 }
@@ -209,14 +207,21 @@ class CartScreen extends StatelessWidget {
                               child: Container(
                                 padding: const EdgeInsets.all(6),
                                 child: Icon(
-                                  item.quantity > 1 ? Icons.remove : Icons.delete,
+                                  item.quantity > 1
+                                      ? Icons.remove
+                                      : Icons.delete,
                                   size: 16,
-                                  color: item.quantity > 1 ? Colors.grey[600] : Colors.red,
+                                  color:
+                                      item.quantity > 1
+                                          ? Colors.grey[600]
+                                          : Colors.red,
                                 ),
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                              ),
                               child: Text(
                                 '${item.quantity}',
                                 style: const TextStyle(
@@ -227,7 +232,10 @@ class CartScreen extends StatelessWidget {
                             ),
                             InkWell(
                               onTap: () {
-                                cart.updateQuantity(item.uniqueId, item.quantity + 1);
+                                cart.updateQuantity(
+                                  item.uniqueId,
+                                  item.quantity + 1,
+                                );
                               },
                               borderRadius: BorderRadius.circular(6),
                               child: Container(
@@ -247,17 +255,13 @@ class CartScreen extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             // Bouton supprimer
             IconButton(
               onPressed: () {
                 _showRemoveItemDialog(context, item, cart);
               },
-              icon: const Icon(
-                Icons.close,
-                color: Colors.red,
-                size: 20,
-              ),
+              icon: const Icon(Icons.close, color: Colors.red, size: 20),
             ),
           ],
         ),
@@ -267,7 +271,7 @@ class CartScreen extends StatelessWidget {
 
   List<Widget> _buildSelectedOptionsWidgets(CartItem item) {
     List<Widget> widgets = [];
-    
+
     // Afficher la couleur sélectionnée
     if (item.selectedColor != null) {
       widgets.add(
@@ -282,20 +286,14 @@ class CartScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: _getColorFromName(item.selectedColor!),
                   borderRadius: BorderRadius.circular(2),
-                  border: Border.all(
-                    color: Colors.grey[300]!,
-                    width: 0.5,
-                  ),
+                  border: Border.all(color: Colors.grey[300]!, width: 0.5),
                 ),
               ),
               const SizedBox(width: 4),
               Flexible(
                 child: Text(
                   'Couleur: ${item.selectedColor}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -304,7 +302,7 @@ class CartScreen extends StatelessWidget {
         ),
       );
     }
-    
+
     // Afficher la taille sélectionnée
     if (item.selectedSize != null) {
       widgets.add(
@@ -312,16 +310,13 @@ class CartScreen extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 2),
           child: Text(
             'Taille: ${item.selectedSize}',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
             overflow: TextOverflow.ellipsis,
           ),
         ),
       );
     }
-    
+
     // Afficher les spécifications sélectionnées
     if (item.selectedSpec != null) {
       widgets.add(
@@ -329,16 +324,13 @@ class CartScreen extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 2),
           child: Text(
             'Écran: ${item.selectedSpec}',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
             overflow: TextOverflow.ellipsis,
           ),
         ),
       );
     }
-    
+
     return widgets;
   }
 
@@ -359,7 +351,7 @@ class CartScreen extends StatelessWidget {
       'Vert ouvert': const Color(0xFF90EE90),
       'Gris foncé': const Color(0xFF2F2F2F),
     };
-    
+
     return colorMap[colorName] ?? Colors.grey;
   }
 
@@ -405,16 +397,17 @@ class CartScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Livraison',
-                      style: TextStyle(fontSize: 16),
-                    ),
+                    const Text('Livraison', style: TextStyle(fontSize: 16)),
                     Text(
                       cart.totalPrice >= 50 ? 'Gratuite' : '5,99€',
                       style: TextStyle(
                         fontSize: 16,
-                        color: cart.totalPrice >= 50 ? Colors.green : Colors.black,
-                        fontWeight: cart.totalPrice >= 50 ? FontWeight.bold : FontWeight.normal,
+                        color:
+                            cart.totalPrice >= 50 ? Colors.green : Colors.black,
+                        fontWeight:
+                            cart.totalPrice >= 50
+                                ? FontWeight.bold
+                                : FontWeight.normal,
                       ),
                     ),
                   ],
@@ -455,9 +448,9 @@ class CartScreen extends StatelessWidget {
               ],
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Boutons d'action
           Row(
             children: [
@@ -496,13 +489,19 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  void _showRemoveItemDialog(BuildContext context, CartItem item, CartModel cart) {
+  void _showRemoveItemDialog(
+    BuildContext context,
+    CartItem item,
+    CartModel cart,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Supprimer l\'article'),
-          content: Text('Voulez-vous supprimer "${item.name}" de votre panier ?'),
+          content: Text(
+            'Voulez-vous supprimer "${item.name}" de votre panier ?',
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -538,7 +537,9 @@ class CartScreen extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Vider le panier'),
-          content: const Text('Voulez-vous vraiment vider votre panier ? Cette action est irréversible.'),
+          content: const Text(
+            'Voulez-vous vraiment vider votre panier ? Cette action est irréversible.',
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -557,14 +558,11 @@ class CartScreen extends StatelessWidget {
                   ),
                 );
               },
-              child: const Text(
-                'Vider',
-                style: TextStyle(color: Colors.red),
-              ),
+              child: const Text('Vider', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
       },
     );
   }
-} 
+}

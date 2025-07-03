@@ -1,14 +1,46 @@
 class ProductOptions {
   static const Map<String, List<String>> colors = {
-    'AirPods': ['Noir', 'Blanc', 'Rouge', 'Bleu', 'Jaune', 'Vert', 'Silver', 'Gold', 'Vert ouvert', 'Gris foncé'],
-    'T-shirt': ['Noir', 'Blanc', 'Rouge', 'Bleu', 'Jaune', 'Vert', 'Rose', 'Gris'],
+    'AirPods': [
+      'Noir',
+      'Blanc',
+      'Rouge',
+      'Bleu',
+      'Jaune',
+      'Vert',
+      'Silver',
+      'Gold',
+      'Vert ouvert',
+      'Gris foncé',
+    ],
+    'T-shirt': [
+      'Noir',
+      'Blanc',
+      'Rouge',
+      'Bleu',
+      'Jaune',
+      'Vert',
+      'Rose',
+      'Gris',
+    ],
     'Téléphone': ['Noir', 'Blanc', 'Rouge', 'Bleu', 'Vert', 'Rose', 'Violet'],
     'Chaussures': ['Noir', 'Blanc', 'Rouge', 'Bleu', 'Marron', 'Gris'],
   };
 
   static const Map<String, List<String>> sizes = {
     'T-shirt': ['S', 'M', 'L', 'XL', 'XXL'],
-    'Chaussures': ['36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46'],
+    'Chaussures': [
+      '36',
+      '37',
+      '38',
+      '39',
+      '40',
+      '41',
+      '42',
+      '43',
+      '44',
+      '45',
+      '46',
+    ],
   };
 
   static const Map<String, List<String>> specifications = {
@@ -29,9 +61,9 @@ class ProductOptions {
   }
 
   static bool hasOptions(String category) {
-    return colors.containsKey(category) || 
-           sizes.containsKey(category) || 
-           specifications.containsKey(category);
+    return colors.containsKey(category) ||
+        sizes.containsKey(category) ||
+        specifications.containsKey(category);
   }
 
   static Map<String, int> getColorHexValues() {
@@ -52,4 +84,4 @@ class ProductOptions {
       'Gris foncé': 0xFF2F2F2F,
     };
   }
-} 
+}
