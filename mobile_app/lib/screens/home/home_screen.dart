@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/api/api_client.dart';
 import 'package:mobile_app/models/category.dart';
+import 'package:mobile_app/models/product.dart';
 import 'package:mobile_app/services/category_service.dart';
+import 'package:mobile_app/services/product_service.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../models/cart_model.dart';
@@ -22,10 +25,20 @@ class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Category>> _categoriesFuture;
   final _categoryService = CategoryService();
 
+  final _productService = ProductService();
+
   @override
   void initState() {
     super.initState();
     _categoriesFuture = _categoryService.fetchCategories();
+    _fetchProducts();
+  }
+
+  void _fetchProducts() async {
+    final products = await _productService.fetchProducts();
+    setState(() {
+      _products = products;
+    });
   }
 
   // Images du slideshow promotionnel
@@ -63,115 +76,16 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   // Produits disponibles
-  final List<Map<String, dynamic>> _products = [
-    {
-      'id': '1',
-      'name': 'iPhone 14 Pro Blanc',
-      'price': 1099.99,
-      'category': 'Téléphones',
-      'image': 'assets/images/iPhone-14-Pro white.jpg',
-      'description':
-          'Smartphone Apple iPhone 14 Pro avec écran Super Retina XDR',
-    },
-    {
-      'id': '2',
-      'name': 'PC Portable HP 15" i7',
-      'price': 849.99,
-      'category': 'Ordinateurs',
-      'image': 'assets/images/pc portable hp elet book 1 1 3.jpg',
-      'description': 'PC Portable HP 15 pouces avec processeur i7',
-    },
-    {
-      'id': '3',
-      'name': 'T-shirt Rouge Premium',
-      'price': 29.99,
-      'category': 'Vêtements',
-      'image': 'assets/images/t-shirt-rouge-.png',
-      'description': 'T-shirt rouge en coton premium',
-    },
-    {
-      'id': '4',
-      'name': 'AirPods Apple Verts',
-      'price': 189.99,
-      'category': 'AirPods',
-      'image': 'assets/images/aple airpods green.jpg',
-      'description': 'Écouteurs sans fil AirPods avec réduction de bruit',
-    },
-    {
-      'id': '5',
-      'name': 'Samsung TV 32" Smart',
-      'price': 299.99,
-      'category': 'Télévision',
-      'image': 'assets/images/tv-samsung-32 smart.jpg',
-      'description': 'Téléviseur Samsung 32 pouces Smart TV',
-    },
-    {
-      'id': '6',
-      'name': 'Samsung Galaxy Watch',
-      'price': 249.99,
-      'category': 'Accessoires',
-      'image': 'assets/images/images galaxy.jpg',
-      'description': 'Montre connectée Samsung Galaxy Watch avec suivi fitness',
-    },
-    {
-      'id': '7',
-      'name': 'Samsung Galaxy S21',
-      'price': 699.99,
-      'category': 'Téléphones',
-      'image': 'assets/images/s21 gray.jpg',
-      'description': 'Smartphone Samsung Galaxy S21 Ultra',
-    },
-    {
-      'id': '8',
-      'name': 'PC Dell Portable 14"',
-      'price': 749.99,
-      'category': 'Ordinateurs',
-      'image': 'assets/images/pc-portable-dell-14-n075l549014emea.jpg',
-      'description': 'Ordinateur portable Dell 14 pouces performant',
-    },
-    {
-      'id': '9',
-      'name': 'T-shirt Gris Mode',
-      'price': 34.99,
-      'category': 'Vêtements',
-      'image': 'assets/images/t-shirt gray.png',
-      'description': 'T-shirt gris moderne et confortable',
-    },
-    {
-      'id': '10',
-      'name': 'AirPods Silver',
-      'price': 179.99,
-      'category': 'AirPods',
-      'image': 'assets/images/apple-airpods- silver.jpg',
-      'description': 'Écouteurs AirPods couleur argent premium',
-    },
-    {
-      'id': '11',
-      'name': 'Samsung TV 43"',
-      'price': 449.99,
-      'category': 'Télévision',
-      'image': 'assets/images/Samsung-43.jpg',
-      'description': 'Téléviseur Samsung 43 pouces 4K Smart TV',
-    },
-    {
-      'id': '12',
-      'name': 'T-shirt Pack Mode',
-      'price': 79.99,
-      'category': 'Vêtements',
-      'image':
-          'assets/images/lot-de-4-mode-tee-shirt-homme-imprime-col-arrondi.webp',
-      'description': 'Pack de 4 t-shirts mode avec col arrondi',
-    },
-  ];
+  List<Product> _products = [];
 
-  List<Map<String, dynamic>> get _filteredProducts {
-    List<Map<String, dynamic>> filtered = _products;
+  List<Product> get _filteredProducts {
+    List<Product> filtered = _products;
 
     // Filtrer par catégorie
     if (_selectedCategory.isNotEmpty) {
       filtered =
           filtered
-              .where((product) => product['category'] == _selectedCategory)
+              .where((product) => product.categoryName == _selectedCategory)
               .toList();
     }
 
@@ -181,10 +95,10 @@ class _HomeScreenState extends State<HomeScreen> {
           filtered
               .where(
                 (product) =>
-                    product['name'].toLowerCase().contains(
+                    product.name.toLowerCase().contains(
                       _searchQuery.toLowerCase(),
                     ) ||
-                    product['description'].toLowerCase().contains(
+                    product.description.toLowerCase().contains(
                       _searchQuery.toLowerCase(),
                     ),
               )
@@ -196,20 +110,25 @@ class _HomeScreenState extends State<HomeScreen> {
       switch (_priceFilter) {
         case 'low':
           filtered =
-              filtered.where((product) => product['price'] < 100).toList();
+              filtered
+                  .where((product) => product.stock[0].price < 100)
+                  .toList();
           break;
         case 'medium':
           filtered =
               filtered
                   .where(
                     (product) =>
-                        product['price'] >= 100 && product['price'] < 500,
+                        product.stock[0].price >= 100 &&
+                        product.stock[0].price < 500,
                   )
                   .toList();
           break;
         case 'high':
           filtered =
-              filtered.where((product) => product['price'] >= 500).toList();
+              filtered
+                  .where((product) => product.stock[0].price >= 500)
+                  .toList();
           break;
       }
     }
@@ -1030,7 +949,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _getProductCountForCategory(String categoryName) {
     return _products
-        .where((product) => product['category'] == categoryName)
+        .where((product) => product.categoryName == categoryName)
         .length;
   }
 
@@ -1094,7 +1013,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildProductCard(Map<String, dynamic> product) {
+  Widget _buildProductCard(Product product) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -1121,8 +1040,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     topLeft: Radius.circular(12),
                     topRight: Radius.circular(12),
                   ),
-                  child: Image.asset(
-                    product['image'],
+                  child: Image.network(
+                    "${ApiClient.baseUrl}/products/images/${product.medias[0].url}",
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
@@ -1137,7 +1056,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              product['name'],
+                              product.name,
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 12,
@@ -1158,7 +1077,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product['name'],
+                    product.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
@@ -1168,7 +1087,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${product['price'].toStringAsFixed(2)}€',
+                    '${product.stock[0].price.toStringAsFixed(2)}€',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -1180,18 +1099,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        context.read<CartModel>().addItem(
-                          product['id'],
-                          product['name'],
-                          product['price'],
-                          product['image'],
-                        );
-
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(
-                              '${product['name']} ajouté au panier',
-                            ),
+                            content: Text('${product.name} ajouté au panier'),
                             duration: const Duration(seconds: 2),
                             backgroundColor: Colors.green,
                           ),
