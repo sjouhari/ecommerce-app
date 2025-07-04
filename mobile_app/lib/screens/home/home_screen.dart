@@ -155,7 +155,6 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildPromoSlideshow(),
             const SizedBox(height: 20),
             _buildCategoriesSection(),
-            const SizedBox(height: 20),
             _buildProductsSection(),
           ],
         ),
@@ -728,7 +727,7 @@ class _HomeScreenState extends State<HomeScreen> {
             } else if (snapshot.hasData) {
               final categories = snapshot.data!;
               return SizedBox(
-                height: 75,
+                height: 50,
                 child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
@@ -769,33 +768,28 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Container(
         margin: const EdgeInsets.only(right: 12),
-        child: Column(
-          children: [
-            AnimatedContainer(
-              padding: EdgeInsets.all(8),
-              duration: const Duration(milliseconds: 200),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.white : Colors.grey.shade200,
-                border: Border.all(
-                  color:
-                      isSelected ? Colors.grey.shade400 : Colors.grey.shade300,
-                  width: 1.5,
-                ),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Text(
-                category.name,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  color: isSelected ? Colors.black54 : Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+        child: AnimatedContainer(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          duration: const Duration(milliseconds: 200),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.white : Colors.grey.shade200,
+            border: Border.all(
+              color: isSelected ? Colors.grey.shade400 : Colors.grey.shade300,
+              width: 1.5,
             ),
-          ],
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Text(
+            category.name,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              color: isSelected ? Colors.black54 : Colors.black87,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ),
     );
