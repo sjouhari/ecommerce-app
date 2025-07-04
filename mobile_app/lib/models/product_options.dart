@@ -68,20 +68,17 @@ class ProductOptions {
 
   static Map<String, int> getColorHexValues() {
     return {
-      'Noir': 0xFF000000,
-      'Blanc': 0xFFFFFFFF,
-      'Rouge': 0xFFFF0000,
-      'Bleu': 0xFF0000FF,
-      'Jaune': 0xFFFFFF00,
-      'Vert': 0xFF00FF00,
-      'Rose': 0xFFFF69B4,
-      'Gris': 0xFF808080,
-      'Violet': 0xFF8A2BE2,
-      'Marron': 0xFFA0522D,
-      'Silver': 0xFFC0C0C0,
-      'Gold': 0xFFFFD700,
-      'Vert ouvert': 0xFF90EE90,
-      'Gris foncé': 0xFF2F2F2F,
+      'ROUGE': 0xFFFF0000,
+      'VERT': 0xFF00FF00,
+      'BLEU': 0xFF0000FF,
+      'JAUNE': 0xFFFFFF00,
+      'NOIR': 0xFF000000,
+      'BLANC': 0xFFFFFFFF,
+      'GRIS': 0xFF808080,
+      'ROSE': 0xFFFF69B4,
+      'ORANGE': 0xFFFFD700,
+      'MARRON': 0xFFA0522D,
+      'VIOLET': 0xFF8A2BE2,
     };
   }
 }

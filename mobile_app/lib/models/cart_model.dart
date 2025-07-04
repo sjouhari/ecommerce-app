@@ -61,7 +61,6 @@ class CartModel extends ChangeNotifier {
     String image, {
     String? selectedColor,
     String? selectedSize,
-    String? selectedSpec,
   }) {
     final newItem = CartItem(
       id: id,
@@ -70,7 +69,6 @@ class CartModel extends ChangeNotifier {
       image: image,
       selectedColor: selectedColor,
       selectedSize: selectedSize,
-      selectedSpec: selectedSpec,
     );
 
     final existingIndex = _items.indexWhere(

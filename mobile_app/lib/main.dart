@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/models/product.dart';
 import 'screens/splash_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
@@ -73,7 +74,7 @@ class MyApp extends StatelessWidget {
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/product-detail') {
-            final product = settings.arguments as Map<String, dynamic>;
+            final product = settings.arguments as Product;
             return MaterialPageRoute(
               builder: (context) => ProductDetailScreen(product: product),
             );

@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiClient {
-  // static const baseUrl = "http://10.0.2.2:8080/api"; // localhost Android
-  static const baseUrl = "http://192.168.18.140:8080/api"; // Physique device
+  static const baseUrl = "http://10.0.2.2:8080/api"; // localhost Android
+  // static const baseUrl = "http://192.168.18.140:8080/api"; // Physique device
   static final _storage = FlutterSecureStorage();
 
   static Future<void> saveToken(String token) async {
