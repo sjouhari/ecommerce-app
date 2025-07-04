@@ -6,18 +6,15 @@ import com.ecommerce.product.entity.Product;
 import com.ecommerce.product.entity.Tva;
 import com.ecommerce.product.exception.ProductNameAlreadyExistsException;
 import com.ecommerce.product.mapper.ProductMapper;
-import com.ecommerce.product.repository.MediaRepository;
 import com.ecommerce.product.repository.ProductRepository;
 import com.ecommerce.product.repository.TvaRepository;
 import com.ecommerce.product.service.ProductService;
-import com.ecommerce.shared.dto.CommentDto;
 import com.ecommerce.shared.dto.InventoryDto;
 import com.ecommerce.shared.dto.CategoryDto;
 import com.ecommerce.shared.dto.StoreDto;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,29 +24,21 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final TvaRepository tvaRepository;
+    private final CategoryApiClient categoryApiClient;
+    private final InventoryApiClient inventoryApiClient;
+    private final UserApiClient userApiClient;
+    private final FileStorageService fileStorageService;
 
-    @Autowired
-    private TvaRepository tvaRepository;
-
-    @Autowired
-    private CategoryApiClient categoryApiClient;
-
-    @Autowired
-    private InventoryApiClient inventoryApiClient;
-
-    @Autowired
-    private UserApiClient userApiClient;
-
-    @Autowired
-    private CommentApiClient commentApiClient;
-
-    @Autowired
-    private FileStorageService fileStorageService;
-
-    @Autowired
-    private MediaRepository mediaRepository;
+    public ProductServiceImpl(ProductRepository productRepository, TvaRepository tvaRepository, CategoryApiClient categoryApiClient, InventoryApiClient inventoryApiClient, UserApiClient userApiClient, FileStorageService fileStorageService) {
+        this.productRepository = productRepository;
+        this.tvaRepository = tvaRepository;
+        this.categoryApiClient = categoryApiClient;
+        this.inventoryApiClient = inventoryApiClient;
+        this.userApiClient = userApiClient;
+        this.fileStorageService = fileStorageService;
+    }
 
     @Override
     public List<ProductResponseDto> getAllProducts() {

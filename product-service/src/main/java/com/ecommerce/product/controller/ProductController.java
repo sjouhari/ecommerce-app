@@ -2,7 +2,6 @@ package com.ecommerce.product.controller;
 
 import com.ecommerce.product.dto.ProductResponseDto;
 import com.ecommerce.product.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -24,11 +23,14 @@ import java.util.List;
 @Validated
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
     @Value("${app.images.path}")
     private String imagesPath;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getAllProducts() {

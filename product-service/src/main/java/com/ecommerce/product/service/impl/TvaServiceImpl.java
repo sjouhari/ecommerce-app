@@ -6,7 +6,6 @@ import com.ecommerce.product.mapper.TvaMapper;
 import com.ecommerce.product.repository.TvaRepository;
 import com.ecommerce.product.service.TvaService;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +13,11 @@ import java.util.List;
 @Service
 public class TvaServiceImpl implements TvaService {
 
-    @Autowired
-    private TvaRepository tvaRepository;
+    private final TvaRepository tvaRepository;
+
+    public TvaServiceImpl(TvaRepository tvaRepository) {
+        this.tvaRepository = tvaRepository;
+    }
 
 
     @Override

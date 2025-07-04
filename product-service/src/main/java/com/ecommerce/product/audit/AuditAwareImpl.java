@@ -20,8 +20,8 @@ public class AuditAwareImpl implements AuditorAware<String> {
         }
 
         Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
-            return Optional.ofNullable(((UserDetails) principal).getUsername());
+        if (principal instanceof UserDetails userDetails) {
+            return Optional.ofNullable(userDetails.getUsername());
         }
 
         return Optional.empty();

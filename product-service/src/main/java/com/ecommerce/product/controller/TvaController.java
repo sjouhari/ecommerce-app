@@ -3,7 +3,6 @@ package com.ecommerce.product.controller;
 import com.ecommerce.product.dto.TvaDto;
 import com.ecommerce.product.service.TvaService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,8 +15,11 @@ import java.util.List;
 @Validated
 public class TvaController {
 
-    @Autowired
-    private TvaService tvaService;
+    private final TvaService tvaService;
+
+    public TvaController(TvaService tvaService) {
+        this.tvaService = tvaService;
+    }
 
     @GetMapping
     public ResponseEntity<List<TvaDto>> getAllTvas() {
