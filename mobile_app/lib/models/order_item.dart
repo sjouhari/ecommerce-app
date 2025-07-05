@@ -1,6 +1,6 @@
 class OrderItem {
   final int id;
-  final String productId;
+  final int productId;
   final String productName;
   final String productImage;
   final String size;
@@ -24,14 +24,27 @@ class OrderItem {
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
       id: json['id'],
-      productId: json['product_id'],
-      productName: json['product_name'],
-      productImage: json['product_image'],
+      productId: json['productId'],
+      productName: json['productName'],
+      productImage: json['productImage'],
       size: json['size'],
       color: json['color'],
       price: json['price'],
       quantity: json['quantity'],
       selected: json['selected'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'productId': productId,
+      'productName': productName,
+      'productImage': productImage,
+      'size': size,
+      'color': color,
+      'price': price,
+      'quantity': quantity,
+      'selected': selected,
+    };
   }
 }

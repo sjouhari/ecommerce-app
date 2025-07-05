@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/api/api_client.dart';
 import 'package:mobile_app/models/category.dart';
 import 'package:mobile_app/models/product.dart';
+import 'package:mobile_app/services/cart_service.dart';
 import 'package:mobile_app/services/category_service.dart';
 import 'package:mobile_app/services/product_service.dart';
-import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../models/cart_model.dart';
 
@@ -21,17 +21,22 @@ class _HomeScreenState extends State<HomeScreen> {
   String _searchQuery = '';
   String _priceFilter = '';
   int _currentSlideIndex = 0;
+  CartModel? cart;
+  List<Product> _products = [];
 
   late Future<List<Category>> _categoriesFuture;
   final _categoryService = CategoryService();
 
   final _productService = ProductService();
 
+  final _cartService = CartService();
+
   @override
   void initState() {
     super.initState();
     _categoriesFuture = _categoryService.fetchCategories();
     _fetchProducts();
+    _fetchUserCart();
   }
 
   void _fetchProducts() async {
@@ -39,6 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _products = products;
     });
+  }
+
+  void _fetchUserCart() {
+    _cartService.fetchUserCart().then(
+      (cart) => setState(() => this.cart = cart),
+    );
   }
 
   // Images du slideshow promotionnel
@@ -74,9 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
       'category': 'Vêtements',
     },
   ];
-
-  // Produits disponibles
-  List<Product> _products = [];
 
   List<Product> get _filteredProducts {
     List<Product> filtered = _products;
@@ -181,48 +189,40 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       centerTitle: true,
       actions: [
-        Consumer<CartModel>(
-          builder: (context, cart, child) {
-            return Stack(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.shopping_cart_outlined),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/cart');
-                  },
-                ),
-                if (cart.itemCount > 0)
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Container(
-                      padding: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 16,
-                        minHeight: 16,
-                      ),
-                      child: Text(
-                        '${cart.itemCount}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+        Stack(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.shopping_cart_outlined),
+              onPressed: () {
+                Navigator.pushNamed(context, '/cart');
+              },
+            ),
+            if (cart != null && cart!.orderItems.isNotEmpty)
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-              ],
-            );
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.notifications_outlined),
-          onPressed: () {},
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    minHeight: 16,
+                  ),
+                  child: Text(
+                    '${cart!.orderItems.length}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+          ],
         ),
       ],
     );
@@ -1093,12 +1093,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${product.name} ajouté au panier'),
-                            duration: const Duration(seconds: 2),
-                            backgroundColor: Colors.green,
-                          ),
+                        Navigator.pushNamed(
+                          context,
+                          '/product-detail',
+                          arguments: product,
                         );
                       },
                       icon: const Icon(Icons.add_shopping_cart, size: 16),

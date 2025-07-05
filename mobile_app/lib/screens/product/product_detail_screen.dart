@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/api/api_client.dart';
+import 'package:mobile_app/models/order_item.dart';
 import 'package:mobile_app/models/product.dart';
-import 'package:provider/provider.dart';
+import 'package:mobile_app/services/cart_service.dart';
 import '../../models/cart_model.dart';
 import '../../models/product_options.dart';
 
@@ -16,12 +17,14 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int _quantity = 1;
-  bool _isFavorite = false;
   String? _selectedColor;
   String? _selectedSize;
   double? _productPrice;
   List<String> colors = [];
   List<String> sizes = [];
+  CartModel? cart;
+
+  final _cartService = CartService();
 
   @override
   void initState() {
@@ -48,6 +51,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               (s) => s.size == _selectedSize && s.color == _selectedColor,
             )
             .price;
+
+    _fetchUserCart();
+  }
+
+  void _fetchUserCart() {
+    _cartService.fetchUserCart().then(
+      (cart) => setState(() => this.cart = cart),
+    );
   }
 
   bool get _canAddToCart {
@@ -68,63 +79,40 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       appBar: AppBar(
         title: Text(widget.product.name),
         actions: [
-          IconButton(
-            icon: Icon(
-              _isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: _isFavorite ? Colors.red : null,
-            ),
-            onPressed: () {
-              setState(() {
-                _isFavorite = !_isFavorite;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    _isFavorite ? 'Ajouté aux favoris' : 'Retiré des favoris',
-                  ),
-                  duration: const Duration(seconds: 1),
-                ),
-              );
-            },
-          ),
-          Consumer<CartModel>(
-            builder: (context, cart, child) {
-              return Stack(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.shopping_cart_outlined),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/cart');
-                    },
-                  ),
-                  if (cart.itemCount > 0)
-                    Positioned(
-                      right: 8,
-                      top: 8,
-                      child: Container(
-                        padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        constraints: const BoxConstraints(
-                          minWidth: 16,
-                          minHeight: 16,
-                        ),
-                        child: Text(
-                          '${cart.itemCount}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.shopping_cart_outlined),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/cart');
+                },
+              ),
+              if (cart != null && cart!.orderItems.isNotEmpty)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                ],
-              );
-            },
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      '${cart!.orderItems.length}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ],
       ),
@@ -350,53 +338,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         child: Row(
           children: [
             Expanded(
-              child: OutlinedButton.icon(
-                onPressed:
-                    _canAddToCart
-                        ? () {
-                          // Acheter maintenant - aller directement au panier
-                          for (int i = 0; i < _quantity; i++) {
-                            context.read<CartModel>().addItem(
-                              widget.product.id.toString(),
-                              widget.product.name,
-                              widget.product.stock[0].price,
-                              widget.product.medias[0].url,
-                              selectedColor: _selectedColor,
-                              selectedSize: _selectedSize,
-                            );
-                          }
-                          Navigator.pushNamed(context, '/cart');
-                        }
-                        : null,
-                icon: const Icon(Icons.flash_on),
-                label: const Text('Acheter maintenant'),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  side: BorderSide(
-                    color:
-                        _canAddToCart ? const Color(0xFF2196F3) : Colors.grey,
-                  ),
-                  foregroundColor:
-                      _canAddToCart ? const Color(0xFF2196F3) : Colors.grey,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
               child: ElevatedButton.icon(
                 onPressed:
                     _canAddToCart
                         ? () {
-                          for (int i = 0; i < _quantity; i++) {
-                            context.read<CartModel>().addItem(
-                              widget.product.id.toString(),
-                              widget.product.name,
-                              _productPrice!,
-                              widget.product.medias[0].url,
-                              selectedColor: _selectedColor,
-                              selectedSize: _selectedSize,
-                            );
-                          }
+                          _cartService.addOrderItemToCart(
+                            OrderItem(
+                              id: 0,
+                              productId: widget.product.id,
+                              productName: widget.product.name,
+                              productImage: widget.product.medias[0].url,
+                              size: _selectedSize!,
+                              color: _selectedColor!,
+                              price: _productPrice ?? 0,
+                              quantity: _quantity,
+                              selected: true,
+                            ),
+                          );
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

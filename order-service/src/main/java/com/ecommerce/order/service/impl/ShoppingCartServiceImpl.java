@@ -9,6 +9,7 @@ import com.ecommerce.order.repository.OrderItemRepository;
 import com.ecommerce.order.repository.ShoppingCartRepository;
 import com.ecommerce.order.service.ShoppingCartService;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +76,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cart.getOrderItems().add(orderItem);
         orderItem.setShoppingCart(cart);
         return ShoppingCartMapper.INSTANCE.shoppingCartToShoppingCartDto(shoppingCartRepository.save(cart));
+    }
+
+    @Override
+    @Transactional
+    public void clearUserCart(Long userId) {
+        shoppingCartRepository.deleteByUserId(userId);
     }
 
     @Override

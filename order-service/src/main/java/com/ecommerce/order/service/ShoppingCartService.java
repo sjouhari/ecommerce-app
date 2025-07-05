@@ -11,6 +11,8 @@ public interface ShoppingCartService {
 
     ShoppingCartDto addItemToShoppingCart(Long userId, OrderItemRequestDto orderItemRequestDto);
 
+    void clearUserCart(Long userId);
+
     OrderItemRequestDto updateItemQuantity(Long id, UpdateOrderItemQauntityDto updateOrderItemQauntityDto);
 
     OrderItemRequestDto selectOrderItem(Long id, SelectOrderItemDto selectOrderItemDto);

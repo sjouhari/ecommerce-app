@@ -1,9 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:mobile_app/api/api_client.dart';
+import 'package:mobile_app/models/order_item.dart';
+import 'package:mobile_app/models/product_options.dart';
+import 'package:mobile_app/services/cart_service.dart';
 import '../../models/cart_model.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  final _cartService = CartService();
+
+  CartModel? cart;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserCart();
+  }
+
+  void _fetchUserCart() async {
+    await _cartService.fetchUserCart().then(
+      (cart) => setState(() => this.cart = cart),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,46 +35,34 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Mon Panier'),
         actions: [
-          Consumer<CartModel>(
-            builder: (context, cart, child) {
-              return cart.items.isNotEmpty
-                  ? TextButton(
-                    onPressed: () {
-                      _showClearCartDialog(context, cart);
-                    },
-                    child: const Text(
-                      'Vider',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  )
-                  : const SizedBox.shrink();
-            },
-          ),
+          cart != null && cart!.orderItems.isNotEmpty
+              ? TextButton(
+                onPressed: () {
+                  _showClearCartDialog(context, cart!);
+                },
+                child: const Text('Vider', style: TextStyle(color: Colors.red)),
+              )
+              : const SizedBox.shrink(),
         ],
       ),
-      body: Consumer<CartModel>(
-        builder: (context, cart, child) {
-          if (cart.items.isEmpty) {
-            return _buildEmptyCart(context);
-          }
-
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: cart.items.length,
-                  itemBuilder: (context, index) {
-                    final item = cart.items[index];
-                    return _buildCartItem(context, item, cart);
-                  },
-                ),
+      body:
+          cart == null || cart!.orderItems.isEmpty
+              ? _buildEmptyCart(context)
+              : Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: cart!.orderItems.length,
+                      itemBuilder: (context, index) {
+                        final item = cart!.orderItems[index];
+                        return _buildCartItem(context, item, cart!);
+                      },
+                    ),
+                  ),
+                  _buildCartSummary(context, cart!),
+                ],
               ),
-              _buildCartSummary(context, cart),
-            ],
-          );
-        },
-      ),
     );
   }
 
@@ -95,7 +107,7 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCartItem(BuildContext context, CartItem item, CartModel cart) {
+  Widget _buildCartItem(BuildContext context, OrderItem item, CartModel cart) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
@@ -114,8 +126,8 @@ class CartScreen extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  item.image,
+                child: Image.network(
+                  "${ApiClient.baseUrl}/products/images/${item.productImage}",
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -139,7 +151,7 @@ class CartScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item.name,
+                    item.productName,
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -193,12 +205,16 @@ class CartScreen extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             InkWell(
-                              onTap: () {
+                              onTap: () async {
                                 if (item.quantity > 1) {
-                                  cart.updateQuantity(
-                                    item.uniqueId,
-                                    item.quantity - 1,
-                                  );
+                                  bool response = await _cartService
+                                      .updateOrderItemQuantityInCart(
+                                        item.id,
+                                        item.quantity - 1,
+                                      );
+                                  if (response) {
+                                    _fetchUserCart();
+                                  }
                                 } else {
                                   _showRemoveItemDialog(context, item, cart);
                                 }
@@ -231,11 +247,16 @@ class CartScreen extends StatelessWidget {
                               ),
                             ),
                             InkWell(
-                              onTap: () {
-                                cart.updateQuantity(
-                                  item.uniqueId,
-                                  item.quantity + 1,
-                                );
+                              onTap: () async {
+                                bool response = await _cartService
+                                    .updateOrderItemQuantityInCart(
+                                      item.id,
+                                      item.quantity + 1,
+                                    );
+
+                                if (response) {
+                                  _fetchUserCart();
+                                }
                               },
                               borderRadius: BorderRadius.circular(6),
                               child: Container(
@@ -269,93 +290,58 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildSelectedOptionsWidgets(CartItem item) {
+  List<Widget> _buildSelectedOptionsWidgets(OrderItem item) {
     List<Widget> widgets = [];
+    final colorHex = ProductOptions.getColorHexValues();
 
     // Afficher la couleur sélectionnée
-    if (item.selectedColor != null) {
-      widgets.add(
-        Container(
-          margin: const EdgeInsets.only(bottom: 2),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: _getColorFromName(item.selectedColor!),
-                  borderRadius: BorderRadius.circular(2),
-                  border: Border.all(color: Colors.grey[300]!, width: 0.5),
-                ),
+    widgets.add(
+      Container(
+        margin: const EdgeInsets.only(bottom: 2),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: Color(colorHex[item.color] ?? 0xFF000000),
+                borderRadius: BorderRadius.circular(2),
+                border: Border.all(color: Colors.grey[300]!, width: 0.5),
               ),
-              const SizedBox(width: 4),
-              Flexible(
-                child: Text(
-                  'Couleur: ${item.selectedColor}',
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                  overflow: TextOverflow.ellipsis,
-                ),
+            ),
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                'Couleur: ${item.color}',
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
-    }
+      ),
+    );
 
     // Afficher la taille sélectionnée
-    if (item.selectedSize != null) {
-      widgets.add(
-        Container(
-          margin: const EdgeInsets.only(bottom: 2),
-          child: Text(
-            'Taille: ${item.selectedSize}',
-            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-            overflow: TextOverflow.ellipsis,
-          ),
+    widgets.add(
+      Container(
+        margin: const EdgeInsets.only(bottom: 2),
+        child: Text(
+          'Taille: ${item.size}',
+          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+          overflow: TextOverflow.ellipsis,
         ),
-      );
-    }
-
-    // Afficher les spécifications sélectionnées
-    if (item.selectedSpec != null) {
-      widgets.add(
-        Container(
-          margin: const EdgeInsets.only(bottom: 2),
-          child: Text(
-            'Écran: ${item.selectedSpec}',
-            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      );
-    }
+      ),
+    );
 
     return widgets;
   }
 
-  Color _getColorFromName(String colorName) {
-    final colorMap = {
-      'Noir': Colors.black,
-      'Blanc': Colors.white,
-      'Rouge': Colors.red,
-      'Bleu': Colors.blue,
-      'Jaune': Colors.yellow,
-      'Vert': Colors.green,
-      'Rose': Colors.pink,
-      'Gris': Colors.grey,
-      'Violet': Colors.purple,
-      'Marron': Colors.brown,
-      'Silver': const Color(0xFFC0C0C0),
-      'Gold': const Color(0xFFFFD700),
-      'Vert ouvert': const Color(0xFF90EE90),
-      'Gris foncé': const Color(0xFF2F2F2F),
-    };
-
-    return colorMap[colorName] ?? Colors.grey;
-  }
-
   Widget _buildCartSummary(BuildContext context, CartModel cart) {
+    double totalPrice = cart.orderItems
+        .map((item) => item.price * item.quantity)
+        .reduce((a, b) => a + b);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -384,11 +370,11 @@ class CartScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Articles (${cart.itemCount})',
+                      'Articles (${cart.orderItems.length})',
                       style: const TextStyle(fontSize: 16),
                     ),
                     Text(
-                      '${cart.totalPrice.toStringAsFixed(2)}€',
+                      '${totalPrice.toStringAsFixed(2)}€',
                       style: const TextStyle(fontSize: 16),
                     ),
                   ],
@@ -399,20 +385,19 @@ class CartScreen extends StatelessWidget {
                   children: [
                     const Text('Livraison', style: TextStyle(fontSize: 16)),
                     Text(
-                      cart.totalPrice >= 50 ? 'Gratuite' : '5,99€',
+                      totalPrice >= 50 ? 'Gratuite' : '5,99€',
                       style: TextStyle(
                         fontSize: 16,
-                        color:
-                            cart.totalPrice >= 50 ? Colors.green : Colors.black,
+                        color: totalPrice >= 50 ? Colors.green : Colors.black,
                         fontWeight:
-                            cart.totalPrice >= 50
+                            totalPrice >= 50
                                 ? FontWeight.bold
                                 : FontWeight.normal,
                       ),
                     ),
                   ],
                 ),
-                if (cart.totalPrice < 50)
+                if (totalPrice < 50)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
@@ -436,7 +421,7 @@ class CartScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${(cart.totalPrice + (cart.totalPrice >= 50 ? 0 : 5.99)).toStringAsFixed(2)}€',
+                      '${(totalPrice + (totalPrice >= 50 ? 0 : 5.99)).toStringAsFixed(2)}€',
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -491,7 +476,7 @@ class CartScreen extends StatelessWidget {
 
   void _showRemoveItemDialog(
     BuildContext context,
-    CartItem item,
+    OrderItem item,
     CartModel cart,
   ) {
     showDialog(
@@ -500,7 +485,7 @@ class CartScreen extends StatelessWidget {
         return AlertDialog(
           title: const Text('Supprimer l\'article'),
           content: Text(
-            'Voulez-vous supprimer "${item.name}" de votre panier ?',
+            'Voulez-vous supprimer "${item.productName}" de votre panier ?',
           ),
           actions: [
             TextButton(
@@ -510,15 +495,20 @@ class CartScreen extends StatelessWidget {
               child: const Text('Annuler'),
             ),
             TextButton(
-              onPressed: () {
-                cart.removeItem(item.uniqueId);
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Article supprimé du panier'),
-                    backgroundColor: Colors.orange,
-                  ),
+              onPressed: () async {
+                final response = await _cartService.removeOrderItemFromCart(
+                  item.id,
                 );
+                if (response) {
+                  _fetchUserCart();
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Article supprimé du panier'),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                }
               },
               child: const Text(
                 'Supprimer',
@@ -548,15 +538,18 @@ class CartScreen extends StatelessWidget {
               child: const Text('Annuler'),
             ),
             TextButton(
-              onPressed: () {
-                cart.clearCart();
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Panier vidé'),
-                    backgroundColor: Colors.orange,
-                  ),
-                );
+              onPressed: () async {
+                final response = await _cartService.clearUserCart();
+                if (response) {
+                  _fetchUserCart();
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Panier vidé'),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                }
               },
               child: const Text('Vider', style: TextStyle(color: Colors.red)),
             ),

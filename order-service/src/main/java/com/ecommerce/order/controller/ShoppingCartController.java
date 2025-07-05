@@ -5,7 +5,6 @@ import com.ecommerce.order.dto.SelectOrderItemDto;
 import com.ecommerce.order.dto.ShoppingCartDto;
 import com.ecommerce.order.dto.UpdateOrderItemQauntityDto;
 import com.ecommerce.order.service.ShoppingCartService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/shopping-cart")
 public class ShoppingCartController {
 
-    @Autowired
-    private ShoppingCartService shoppingCartService;
+    private final ShoppingCartService shoppingCartService;
+
+    public ShoppingCartController(ShoppingCartService shoppingCartService) {
+        this.shoppingCartService = shoppingCartService;
+    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<ShoppingCartDto> getShoppingCartByUserId(@PathVariable Long userId) {
@@ -24,6 +26,12 @@ public class ShoppingCartController {
     @PostMapping("/{userId}")
     public ResponseEntity<ShoppingCartDto> addItemToShoppingCart(@PathVariable Long userId, @RequestBody OrderItemRequestDto orderItemRequestDto) {
         return ResponseEntity.ok(shoppingCartService.addItemToShoppingCart(userId, orderItemRequestDto));
+    }
+
+    @DeleteMapping("user/{userId}")
+    public ResponseEntity<Void> clearUserCart(@PathVariable Long userId) {
+        shoppingCartService.clearUserCart(userId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/quantity/{id}")

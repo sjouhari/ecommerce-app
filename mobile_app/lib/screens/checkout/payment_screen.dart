@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/api/api_client.dart';
 import 'package:provider/provider.dart';
 import '../../models/cart_model.dart';
 
@@ -35,7 +36,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       appBar: AppBar(title: const Text('Paiement')),
       body: Consumer<CartModel>(
         builder: (context, cart, child) {
-          if (cart.items.isEmpty) {
+          if (cart.orderItems.isEmpty) {
             return _buildEmptyCart(context);
           }
 
@@ -95,6 +96,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Widget _buildOrderSummary(CartModel cart) {
+    double totalPrice = cart.orderItems.fold(
+      0,
+      (total, item) => total + item.price * item.quantity,
+    );
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -110,7 +115,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             const SizedBox(height: 16),
 
             // Liste des articles
-            ...cart.items.map(
+            ...cart.orderItems.map(
               (item) => Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
@@ -124,8 +129,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.asset(
-                          item.image,
+                        child: Image.network(
+                          "${ApiClient.baseUrl}/products/images/${item.productImage}",
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(
@@ -143,7 +148,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            item.name,
+                            item.productName,
                             style: const TextStyle(fontWeight: FontWeight.w500),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -177,7 +182,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Sous-total:'),
-                Text('${cart.totalPrice.toStringAsFixed(2)}€'),
+                Text('${totalPrice.toStringAsFixed(2)}€'),
               ],
             ),
             const SizedBox(height: 8),
@@ -186,9 +191,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
               children: [
                 const Text('Livraison:'),
                 Text(
-                  cart.totalPrice >= 50 ? 'Gratuite' : '5,99€',
+                  totalPrice >= 50 ? 'Gratuite' : '5,99€',
                   style: TextStyle(
-                    color: cart.totalPrice >= 50 ? Colors.green : Colors.black,
+                    color: totalPrice >= 50 ? Colors.green : Colors.black,
                   ),
                 ),
               ],
@@ -202,7 +207,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '${(cart.totalPrice + (cart.totalPrice >= 50 ? 0 : 5.99)).toStringAsFixed(2)}€',
+                  '${(totalPrice + (totalPrice >= 50 ? 0 : 5.99)).toStringAsFixed(2)}€',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -536,6 +541,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
     String orderNumber,
     CartModel cart,
   ) {
+    double totalPrice = cart.orderItems
+        .map((item) => item.price * item.quantity)
+        .reduce((a, b) => a + b);
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -561,7 +569,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               Text('Numéro de commande: #$orderNumber'),
               const SizedBox(height: 8),
               Text(
-                'Total: ${(cart.totalPrice + (cart.totalPrice >= 50 ? 0 : 5.99)).toStringAsFixed(2)}€',
+                'Total: ${(totalPrice + (totalPrice >= 50 ? 0 : 5.99)).toStringAsFixed(2)}€',
               ),
               const SizedBox(height: 8),
               Text(
@@ -578,7 +586,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Fermer le dialog
-                cart.clearCart(); // Vider le panier
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   '/home',

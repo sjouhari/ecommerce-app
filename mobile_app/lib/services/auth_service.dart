@@ -13,6 +13,7 @@ class AuthService {
     if (response.statusCode == 200) {
       final auth = AuthResponse.fromJson(jsonDecode(response.body));
       await ApiClient.saveToken(auth.token);
+      await ApiClient.saveCurrentUser();
       return null;
     } else if (response.statusCode == 500) {
       return jsonDecode(response.body)['message'];
