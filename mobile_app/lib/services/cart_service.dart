@@ -46,7 +46,7 @@ class CartService {
     }
   }
 
-  Future<void> addOrderItemToCart(OrderItem orderItem) async {
+  Future<bool> addOrderItemToCart(OrderItem orderItem) async {
     try {
       User? user = await ApiClient.getCurrentUser();
       final response = await ApiClient.post(
@@ -56,8 +56,7 @@ class CartService {
       );
 
       if (response.statusCode == 200) {
-        print(response.body);
-        return;
+        return true;
       } else {
         throw Exception('Error adding product to cart: ${response.body}');
       }

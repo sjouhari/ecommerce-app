@@ -83,8 +83,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             children: [
               IconButton(
                 icon: const Icon(Icons.shopping_cart_outlined),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/cart');
+                onPressed: () async {
+                  await Navigator.pushNamed(context, '/cart');
+                  _fetchUserCart();
                 },
               ),
               if (cart != null && cart!.orderItems.isNotEmpty)
@@ -341,37 +342,41 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: ElevatedButton.icon(
                 onPressed:
                     _canAddToCart
-                        ? () {
-                          _cartService.addOrderItemToCart(
-                            OrderItem(
-                              id: 0,
-                              productId: widget.product.id,
-                              productName: widget.product.name,
-                              productImage: widget.product.medias[0].url,
-                              size: _selectedSize!,
-                              color: _selectedColor!,
-                              price: _productPrice ?? 0,
-                              quantity: _quantity,
-                              selected: true,
-                            ),
-                          );
+                        ? () async {
+                          final response = await _cartService
+                              .addOrderItemToCart(
+                                OrderItem(
+                                  id: 0,
+                                  productId: widget.product.id,
+                                  productName: widget.product.name,
+                                  productImage: widget.product.medias[0].url,
+                                  size: _selectedSize!,
+                                  color: _selectedColor!,
+                                  price: _productPrice ?? 0,
+                                  quantity: _quantity,
+                                  selected: true,
+                                ),
+                              );
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                '$_quantity x ${widget.product.name} ajouté(s) au panier',
+                          if (response) {
+                            _fetchUserCart();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  '$_quantity x ${widget.product.name} ajouté(s) au panier',
+                                ),
+                                duration: const Duration(seconds: 2),
+                                backgroundColor: Colors.green,
+                                action: SnackBarAction(
+                                  label: 'Voir panier',
+                                  textColor: Colors.white,
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/cart');
+                                  },
+                                ),
                               ),
-                              duration: const Duration(seconds: 2),
-                              backgroundColor: Colors.green,
-                              action: SnackBarAction(
-                                label: 'Voir panier',
-                                textColor: Colors.white,
-                                onPressed: () {
-                                  Navigator.pushNamed(context, '/cart');
-                                },
-                              ),
-                            ),
-                          );
+                            );
+                          }
                         }
                         : null,
                 icon: const Icon(Icons.add_shopping_cart),

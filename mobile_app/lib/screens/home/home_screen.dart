@@ -193,8 +193,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             IconButton(
               icon: const Icon(Icons.shopping_cart_outlined),
-              onPressed: () {
-                Navigator.pushNamed(context, '/cart');
+              onPressed: () async {
+                await Navigator.pushNamed(context, '/cart');
+                _fetchUserCart();
               },
             ),
             if (cart != null && cart!.orderItems.isNotEmpty)
@@ -1012,8 +1013,14 @@ class _HomeScreenState extends State<HomeScreen> {
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
-        onTap: () {
-          Navigator.pushNamed(context, '/product-detail', arguments: product);
+        onTap: () async {
+          await Navigator.pushNamed(
+            context,
+            '/product-detail',
+            arguments: product,
+          );
+          _fetchProducts();
+          _fetchUserCart();
         },
         borderRadius: BorderRadius.circular(12),
         child: Column(
@@ -1092,12 +1099,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pushNamed(
+                      onPressed: () async {
+                        await Navigator.pushNamed(
                           context,
                           '/product-detail',
                           arguments: product,
                         );
+                        _fetchProducts();
+                        _fetchUserCart();
                       },
                       icon: const Icon(Icons.add_shopping_cart, size: 16),
                       label: const Text(
