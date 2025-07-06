@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/api/api_client.dart';
-import 'package:provider/provider.dart';
+import 'package:mobile_app/models/address.dart';
+import 'package:mobile_app/models/order_request.dart';
+import 'package:mobile_app/models/user.dart';
+import 'package:mobile_app/services/address_service.dart';
+import 'package:mobile_app/services/cart_service.dart';
+import 'package:mobile_app/services/order_service.dart';
 import '../../models/cart_model.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -11,18 +16,59 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  String _selectedPaymentMethod = '';
+  String _selectedPaymentMethod = 'CASH';
+  String _selectedAddressId = '';
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _addressController = TextEditingController();
   final _cityController = TextEditingController();
+  final _countryController = TextEditingController();
   final _postalCodeController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _chequeNumberController = TextEditingController();
+  final _banqueNameController = TextEditingController();
   bool _isProcessing = false;
+
+  CartModel? cart;
+  final _cartService = CartService();
+
+  List<Address>? addresses;
+  final _addressService = AddressService();
+
+  final _orderService = OrderService();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserCart();
+    _fetchUserDeliveryAddresses();
+  }
+
+  void _fetchUserCart() async {
+    await _cartService.fetchUserCart().then(
+      (cart) => setState(() => this.cart = cart),
+    );
+  }
+
+  void _fetchUserDeliveryAddresses() async {
+    await _addressService.fetchUserAddresses().then((addresses) {
+      setState(() {
+        this.addresses = addresses;
+        if (addresses.isNotEmpty) {
+          _selectedAddressId = addresses.first.id.toString();
+        }
+      });
+    });
+  }
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _countryController.dispose();
+    _chequeNumberController.dispose();
+    _banqueNameController.dispose();
     _addressController.dispose();
     _cityController.dispose();
     _postalCodeController.dispose();
@@ -34,32 +80,27 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Paiement')),
-      body: Consumer<CartModel>(
-        builder: (context, cart, child) {
-          if (cart.orderItems.isEmpty) {
-            return _buildEmptyCart(context);
-          }
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildOrderSummary(cart),
-                  const SizedBox(height: 24),
-                  _buildDeliveryForm(),
-                  const SizedBox(height: 24),
-                  _buildPaymentMethods(),
-                  const SizedBox(height: 32),
-                  _buildConfirmButton(cart),
-                ],
+      body:
+          cart == null || cart!.orderItems.isEmpty
+              ? _buildEmptyCart(context)
+              : SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildOrderSummary(cart!),
+                      const SizedBox(height: 24),
+                      _buildAddressesSection(),
+                      const SizedBox(height: 24),
+                      _buildPaymentMethods(),
+                      const SizedBox(height: 32),
+                      _buildConfirmButton(cart!),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          );
-        },
-      ),
     );
   }
 
@@ -223,6 +264,147 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Widget _buildDeliveryForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Adresse de livraison',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+
+        Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: TextFormField(
+                controller: _lastNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nom',
+                  prefixIcon: Icon(Icons.person),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre nom';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              flex: 1,
+              child: TextFormField(
+                controller: _firstNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Prénom',
+                  prefixIcon: Icon(Icons.person),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre prénom';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+
+        TextFormField(
+          controller: _addressController,
+          decoration: const InputDecoration(
+            labelText: 'Adresse',
+            prefixIcon: Icon(Icons.home),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Veuillez entrer votre adresse';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 16),
+
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: _cityController,
+                decoration: const InputDecoration(
+                  labelText: 'Ville',
+                  prefixIcon: Icon(Icons.location_city),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre ville';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: TextFormField(
+                controller: _countryController,
+                decoration: const InputDecoration(
+                  labelText: 'Pays',
+                  prefixIcon: Icon(Icons.flag),
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre pays';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+
+        TextFormField(
+          controller: _postalCodeController,
+          decoration: const InputDecoration(
+            labelText: 'Code postal',
+            prefixIcon: Icon(Icons.location_pin),
+          ),
+          keyboardType: TextInputType.number,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Code postal requis';
+            }
+            if (value.length != 5) {
+              return 'Code postal invalide';
+            }
+            return null;
+          },
+        ),
+
+        const SizedBox(height: 16),
+
+        TextFormField(
+          controller: _phoneController,
+          decoration: const InputDecoration(
+            labelText: 'Téléphone',
+            prefixIcon: Icon(Icons.phone),
+          ),
+          keyboardType: TextInputType.phone,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Veuillez entrer votre numéro de téléphone';
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAddressesSection() {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -237,88 +419,92 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             const SizedBox(height: 16),
 
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nom complet',
-                prefixIcon: Icon(Icons.person),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Veuillez entrer votre nom complet';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
+            addresses != null && addresses!.isNotEmpty
+                ? ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: addresses?.length,
+                  itemBuilder:
+                      (context, index) => _buildAddressItem(addresses![index]),
+                )
+                : const Center(child: Text('Aucune adresse disponible')),
 
-            TextFormField(
-              controller: _addressController,
-              decoration: const InputDecoration(
-                labelText: 'Adresse',
-                prefixIcon: Icon(Icons.home),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color:
+                      _selectedAddressId == ''
+                          ? const Color(0xFF2196F3)
+                          : Colors.grey[300]!,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(12),
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Veuillez entrer votre adresse';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: TextFormField(
-                    controller: _cityController,
-                    decoration: const InputDecoration(
-                      labelText: 'Ville',
-                      prefixIcon: Icon(Icons.location_city),
+              child: RadioListTile<String>(
+                value: '',
+                groupValue: _selectedAddressId,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedAddressId = '';
+                  });
+                },
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Créer une nouvelle adresse',
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Veuillez entrer votre ville';
-                      }
-                      return null;
-                    },
-                  ),
+                  ],
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: TextFormField(
-                    controller: _postalCodeController,
-                    decoration: const InputDecoration(labelText: 'Code postal'),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Code postal requis';
-                      }
-                      if (value.length != 5) {
-                        return 'Code postal invalide';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ],
+              ),
             ),
+
             const SizedBox(height: 16),
 
-            TextFormField(
-              controller: _phoneController,
-              decoration: const InputDecoration(
-                labelText: 'Téléphone',
-                prefixIcon: Icon(Icons.phone),
-              ),
-              keyboardType: TextInputType.phone,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Veuillez entrer votre numéro de téléphone';
-                }
-                return null;
-              },
+            _selectedAddressId == '' ? _buildDeliveryForm() : Container(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddressItem(Address address) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color:
+              _selectedAddressId == address.id.toString()
+                  ? const Color(0xFF2196F3)
+                  : Colors.grey[300]!,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: RadioListTile<String>(
+        value: address.id.toString(),
+        groupValue: _selectedAddressId,
+        onChanged: (value) {
+          setState(() {
+            _selectedAddressId = value!;
+          });
+        },
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              address.deliveryAddress,
+              style: TextStyle(fontWeight: FontWeight.w500),
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              '${address.firstName} ${address.lastName}, ${address.phone}',
+              style: TextStyle(fontSize: 12),
+            ),
+            Text(
+              '${address.postalCode}, ${address.city}, ${address.country}',
+              style: TextStyle(fontSize: 12),
             ),
           ],
         ),
@@ -341,12 +527,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Virement bancaire
+            // CASH ON DELIVERY
             Container(
               decoration: BoxDecoration(
                 border: Border.all(
                   color:
-                      _selectedPaymentMethod == 'virement'
+                      _selectedPaymentMethod == 'CASH'
                           ? const Color(0xFF2196F3)
                           : Colors.grey[300]!,
                   width: 2,
@@ -354,7 +540,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: RadioListTile<String>(
-                value: 'virement',
+                value: 'CASH',
                 groupValue: _selectedPaymentMethod,
                 onChanged: (value) {
                   setState(() {
@@ -368,7 +554,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     SizedBox(width: 8),
                     Flexible(
                       child: Text(
-                        'Virement bancaire',
+                        'Payement à la livraison',
                         style: TextStyle(fontWeight: FontWeight.w500),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -376,7 +562,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   ],
                 ),
                 subtitle: const Text(
-                  'Paiement sécurisé par virement bancaire',
+                  'Payer au moment de la livraison',
                   style: TextStyle(fontSize: 12),
                 ),
               ),
@@ -389,7 +575,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               decoration: BoxDecoration(
                 border: Border.all(
                   color:
-                      _selectedPaymentMethod == 'cheque'
+                      _selectedPaymentMethod == 'CHEQUE'
                           ? const Color(0xFF2196F3)
                           : Colors.grey[300]!,
                   width: 2,
@@ -397,7 +583,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: RadioListTile<String>(
-                value: 'cheque',
+                value: 'CHEQUE',
                 groupValue: _selectedPaymentMethod,
                 onChanged: (value) {
                   setState(() {
@@ -419,15 +605,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   ],
                 ),
                 subtitle: const Text(
-                  'Envoyez votre chèque à l\'adresse indiquée',
+                  'Payer par chèque lors de la livraison',
                   style: TextStyle(fontSize: 12),
                 ),
               ),
             ),
 
-            if (_selectedPaymentMethod.isNotEmpty) ...[
+            if (_selectedPaymentMethod.isNotEmpty &&
+                _selectedPaymentMethod == 'CHEQUE') ...[
               const SizedBox(height: 16),
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.blue[50],
@@ -438,30 +626,40 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _selectedPaymentMethod == 'virement'
-                          ? 'Informations pour le virement:'
-                          : 'Informations pour le chèque:',
+                      'Informations pour le chèque:',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF2196F3),
                       ),
                     ),
                     const SizedBox(height: 8),
-                    if (_selectedPaymentMethod == 'virement') ...[
-                      const Text('IBAN: MA64 1234 5678 9012 3456 7890 123'),
-                      const Text('BIC: BMCEMAMC'),
-                      const Text('Bénéficiaire: E-Shop SARL'),
-                      Text(
-                        'Référence: Commande #${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
+                    TextFormField(
+                      controller: _chequeNumberController,
+                      decoration: const InputDecoration(
+                        labelText: 'Numéro de chèque',
+                        prefixIcon: Icon(Icons.person),
                       ),
-                    ] else ...[
-                      const Text('Ordre: E-Shop SARL'),
-                      const Text('Adresse: 123 Rue du Commerce'),
-                      const Text('20000 Casablanca, Maroc'),
-                      Text(
-                        'Référence: Commande #${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer numero de chèque';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _banqueNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Nom de la banque',
+                        prefixIcon: Icon(Icons.person),
                       ),
-                    ],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer votre banque';
+                        }
+                        return null;
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -504,6 +702,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   Future<void> _processOrder(CartModel cart) async {
     if (!_formKey.currentState!.validate()) return;
+    User? user = await ApiClient.getCurrentUser();
     if (_selectedPaymentMethod.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -518,29 +717,53 @@ class _PaymentScreenState extends State<PaymentScreen> {
       _isProcessing = true;
     });
 
-    // Simulation du traitement de la commande
-    await Future.delayed(const Duration(seconds: 3));
+    if (_selectedAddressId.isEmpty) {
+      Address address = await _addressService.addAddress(
+        Address(
+          id: 0,
+          userId: user!.id,
+          firstName: _firstNameController.text.trim(),
+          lastName: _lastNameController.text.trim(),
+          phone: _phoneController.text.trim(),
+          deliveryAddress: _addressController.text.trim(),
+          country: _countryController.text.trim(),
+          city: _cityController.text.trim(),
+          postalCode: _postalCodeController.text.trim(),
+        ),
+      );
+
+      await _addressService.fetchUserAddresses().then((addresses) {
+        setState(() {
+          this.addresses = addresses;
+          if (addresses.isNotEmpty) {
+            _selectedAddressId = address.id.toString();
+          }
+        });
+      });
+    }
+
+    await _orderService.placeOrder(
+      OrderRequest(
+        userId: user!.id,
+        deliveryAddressId: int.parse(_selectedAddressId),
+        orderItemsIds: cart.orderItems.map((item) => item.id).toList(),
+        paymentMethod: _selectedPaymentMethod,
+        chequeNumber: _chequeNumberController.text.trim(),
+        bankName: _banqueNameController.text.trim(),
+      ),
+    );
 
     if (mounted) {
       setState(() {
         _isProcessing = false;
       });
 
-      // Générer un numéro de commande
-      final orderNumber = DateTime.now().millisecondsSinceEpoch
-          .toString()
-          .substring(7);
-
       // Afficher la confirmation
-      _showOrderConfirmation(context, orderNumber, cart);
+      _showOrderConfirmation(context, cart);
     }
   }
 
-  void _showOrderConfirmation(
-    BuildContext context,
-    String orderNumber,
-    CartModel cart,
-  ) {
+  void _showOrderConfirmation(BuildContext context, CartModel cart) {
     double totalPrice = cart.orderItems
         .map((item) => item.price * item.quantity)
         .reduce((a, b) => a + b);
@@ -566,8 +789,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Numéro de commande: #$orderNumber'),
-              const SizedBox(height: 8),
               Text(
                 'Total: ${(totalPrice + (totalPrice >= 50 ? 0 : 5.99)).toStringAsFixed(2)}€',
               ),
