@@ -32,4 +32,8 @@ public class CommentDto {
 
     private String username;
 
+    private boolean approved;
+
+    private boolean rejected;
+
 }

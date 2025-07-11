@@ -89,6 +89,11 @@ export class AppMenu {
                         routerLink: ['/admin/contacts']
                     },
                     {
+                        label: 'Gestion des commentaires',
+                        icon: 'pi pi-fw pi-comment',
+                        routerLink: ['/admin/comments']
+                    },
+                    {
                         label: 'Déconnexion',
                         icon: 'pi pi-fw pi-sign-out',
                         command: () => {

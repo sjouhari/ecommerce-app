@@ -27,6 +27,7 @@ import { ShoppingCartComponent } from './app/pages/shopping-cart/shopping-cart.c
 import { OrderSummaryComponent } from './app/pages/order-summary/order-summary.component';
 import { ContactComponent } from './app/pages/contact/contact.component';
 import { ContactsComponent } from './app/pages/contacts/contacts.component';
+import { CommentsComponent } from './app/pages/comments/comments.component';
 
 export const appRoutes: Routes = [
     {
@@ -84,7 +85,8 @@ export const appRoutes: Routes = [
             { path: 'roles', component: ProfilesComponent },
             { path: 'features', component: FeaturesComponent },
             { path: 'profile', component: UserProfileComponent },
-            { path: 'contacts', component: ContactsComponent }
+            { path: 'contacts', component: ContactsComponent },
+            { path: 'comments', component: CommentsComponent }
         ]
     },
     { path: 'notfound', component: Notfound },

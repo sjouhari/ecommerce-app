@@ -34,4 +34,12 @@ export class CommentService {
     deleteComment(id: number): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/${id}`);
     }
+
+    approveComment(id: number): Observable<void> {
+        return this.http.put<void>(`${this.baseUrl}/${id}/approve`, {});
+    }
+
+    rejectComment(id: number): Observable<void> {
+        return this.http.put<void>(`${this.baseUrl}/${id}/reject`, {});
+    }
 }

@@ -34,4 +34,8 @@ public class Comment {
 
     private Long userId;
 
+    private boolean approved;
+
+    private boolean rejected;
+
 }

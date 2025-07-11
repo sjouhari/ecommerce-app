@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
 
         UserEvent userEvent = new UserEvent(user.getFirstName() + " " + user.getLastName(), user.getEmail(), 0);
         kafkaUserProducer.sendMessage(userEvent, userConfirmedTopicName);
-        return "Votre compte a été verifié avec succès. Vous pouvez maintenant vous connecter.";
+        return user.getFirstName() + " " + user.getLastName();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.ecommerce.user.controller;
 
 import com.ecommerce.user.entity.User;
 import com.ecommerce.user.repository.UserRepository;
+import com.ecommerce.user.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,20 +16,30 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("api/users/reset-password")
-public class PasswordResetController {
+@RequestMapping("users")
+public class UserMvcController {
 
     private static final String RESET_PASSWORD_TEMPLATE = "reset-password-template";
+    private static final String USER_VALIDATION_TEMPLATE = "user-account-verification-template";
 
+    private final UserService userService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public PasswordResetController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserMvcController(UserService userService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping
+    @GetMapping("/verify")
+    public String verifyUserEmail(@RequestParam("code") int verificationCode, Model model) {
+        String name = userService.verifyUserEmail(verificationCode);
+        model.addAttribute("name", name);
+        return USER_VALIDATION_TEMPLATE;
+    }
+
+    @GetMapping("/reset-password")
     public String resetPassword(@RequestParam("code") int verificationCode, Model model) {
         Optional<User> user = userRepository.findByVerificationCode(verificationCode);
 

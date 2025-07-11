@@ -3,7 +3,6 @@ package com.ecommerce.comment.controller;
 import com.ecommerce.shared.dto.CommentDto;
 import com.ecommerce.comment.service.CommentService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,8 +15,11 @@ import java.util.List;
 @Validated
 public class CommentController {
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @GetMapping
     public ResponseEntity<List<CommentDto>> getAllComments(@RequestHeader("Authorization") String token) {
@@ -55,5 +57,16 @@ public class CommentController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("{id}/approve")
+    public ResponseEntity<Void> approveComment(@PathVariable Long id) {
+        commentService.approveComment(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("{id}/reject")
+    public ResponseEntity<Void> rejectComment(@PathVariable Long id) {
+        commentService.rejectComment(id);
+        return ResponseEntity.ok().build();
+    }
 
 }

@@ -44,9 +44,9 @@ public class SecurityConfig {
 						.requestMatchers(
 								"/api/auth/login",
 								"/api/auth/register",
-								"/api/users/verify",
+								"/users/verify",
 								"/api/users/forgot-password",
-								"/api/users/reset-password").permitAll()
+								"/users/reset-password").permitAll()
 
 						.requestMatchers(HttpMethod.GET, "/api/auth/current-user").authenticated()
 

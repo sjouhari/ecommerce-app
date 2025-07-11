@@ -55,11 +55,6 @@ public class UserController {
         return userService.existsById(id);
     }
 
-    @GetMapping("/verify")
-    public String verifyUserEmail(@RequestParam("code") int verificationCode) {
-        return userService.verifyUserEmail(verificationCode);
-    }
-
     @GetMapping("/forgot-password")
     public ResponseEntity<MessageResponseDto> forgotPassword(@RequestParam("email") String email) {
         return ResponseEntity.ok(userService.forgotPassword(email));

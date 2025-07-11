@@ -6,7 +6,6 @@ import com.ecommerce.comment.mapper.CommentMapper;
 import com.ecommerce.comment.repository.CommentRepository;
 import com.ecommerce.comment.service.CommentService;
 import com.ecommerce.shared.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,14 +13,15 @@ import java.util.List;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+    private final ProductApiClient productApiClient;
+    private final UserApiClient userApiClient;
 
-    @Autowired
-    private ProductApiClient productApiClient;
-
-    @Autowired
-    private UserApiClient userApiClient;
+    public CommentServiceImpl(CommentRepository commentRepository, ProductApiClient productApiClient, UserApiClient userApiClient) {
+        this.commentRepository = commentRepository;
+        this.productApiClient = productApiClient;
+        this.userApiClient = userApiClient;
+    }
 
     @Override
     public List<CommentDto> getAllComments(String token) {
@@ -29,6 +29,18 @@ public class CommentServiceImpl implements CommentService {
         List<CommentDto> commentDtos = CommentMapper.INSTANCE.commentsToCommentDtos(comments);
         return commentDtos.stream()
                 .map(commentDto -> {
+                    String username = userApiClient.getUserFullName(commentDto.getUserId(), token);
+                    commentDto.setUsername(username);
+                    return commentDto;
+                }).toList();
+    }
+
+    @Override
+    public List<CommentDto> getAllApprovedComments(String token) {
+        return commentRepository.findAll().stream()
+                .filter(Comment::isApproved)
+                .map(comment -> {
+                    CommentDto commentDto = CommentMapper.INSTANCE.commentToCommentDto(comment);
                     String username = userApiClient.getUserFullName(commentDto.getUserId(), token);
                     commentDto.setUsername(username);
                     return commentDto;
@@ -55,6 +67,8 @@ public class CommentServiceImpl implements CommentService {
             throw new ResourceNotFoundException("Product", "id", commentDto.getProductId().toString());
         }
         Comment comment = CommentMapper.INSTANCE.commentDtoToComment(commentDto);
+        comment.setApproved(false);
+        comment.setRejected(false);
         Comment savedComment = commentRepository.save(comment);
         CommentDto newCommentDto = CommentMapper.INSTANCE.commentToCommentDto(savedComment);
         newCommentDto.setUsername(username);
@@ -85,6 +99,7 @@ public class CommentServiceImpl implements CommentService {
         List<Comment> comments = commentRepository.findAllByProductId(productId);
         List<CommentDto> commentDtos = CommentMapper.INSTANCE.commentsToCommentDtos(comments);
         return commentDtos.stream()
+                .filter(CommentDto::isApproved)
                 .map(commentDto -> {
                     commentDto.setUsername(userApiClient.getUserFullName(commentDto.getUserId(), token));
                     return commentDto;
@@ -93,7 +108,29 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDto> getCommentsByUserId(Long userId, String token) {
-        List<Comment> comments = commentRepository.findAllByUserId(userId);
+        List<Comment> comments = commentRepository.findAllByUserId(userId).stream()
+                .filter(Comment::isApproved)
+                .toList();
         return CommentMapper.INSTANCE.commentsToCommentDtos(comments);
+    }
+
+    @Override
+    public void approveComment(Long id) {
+        Comment comment = commentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Comment", "id", id.toString())
+        );
+        comment.setApproved(true);
+        comment.setRejected(false);
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public void rejectComment(Long id) {
+        Comment comment = commentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Comment", "id", id.toString())
+        );
+        comment.setApproved(false);
+        comment.setRejected(true);
+        commentRepository.save(comment);
     }
 }

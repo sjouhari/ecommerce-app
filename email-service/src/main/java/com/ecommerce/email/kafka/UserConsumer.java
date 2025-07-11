@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class KafkaUserConsumer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaUserConsumer.class);
+public class UserConsumer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserConsumer.class);
 
     private final EmailService emailService;
 
-    public KafkaUserConsumer(EmailService emailService) {
+    public UserConsumer(EmailService emailService) {
         this.emailService = emailService;
     }
 
@@ -27,7 +27,7 @@ public class KafkaUserConsumer {
         emailDto.setTo(userEvent.getEmail());
         emailDto.setSubject("Confirmation de compte");
 
-        String verificationUrl = "http://localhost:8080/api/users/verify?code=" + userEvent.getCode();
+        String verificationUrl = "http://localhost:8080/users/verify?code=" + userEvent.getCode();
 
         Map<String, Object> variables = Map.of(
                 "subject", "Confirmation de compte",

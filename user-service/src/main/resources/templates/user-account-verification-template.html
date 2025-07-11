@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vérification de compte</title>
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: background-color 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .link:hover {
+            background-color: #45a049;
+        }
+
+        .link a {
+            text-decoration: none;
+            color: white;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>Bonjour <span th:text="${name}"></span>,</p>
+        <p>Votre compte a bien été activé. Vous pouvez maintenant vous connecter sur l'application EcomApp.</p>
+        <p class="link">
+            <a href="http://localhost:4200/">Cliquez ici pour vous connecter</a>
+        </p>
+    </div>
+</body>
+</html>
